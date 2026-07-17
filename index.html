@@ -1,17 +1,249 @@
 <!DOCTYPE html>
 <html lang="el">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ΑΣΕΠ Quiz</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0b5cab" />
+  <title>ΑΣΕΠ Quiz</title>
+  <style>
+    :root{
+      --blue:#0b5cab; --blue2:#083f78; --bg:#f3f6fa; --card:#fff;
+      --text:#172033; --muted:#687386; --border:#d8e0ea;
+      --green:#1f9d55; --greenbg:#e8f7ef; --red:#d9363e; --redbg:#fdebec;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text)}
+    .app{width:min(720px,100%);margin:0 auto;min-height:100vh;padding:16px 14px 30px}
+    .header{background:var(--blue);color:#fff;border-radius:16px;padding:18px;margin-bottom:14px;box-shadow:0 8px 24px rgba(11,92,171,.18)}
+    .header h1{margin:0 0 6px;font-size:1.35rem}
+    .header p{margin:0;opacity:.9;font-size:.92rem}
+    .card{background:var(--card);border:1px solid #e8edf4;border-radius:16px;padding:18px;box-shadow:0 8px 26px rgba(23,37,61,.08);margin-bottom:14px}
+    h2{margin-top:0}
+    .menu-grid{display:grid;gap:12px}
+    .menu-btn,.primary,.secondary{
+      width:100%;border:0;border-radius:12px;padding:15px;font-size:1rem;font-weight:700;cursor:pointer
+    }
+    .menu-btn,.primary{background:var(--blue);color:#fff}
+    .secondary{background:#eaf3fc;color:var(--blue2);border:1px solid #bdd4ec}
+    label{display:block;font-weight:700;margin:14px 0 7px}
+    select,input{
+      width:100%;padding:13px;border:2px solid var(--border);border-radius:11px;
+      font-size:1rem;background:#fff;color:var(--text)
+    }
+    .hint{font-size:.86rem;color:var(--muted);line-height:1.4;margin-top:7px}
+    .topbar{display:flex;justify-content:space-between;gap:10px;align-items:center;margin:10px 2px;color:var(--muted);font-weight:700;font-size:.92rem}
+    .progress{height:8px;background:#dfe6ef;border-radius:999px;overflow:hidden;margin-bottom:14px}
+    .progress>div{height:100%;background:var(--blue);width:0;transition:width .25s}
+    .category{display:inline-block;background:#eaf3fc;color:var(--blue2);padding:6px 9px;border-radius:999px;font-size:.8rem;font-weight:700;margin-bottom:12px}
+    .question{font-size:1.12rem;line-height:1.45;margin:0 0 17px}
+    .answers{display:grid;gap:10px}
+    .answer{
+      width:100%;text-align:left;border:2px solid var(--border);background:#fff;border-radius:12px;
+      padding:14px;font-size:1rem;line-height:1.35;color:var(--text)
+    }
+    .answer.correct{border-color:var(--green);background:var(--greenbg);color:#116934;font-weight:700}
+    .answer.wrong{border-color:var(--red);background:var(--redbg);color:#9f2028;font-weight:700}
+    .countdown{text-align:center;font-weight:700;color:var(--blue2);margin-top:14px;min-height:24px}
+    .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+    .hidden{display:none!important}
+    .source{text-align:center;color:var(--muted);font-size:.78rem;margin-top:12px}
+    @media(max-width:480px){
+      .header h1{font-size:1.18rem}.question{font-size:1.04rem}.answer{font-size:.95rem;padding:13px 12px}
+      .actions{grid-template-columns:1fr}
+    }
+  </style>
 </head>
 <body>
+<main class="app">
+  <section class="header">
+    <h1>Προσομοιωτής Γραπτού ΑΣΕΠ</h1>
+    <p>Δοκιμαστική έκδοση εφαρμογής</p>
+  </section>
 
-<h1>Προσομοιωτής Πανελλήνιου Γραπτού ΑΣΕΠ</h1>
+  <section id="homeScreen" class="card">
+    <h2>Αρχικό μενού</h2>
+    <div class="menu-grid">
+      <button class="menu-btn" onclick="openStudySetup()">📚 Διάβασμα</button>
+      <button class="menu-btn" onclick="alert('Η λειτουργία Τεστ θα προστεθεί στο επόμενο βήμα.')">🎯 Τεστ</button>
+    </div>
+  </section>
 
-<p>Η εφαρμογή λειτουργεί.</p>
+  <section id="studySetup" class="card hidden">
+    <h2>Ρυθμίσεις διαβάσματος</h2>
 
-<button>Έναρξη Τεστ</button>
+    <label for="categorySelect">Επίλεξε ενότητα</label>
+    <select id="categorySelect">
+      <option value="constitutional">Συνταγματικό Δίκαιο</option>
+    </select>
+    <div class="hint">Στη δοκιμαστική έκδοση είναι ενεργή μόνο η πρώτη ενότητα.</div>
 
+    <label for="secondsInput">Σε πόσα δευτερόλεπτα θέλεις να εμφανίζεται η σωστή απάντηση;</label>
+    <input id="secondsInput" type="number" min="1" max="300" step="1" value="5" inputmode="numeric" />
+    <div class="hint">Γράψε έναν αριθμό από 1 έως 300 δευτερόλεπτα.</div>
+
+    <div class="actions">
+      <button class="secondary" onclick="goHome()">Πίσω</button>
+      <button class="primary" onclick="startStudy()">Έναρξη</button>
+    </div>
+  </section>
+
+  <section id="studyScreen" class="hidden">
+    <div class="topbar">
+      <span id="counter">Ερώτηση 1 από 5</span>
+      <span id="timerLabel">Απάντηση σε 5″</span>
+    </div>
+    <div class="progress"><div id="progressBar"></div></div>
+
+    <section class="card">
+      <div class="category">Συνταγματικό Δίκαιο</div>
+      <h2 id="questionText" class="question"></h2>
+      <div id="answers" class="answers"></div>
+      <div id="countdown" class="countdown"></div>
+
+      <div class="actions">
+        <button class="secondary" onclick="revealNow()">Εμφάνιση τώρα</button>
+        <button id="nextButton" class="primary hidden" onclick="nextQuestion()">Επόμενη</button>
+      </div>
+    </section>
+
+    <button class="secondary" onclick="stopStudy()">Τέλος διαβάσματος</button>
+  </section>
+
+  <section id="finishedScreen" class="card hidden">
+    <h2>Ολοκληρώθηκε η ενότητα</h2>
+    <p>Εμφανίστηκαν όλες οι δοκιμαστικές ερωτήσεις.</p>
+    <button class="primary" onclick="goHome()">Επιστροφή στο αρχικό μενού</button>
+  </section>
+
+  <div class="source">Πηγή: Επίσημο Μητρώο Θεμάτων Γνώσεων ΑΣΕΠ</div>
+</main>
+
+<script>
+const questions = [
+  {
+    q:"Η λαϊκή κυριαρχία, στο πολίτευμά μας, είναι:",
+    a:["Άγραφη αρχή","Θεμελιώδης συνταγματική αρχή","Κατώτερη από την εθνική κυριαρχία","Πάνω από το Σύνταγμα"],
+    c:1
+  },
+  {
+    q:"Το Σύνταγμα:",
+    a:["Έχει υπέρτερη ισχύ από τον τυπικό νόμο","Έχει την ίδια ισχύ με τον τυπικό νόμο","Είναι κατώτερο από τον τυπικό νόμο","Έχει την ίδια ισχύ με το διεθνές δίκαιο"],
+    c:0
+  },
+  {
+    q:"Το πολίτευμα της Ελλάδας είναι:",
+    a:["Προεδρική Δημοκρατία","Προεδρευόμενη Κοινοβουλευτική Δημοκρατία","Βασιλευόμενη Κοινοβουλευτική Δημοκρατία","Προεδρική Κοινοβουλευτική Δημοκρατία"],
+    c:1
+  },
+  {
+    q:"Οι συντακτικές πράξεις:",
+    a:["Έχουν αυξημένη τυπική ισχύ","Είναι παράνομες","Εκδίδονται από την αναθεωρητική Βουλή","Εκδίδονται βάσει εξουσιοδότησης απευθείας εκ του Συντάγματος"],
+    c:0
+  },
+  {
+    q:"Η αντιπροσωπευτική αρχή:",
+    a:["Είναι συνώνυμο της έμμεσης δημοκρατίας σήμερα","Είναι συνώνυμο της άμεσης δημοκρατίας","Δεν είναι συνώνυμο ούτε της άμεσης ούτε της έμμεσης δημοκρατίας","Σημαίνει ότι οι βουλευτές δεσμεύονται από τη γνώμη των ψηφοφόρων της περιφέρειάς τους"],
+    c:0
+  }
+];
+
+let current=0;
+let seconds=5;
+let remaining=5;
+let intervalId=null;
+let revealed=false;
+const letters=["Α","Β","Γ","Δ"];
+
+function showOnly(id){
+  ["homeScreen","studySetup","studyScreen","finishedScreen"].forEach(x=>{
+    document.getElementById(x).classList.toggle("hidden",x!==id);
+  });
+}
+
+function openStudySetup(){ showOnly("studySetup"); }
+function goHome(){ clearTimer(); showOnly("homeScreen"); }
+
+function startStudy(){
+  const value=Number(document.getElementById("secondsInput").value);
+  if(!Number.isInteger(value)||value<1||value>300){
+    alert("Γράψε έναν ακέραιο αριθμό από 1 έως 300 δευτερόλεπτα.");
+    return;
+  }
+  seconds=value;
+  current=0;
+  showOnly("studyScreen");
+  renderQuestion();
+}
+
+function renderQuestion(){
+  clearTimer();
+  revealed=false;
+  remaining=seconds;
+
+  const item=questions[current];
+  document.getElementById("counter").textContent=`Ερώτηση ${current+1} από ${questions.length}`;
+  document.getElementById("progressBar").style.width=`${(current/questions.length)*100}%`;
+  document.getElementById("questionText").textContent=item.q;
+  document.getElementById("nextButton").classList.add("hidden");
+
+  const box=document.getElementById("answers");
+  box.innerHTML="";
+  item.a.forEach((text,i)=>{
+    const div=document.createElement("div");
+    div.className="answer";
+    div.textContent=`${letters[i]}. ${text}`;
+    box.appendChild(div);
+  });
+
+  updateCountdown();
+  intervalId=setInterval(()=>{
+    remaining--;
+    updateCountdown();
+    if(remaining<=0) revealAnswer();
+  },1000);
+}
+
+function updateCountdown(){
+  document.getElementById("timerLabel").textContent=`Απάντηση σε ${remaining}″`;
+  document.getElementById("countdown").textContent=
+    revealed ? "Η σωστή απάντηση εμφανίστηκε." : `Η σωστή απάντηση θα εμφανιστεί σε ${remaining} δευτερόλεπτα.`;
+}
+
+function revealAnswer(){
+  if(revealed) return;
+  revealed=true;
+  clearTimer();
+  const item=questions[current];
+  document.querySelectorAll(".answer")[item.c].classList.add("correct");
+  document.getElementById("timerLabel").textContent="Απάντηση εμφανίστηκε";
+  document.getElementById("countdown").textContent=`Σωστή απάντηση: ${letters[item.c]}`;
+  document.getElementById("nextButton").classList.remove("hidden");
+}
+
+function revealNow(){ revealAnswer(); }
+
+function nextQuestion(){
+  if(!revealed) return;
+  current++;
+  if(current<questions.length){
+    renderQuestion();
+  }else{
+    document.getElementById("progressBar").style.width="100%";
+    showOnly("finishedScreen");
+  }
+}
+
+function stopStudy(){
+  clearTimer();
+  goHome();
+}
+
+function clearTimer(){
+  if(intervalId!==null){
+    clearInterval(intervalId);
+    intervalId=null;
+  }
+}
+</script>
 </body>
 </html>
