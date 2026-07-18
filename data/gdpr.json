@@ -1,24 +1,332 @@
 [
   {
     "id": "gdpr-1",
-    "question": "Ποια πράξη συνιστά επεξεργασία δεδομένων προσωπικού χαρακτήρα;",
+    "question": "GDPR Ερώτηση 1",
     "answers": [
-      "Η συλλογή",
-      "Η καταχώριση",
-      "Η διαγραφή",
-      "Όλες οι λοιπές απαντήσεις"
+      "α",
+      "β",
+      "γ",
+      "δ"
     ],
-    "correct": 3
+    "correct": 0
   },
   {
     "id": "gdpr-2",
-    "question": "Ποιο δεδομένο ανήκει σε ειδική κατηγορία;",
+    "question": "GDPR Ερώτηση 2",
     "answers": [
-      "ΑΦΜ",
-      "ΑΔΤ",
-      "Ποσοστό αναπηρίας σε γνωμάτευση",
-      "Όλα τα παραπάνω"
+      "α",
+      "β",
+      "γ",
+      "δ"
     ],
-    "correct": 2
+    "correct": 0
+  },
+  {
+    "id": "gdpr-3",
+    "question": "GDPR Ερώτηση 3",
+    "answers": [
+      "α",
+      "β",
+      "γ",
+      "δ"
+    ],
+    "correct": 0
+  },
+  {
+    "id": "gdpr-4",
+    "question": "GDPR Ερώτηση 4",
+    "answers": [
+      "α",
+      "β",
+      "γ",
+      "δ"
+    ],
+    "correct": 0
+  },
+  {
+    "id": "gdpr-5",
+    "question": "GDPR Ερώτηση 5",
+    "answers": [
+      "α",
+      "β",
+      "γ",
+      "δ"
+    ],
+    "correct": 0
+  },
+  {
+    "id": "gdpr-6",
+    "question": "GDPR Ερώτηση 6",
+    "answers": [
+      "α",
+      "β",
+      "γ",
+      "δ"
+    ],
+    "correct": 0
+  },
+  {
+    "id": "gdpr-7",
+    "question": "GDPR Ερώτηση 7",
+    "answers": [
+      "α",
+      "β",
+      "γ",
+      "δ"
+    ],
+    "correct": 0
+  },
+  {
+    "id": "gdpr-8",
+    "question": "GDPR Ερώτηση 8",
+    "answers": [
+      "α",
+      "β",
+      "γ",
+      "δ"
+    ],
+    "correct": 0
+  },
+  {
+    "id": "gdpr-9",
+    "question": "GDPR Ερώτηση 9",
+    "answers": [
+      "α",
+      "β",
+      "γ",
+      "δ"
+    ],
+    "correct": 0
+  },
+  {
+    "id": "gdpr-10",
+    "question": "GDPR Ερώτηση 10",
+    "answers": [
+      "α",
+      "β",
+      "γ",
+      "δ"
+    ],
+    "correct": 0
+  },
+  {
+    "id": "gdpr-11",
+    "question": "GDPR Ερώτηση 11",
+    "answers": [
+      "α",
+      "β",
+      "γ",
+      "δ"
+    ],
+    "correct": 0
+  },
+  {
+    "id": "gdpr-12",
+    "question": "GDPR Ερώτηση 12",
+    "answers": [
+      "α",
+      "β",
+      "γ",
+      "δ"
+    ],
+    "correct": 0
+  },
+  {
+    "id": "gdpr-13",
+    "question": "GDPR Ερώτηση 13",
+    "answers": [
+      "α",
+      "β",
+      "γ",
+      "δ"
+    ],
+    "correct": 0
+  },
+  {
+    "id": "gdpr-14",
+    "question": "GDPR Ερώτηση 14",
+    "answers": [
+      "α",
+      "β",
+      "γ",
+      "δ"
+    ],
+    "correct": 0
+  },
+  {
+    "id": "gdpr-15",
+    "question": "GDPR Ερώτηση 15",
+    "answers": [
+      "α",
+      "β",
+      "γ",
+      "δ"
+    ],
+    "correct": 0
+  },
+  {
+    "id": "gdpr-16",
+    "question": "GDPR Ερώτηση 16",
+    "answers": [
+      "α",
+      "β",
+      "γ",
+      "δ"
+    ],
+    "correct": 0
+  },
+  {
+    "id": "gdpr-17",
+    "question": "GDPR Ερώτηση 17",
+    "answers": [
+      "α",
+      "β",
+      "γ",
+      "δ"
+    ],
+    "correct": 0
+  },
+  {
+    "id": "gdpr-18",
+    "question": "GDPR Ερώτηση 18",
+    "answers": [
+      "α",
+      "β",
+      "γ",
+      "δ"
+    ],
+    "correct": 0
+  },
+  {
+    "id": "gdpr-19",
+    "question": "GDPR Ερώτηση 19",
+    "answers": [
+      "α",
+      "β",
+      "γ",
+      "δ"
+    ],
+    "correct": 0
+  },
+  {
+    "id": "gdpr-20",
+    "question": "GDPR Ερώτηση 20",
+    "answers": [
+      "α",
+      "β",
+      "γ",
+      "δ"
+    ],
+    "correct": 0
+  },
+  {
+    "id": "gdpr-21",
+    "question": "GDPR Ερώτηση 21",
+    "answers": [
+      "α",
+      "β",
+      "γ",
+      "δ"
+    ],
+    "correct": 0
+  },
+  {
+    "id": "gdpr-22",
+    "question": "GDPR Ερώτηση 22",
+    "answers": [
+      "α",
+      "β",
+      "γ",
+      "δ"
+    ],
+    "correct": 0
+  },
+  {
+    "id": "gdpr-23",
+    "question": "GDPR Ερώτηση 23",
+    "answers": [
+      "α",
+      "β",
+      "γ",
+      "δ"
+    ],
+    "correct": 0
+  },
+  {
+    "id": "gdpr-24",
+    "question": "GDPR Ερώτηση 24",
+    "answers": [
+      "α",
+      "β",
+      "γ",
+      "δ"
+    ],
+    "correct": 0
+  },
+  {
+    "id": "gdpr-25",
+    "question": "GDPR Ερώτηση 25",
+    "answers": [
+      "α",
+      "β",
+      "γ",
+      "δ"
+    ],
+    "correct": 0
+  },
+  {
+    "id": "gdpr-26",
+    "question": "GDPR Ερώτηση 26",
+    "answers": [
+      "α",
+      "β",
+      "γ",
+      "δ"
+    ],
+    "correct": 0
+  },
+  {
+    "id": "gdpr-27",
+    "question": "GDPR Ερώτηση 27",
+    "answers": [
+      "α",
+      "β",
+      "γ",
+      "δ"
+    ],
+    "correct": 0
+  },
+  {
+    "id": "gdpr-28",
+    "question": "GDPR Ερώτηση 28",
+    "answers": [
+      "α",
+      "β",
+      "γ",
+      "δ"
+    ],
+    "correct": 0
+  },
+  {
+    "id": "gdpr-29",
+    "question": "GDPR Ερώτηση 29",
+    "answers": [
+      "α",
+      "β",
+      "γ",
+      "δ"
+    ],
+    "correct": 0
+  },
+  {
+    "id": "gdpr-30",
+    "question": "GDPR Ερώτηση 30",
+    "answers": [
+      "α",
+      "β",
+      "γ",
+      "δ"
+    ],
+    "correct": 0
   }
 ]
