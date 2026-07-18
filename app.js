@@ -1,4 +1,5 @@
 
+const DATA_VERSION = "2";
 const FILES = {
   constitutional:"constitutional.json", administrative:"administrative.json", eu:"eu.json",
   economics:"economics.json", it:"it.json", history:"history.json",
@@ -12,7 +13,7 @@ let mode="", score=0, answerLocked=false, studyTimer=null, studySeconds=5, autoN
 document.addEventListener("DOMContentLoaded", init);
 
 async function init(){
-  categories = await fetch("data/categories.json").then(r=>r.json());
+  categories = await fetch(`data/categories.json?v=${DATA_VERSION}`).then(r=>r.json());
   categories.forEach(c=>categoryMap.set(c.id,c));
   renderCategoryControls();
   goHome();
@@ -92,7 +93,7 @@ function resetTestCategories(){
 }
 
 async function loadQuestions(ids){
-  const sets=await Promise.all(ids.map(id=>fetch(`data/${FILES[id]}`).then(r=>r.json())));
+  const sets=await Promise.all(ids.map(id=>fetch(`data/${FILES[id]}?v=${DATA_VERSION}`).then(r=>r.json())));
   return sets.flat().map(q=>({...q,categoryId:q.id.split("-")[0]}));
 }
 
@@ -103,7 +104,7 @@ async function startTest(){
 
   const byCategory={};
   for(const id of selected){
-    byCategory[id]=await fetch(`data/${FILES[id]}`).then(r=>r.json());
+    byCategory[id]=await fetch(`data/${FILES[id]}?v=${DATA_VERSION}`).then(r=>r.json());
   }
   currentQuestions=buildProportionalTest(byCategory,requested);
   if(currentQuestions.length===0){showMessage("Δεν βρέθηκαν διαθέσιμες ερωτήσεις.");return;}
