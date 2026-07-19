@@ -1,6 +1,7 @@
 
-const DATA_VERSION = "3";
+const DATA_VERSION = "4";
 const FAVORITES_KEY = "asepFavorites";
+const WRONGS_KEY = "asepWrongs";
 
 const FILES = {
   constitutional: "constitutional.json",
@@ -34,7 +35,7 @@ document.addEventListener("DOMContentLoaded", init);
 async function init() {
   categories = await fetch(
     `data/categories.json?v=${DATA_VERSION}`
-  ).then(r => r.json());
+  ).then(response => response.json());
 
   categories.forEach(category => {
     categoryMap.set(category.id, category);
@@ -73,6 +74,7 @@ function renderCategoryControls() {
 
   study.add(new Option("Όλες οι ενότητες", "all"));
   study.add(new Option("⭐ Μόνο αγαπημένες", "favorites"));
+  study.add(new Option("❌ Μόνο λάθη", "wrongs"));
 
   categories.forEach(category => {
     const label = document.createElement("label");
@@ -90,6 +92,8 @@ function renderCategoryControls() {
     checks.appendChild(label);
     study.add(new Option(category.name, category.id));
   });
+
+  ensureClearWrongsButton();
 
   document
     .getElementById("allCategories")
@@ -115,6 +119,26 @@ function renderCategoryControls() {
     });
 }
 
+function ensureClearWrongsButton() {
+  if (document.getElementById("clearWrongsButton")) {
+    return;
+  }
+
+  const studySelect = document.getElementById("studyCategory");
+
+  const button = document.createElement("button");
+  button.id = "clearWrongsButton";
+  button.type = "button";
+  button.className = "secondary";
+  button.textContent = "🗑 Καθαρισμός λαθών";
+  button.onclick = clearAllWrongs;
+
+  studySelect.parentNode.insertBefore(
+    button,
+    studySelect.nextSibling
+  );
+}
+
 function openTest() {
   const saved = getSavedCategories();
 
@@ -135,9 +159,11 @@ function openTest() {
 
 function getSavedCategories() {
   try {
-    return JSON.parse(
+    const saved = JSON.parse(
       localStorage.getItem("asepTestCategories") || "[]"
     );
+
+    return Array.isArray(saved) ? saved : [];
   } catch {
     return [];
   }
@@ -205,12 +231,20 @@ async function loadQuestions(ids) {
     )
   );
 
-  return sets
-    .flat()
-    .map(question => ({
-      ...question,
-      categoryId: question.id.split("-")[0]
-    }));
+  const questions = [];
+
+  sets.forEach((set, index) => {
+    const categoryId = ids[index];
+
+    set.forEach(question => {
+      questions.push({
+        ...question,
+        categoryId
+      });
+    });
+  });
+
+  return questions;
 }
 
 async function startTest() {
@@ -226,9 +260,7 @@ async function startTest() {
     requested < 1 ||
     requested > 100
   ) {
-    showMessage(
-      "Δώσε αριθμό ερωτήσεων από 1 έως 100."
-    );
+    showMessage("Δώσε αριθμό ερωτήσεων από 1 έως 100.");
     return;
   }
 
@@ -246,9 +278,7 @@ async function startTest() {
   );
 
   if (currentQuestions.length === 0) {
-    showMessage(
-      "Δεν βρέθηκαν διαθέσιμες ερωτήσεις."
-    );
+    showMessage("Δεν βρέθηκαν διαθέσιμες ερωτήσεις.");
     return;
   }
 
@@ -302,10 +332,7 @@ function buildProportionalTest(byCategory, total) {
         remainderIndex % remainders.length
       ].id;
 
-    if (
-      allocation[id] <
-      byCategory[id].length
-    ) {
+    if (allocation[id] < byCategory[id].length) {
       allocation[id]++;
       left--;
     }
@@ -351,9 +378,7 @@ async function startStudy() {
     studySeconds < 1 ||
     studySeconds > 300
   ) {
-    showMessage(
-      "Δώσε χρόνο από 1 έως 300 δευτερόλεπτα."
-    );
+    showMessage("Δώσε χρόνο από 1 έως 300 δευτερόλεπτα.");
     return;
   }
 
@@ -371,6 +396,20 @@ async function startStudy() {
     if (currentQuestions.length === 0) {
       showMessage(
         "Δεν έχεις αποθηκεύσει αγαπημένες ερωτήσεις."
+      );
+      return;
+    }
+  } else if (selected === "wrongs") {
+    currentQuestions = await loadQuestions(
+      categories.map(category => category.id)
+    );
+
+    currentQuestions =
+      currentQuestions.filter(isWrong);
+
+    if (currentQuestions.length === 0) {
+      showMessage(
+        "Δεν υπάρχουν αποθηκευμένες λάθος ερωτήσεις."
       );
       return;
     }
@@ -507,6 +546,8 @@ function chooseTestAnswer(selected) {
     buttons[selected].classList.add("correct");
     score++;
 
+    removeWrong(question);
+
     document.getElementById(
       "feedback"
     ).textContent = "✓ Σωστή απάντηση";
@@ -516,6 +557,8 @@ function chooseTestAnswer(selected) {
     buttons[
       question.correct
     ].classList.add("correct");
+
+    addWrong(question);
 
     document.getElementById(
       "feedback"
@@ -569,9 +612,7 @@ function nextQuestion() {
   clearStudyTimer();
   currentIndex++;
 
-  if (
-    currentIndex < currentQuestions.length
-  ) {
+  if (currentIndex < currentQuestions.length) {
     renderQuestion();
   } else {
     finishQuiz();
@@ -579,9 +620,7 @@ function nextQuestion() {
 }
 
 function finishEarly() {
-  if (
-    confirm("Θέλεις να σταματήσεις;")
-  ) {
+  if (confirm("Θέλεις να σταματήσεις;")) {
     finishQuiz();
   }
 }
@@ -627,8 +666,7 @@ function finishQuiz() {
 function getFavorites() {
   try {
     const favorites = JSON.parse(
-      localStorage.getItem(FAVORITES_KEY) ||
-      "[]"
+      localStorage.getItem(FAVORITES_KEY) || "[]"
     );
 
     return Array.isArray(favorites)
@@ -640,10 +678,7 @@ function getFavorites() {
 }
 
 function favoriteKey(question) {
-  return (
-    `${question.categoryId}:` +
-    `${question.id}`
-  );
+  return `${question.categoryId}:${question.id}`;
 }
 
 function isFavorite(question) {
@@ -687,9 +722,7 @@ function toggleFavorite() {
 }
 
 function ensureFavoriteButton() {
-  if (
-    document.getElementById("favoriteButton")
-  ) {
+  if (document.getElementById("favoriteButton")) {
     return;
   }
 
@@ -732,6 +765,83 @@ function updateFavoriteButton(question) {
   button.title = favorite
     ? "Αφαίρεση από τις αγαπημένες"
     : "Προσθήκη στις αγαπημένες";
+}
+
+function getWrongs() {
+  try {
+    const wrongs = JSON.parse(
+      localStorage.getItem(WRONGS_KEY) || "[]"
+    );
+
+    return Array.isArray(wrongs)
+      ? wrongs
+      : [];
+  } catch {
+    return [];
+  }
+}
+
+function wrongKey(question) {
+  return `${question.categoryId}:${question.id}`;
+}
+
+function isWrong(question) {
+  return getWrongs().includes(
+    wrongKey(question)
+  );
+}
+
+function addWrong(question) {
+  const key = wrongKey(question);
+  const wrongs = getWrongs();
+
+  if (!wrongs.includes(key)) {
+    wrongs.push(key);
+
+    localStorage.setItem(
+      WRONGS_KEY,
+      JSON.stringify(wrongs)
+    );
+  }
+}
+
+function removeWrong(question) {
+  const key = wrongKey(question);
+  const wrongs = getWrongs();
+  const index = wrongs.indexOf(key);
+
+  if (index >= 0) {
+    wrongs.splice(index, 1);
+
+    localStorage.setItem(
+      WRONGS_KEY,
+      JSON.stringify(wrongs)
+    );
+  }
+}
+
+function clearAllWrongs() {
+  const wrongs = getWrongs();
+
+  if (wrongs.length === 0) {
+    showMessage("Δεν υπάρχουν αποθηκευμένα λάθη.");
+    return;
+  }
+
+  const confirmed = confirm(
+    `Θέλεις να διαγράψεις και τις ${wrongs.length} ` +
+    "αποθηκευμένες λάθος ερωτήσεις;"
+  );
+
+  if (!confirmed) {
+    return;
+  }
+
+  localStorage.removeItem(WRONGS_KEY);
+
+  showMessage(
+    "Οι λάθος ερωτήσεις διαγράφηκαν."
+  );
 }
 
 function clearStudyTimer() {
