@@ -921,11 +921,26 @@ function renderStats() {
   const body = document.getElementById("statsByCategory");
   body.innerHTML = "";
 
-  categories.forEach(category => {
+  const sortedCategories = [...categories].sort((a, b) => {
+    const aStats = stats.byCategory[a.id] || { total: 0, correct: 0 };
+    const bStats = stats.byCategory[b.id] || { total: 0, correct: 0 };
+
+    const aPercent = aStats.total > 0 ? (aStats.correct / aStats.total) * 100 : 0;
+    const bPercent = bStats.total > 0 ? (bStats.correct / bStats.total) * 100 : 0;
+
+    return aPercent - bPercent;
+  });
+
+  sortedCategories.forEach(category => {
     const categoryStats = stats.byCategory[category.id] || { total: 0, correct: 0, wrong: 0 };
     const categoryPercentage = categoryStats.total > 0
       ? Math.round((categoryStats.correct / categoryStats.total) * 100)
       : 0;
+
+    const color =
+      categoryPercentage >= 75 ? '#198754' :
+      categoryPercentage >= 50 ? '#fd7e14' :
+      '#dc3545';
 
     const row = document.createElement("tr");
     row.innerHTML = `
@@ -933,7 +948,7 @@ function renderStats() {
       <td>${categoryStats.correct}</td>
       <td>${categoryStats.wrong}</td>
       <td>${categoryStats.total}</td>
-      <td><strong>${categoryPercentage}%</strong></td>
+      <td><strong style="color:${color}">${categoryPercentage}%</strong></td>
     `;
     body.appendChild(row);
   });
