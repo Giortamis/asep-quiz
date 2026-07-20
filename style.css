@@ -23,3 +23,19 @@ label{display:block;font-weight:700;margin:14px 0 7px}select,input[type=number]{
 .message{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#172033;color:white;padding:12px 16px;border-radius:10px;max-width:90%;text-align:center}
 footer{text-align:center;color:var(--muted);font-size:.78rem;margin-top:12px}
 @media(max-width:520px){.actions{grid-template-columns:1fr}.header h1{font-size:1.18rem}.question{font-size:1.04rem}.answer{font-size:.95rem}}
+
+
+/* Έκδοση 5 — Στατιστικά */
+.favorite-button{display:inline-block;margin:0 0 12px;padding:8px 11px;border:1px solid #e2b544;border-radius:10px;background:#fff8db;color:#755500;font-weight:700;cursor:pointer}
+.clear-wrongs{width:100%;margin-top:10px}
+.stats-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:20px}
+.stat-box{border:1px solid var(--border);border-radius:12px;padding:13px;background:#f8fbff}
+.stat-box span{display:block;color:var(--muted);font-size:.84rem;margin-bottom:6px}
+.stat-box strong{display:block;color:var(--blue);font-size:1.45rem}
+.stats-table-wrap{width:100%;overflow-x:auto;margin-top:10px}
+.stats-table{width:100%;border-collapse:collapse;min-width:590px}
+.stats-table th,.stats-table td{padding:11px 9px;border-bottom:1px solid var(--border);text-align:center}
+.stats-table th:first-child,.stats-table td:first-child{text-align:left}
+.stats-table th{background:#edf5fd;color:var(--blue2);font-size:.9rem}
+.danger{border:1px solid #e1a3a7;border-radius:12px;padding:14px;background:#fdebec;color:#9f2028;font-size:1rem;font-weight:700;cursor:pointer}
+@media(max-width:520px){.stats-grid{grid-template-columns:1fr}}

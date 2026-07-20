@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#0b5cab">
   <title>ΑΣΕΠ Quiz</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=5">
 </head>
 <body>
 <main class="app">
   <header class="header">
     <h1>Προσομοιωτής Γραπτού ΑΣΕΠ</h1>
-    <p>Δοκιμαστική οργανωμένη έκδοση</p>
+    <p>Οργανωμένη έκδοση με στατιστικά</p>
   </header>
 
   <section id="home" class="card">
@@ -19,9 +19,9 @@
     <div class="menu">
       <button onclick="openStudy()">📚 Διάβασμα</button>
       <button onclick="openTest()">🎯 Τεστ</button>
-      <button onclick="showMessage('Τα στατιστικά θα προστεθούν σε επόμενη έκδοση.')">📊 Στατιστικά</button>
-      <button onclick="showMessage('Τα λάθη μου θα ενεργοποιηθούν όταν προστεθεί η αποθήκευση αποτελεσμάτων.')">❌ Τα λάθη μου</button>
-      <button onclick="showMessage('Οι αγαπημένες θα προστεθούν σε επόμενη έκδοση.')">⭐ Αγαπημένες</button>
+      <button onclick="openStats()">📊 Στατιστικά</button>
+      <button onclick="openStudyFiltered('wrongs')">❌ Τα λάθη μου</button>
+      <button onclick="openStudyFiltered('favorites')">⭐ Αγαπημένες</button>
     </div>
   </section>
 
@@ -94,6 +94,41 @@
     <div id="resultScore" class="score"></div>
     <p id="resultDetails"></p>
     <button class="primary full" onclick="goHome()">Επιστροφή στο αρχικό μενού</button>
+  </section>
+
+  <section id="statsScreen" class="card hidden">
+    <h2>📊 Στατιστικά</h2>
+
+    <div class="stats-grid">
+      <div class="stat-box"><span>Συνολικές απαντήσεις</span><strong id="statsTotal">0</strong></div>
+      <div class="stat-box"><span>Σωστές</span><strong id="statsCorrect">0</strong></div>
+      <div class="stat-box"><span>Λάθος</span><strong id="statsWrong">0</strong></div>
+      <div class="stat-box"><span>Ποσοστό επιτυχίας</span><strong id="statsPercent">0%</strong></div>
+      <div class="stat-box"><span>Ολοκληρωμένα τεστ</span><strong id="statsTests">0</strong></div>
+      <div class="stat-box"><span>Αγαπημένες</span><strong id="statsFavorites">0</strong></div>
+      <div class="stat-box"><span>Αποθηκευμένα λάθη</span><strong id="statsSavedWrongs">0</strong></div>
+    </div>
+
+    <h3>Στατιστικά ανά ενότητα</h3>
+    <div class="stats-table-wrap">
+      <table class="stats-table">
+        <thead>
+          <tr>
+            <th>Ενότητα</th>
+            <th>Σωστές</th>
+            <th>Λάθος</th>
+            <th>Σύνολο</th>
+            <th>Ποσοστό</th>
+          </tr>
+        </thead>
+        <tbody id="statsByCategory"></tbody>
+      </table>
+    </div>
+
+    <div class="actions">
+      <button class="secondary" onclick="goHome()">Πίσω</button>
+      <button class="danger" onclick="resetStats()">Μηδενισμός στατιστικών</button>
+    </div>
   </section>
 
   <div id="message" class="message hidden"></div>

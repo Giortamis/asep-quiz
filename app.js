@@ -1,7 +1,8 @@
 
-const DATA_VERSION = "4";
+const DATA_VERSION = "5";
 const FAVORITES_KEY = "asepFavorites";
 const WRONGS_KEY = "asepWrongs";
+const STATS_KEY = "asepStats";
 
 const FILES = {
   constitutional: "constitutional.json",
@@ -25,6 +26,8 @@ let currentIndex = 0;
 let mode = "";
 let score = 0;
 let answerLocked = false;
+let testAnswered = 0;
+let quizFinished = false;
 
 let studyTimer = null;
 let studySeconds = 5;
@@ -52,7 +55,8 @@ function showOnly(id) {
     "testHome",
     "studySetup",
     "quizScreen",
-    "resultScreen"
+    "resultScreen",
+    "statsScreen"
   ].forEach(screenId => {
     document
       .getElementById(screenId)
@@ -285,6 +289,8 @@ async function startTest() {
   mode = "test";
   score = 0;
   currentIndex = 0;
+  testAnswered = 0;
+  quizFinished = false;
 
   showOnly("quizScreen");
   renderQuestion();
@@ -364,6 +370,11 @@ function openStudy() {
   showOnly("studySetup");
 }
 
+function openStudyFiltered(filter) {
+  showOnly("studySetup");
+  document.getElementById("studyCategory").value = filter;
+}
+
 async function startStudy() {
   const selected =
     document.getElementById("studyCategory").value;
@@ -431,6 +442,7 @@ async function startStudy() {
   mode = "study";
   currentIndex = 0;
   score = 0;
+  quizFinished = false;
 
   showOnly("quizScreen");
   renderQuestion();
@@ -542,7 +554,11 @@ function chooseTestAnswer(selected) {
     button.disabled = true;
   });
 
-  if (selected === question.correct) {
+  const isCorrectAnswer = selected === question.correct;
+  testAnswered++;
+  recordAnswer(question.categoryId, isCorrectAnswer);
+
+  if (isCorrectAnswer) {
     buttons[selected].classList.add("correct");
     score++;
 
@@ -626,38 +642,26 @@ function finishEarly() {
 }
 
 function finishQuiz() {
+  if (quizFinished) return;
+  quizFinished = true;
   clearStudyTimer();
 
   if (mode === "test") {
-    const percentage = Math.round(
-      (score / currentQuestions.length) * 100
-    );
+    if (testAnswered > 0) {
+      incrementCompletedTests();
+    }
 
-    document.getElementById(
-      "resultScore"
-    ).textContent = `${percentage}%`;
+    const percentage = testAnswered > 0
+      ? Math.round((score / testAnswered) * 100)
+      : 0;
 
-    document.getElementById(
-      "resultDetails"
-    ).textContent =
-      `Σωστές: ${score} — ` +
-      `Λάθος: ${
-        currentQuestions.length - score
-      }`;
+    document.getElementById("resultScore").textContent = `${percentage}%`;
+    document.getElementById("resultDetails").textContent =
+      `Απαντήθηκαν: ${testAnswered} — Σωστές: ${score} — Λάθος: ${testAnswered - score}`;
   } else {
-    document.getElementById(
-      "resultScore"
-    ).textContent = "Ολοκλήρωση";
-
-    document.getElementById(
-      "resultDetails"
-    ).textContent =
-      `Εμφανίστηκαν ${
-        Math.min(
-          currentIndex,
-          currentQuestions.length
-        )
-      } από ${currentQuestions.length} ερωτήσεις.`;
+    document.getElementById("resultScore").textContent = "Ολοκλήρωση";
+    document.getElementById("resultDetails").textContent =
+      `Εμφανίστηκαν ${Math.min(currentIndex, currentQuestions.length)} από ${currentQuestions.length} ερωτήσεις.`;
   }
 
   showOnly("resultScreen");
@@ -842,6 +846,107 @@ function clearAllWrongs() {
   showMessage(
     "Οι λάθος ερωτήσεις διαγράφηκαν."
   );
+}
+
+function getStats() {
+  const emptyStats = { total: 0, correct: 0, wrong: 0, tests: 0, byCategory: {} };
+
+  try {
+    const stored = JSON.parse(localStorage.getItem(STATS_KEY) || "null");
+    if (!stored || typeof stored !== "object") return emptyStats;
+
+    return {
+      total: Number(stored.total) || 0,
+      correct: Number(stored.correct) || 0,
+      wrong: Number(stored.wrong) || 0,
+      tests: Number(stored.tests) || 0,
+      byCategory: stored.byCategory && typeof stored.byCategory === "object"
+        ? stored.byCategory
+        : {}
+    };
+  } catch {
+    return emptyStats;
+  }
+}
+
+function saveStats(stats) {
+  localStorage.setItem(STATS_KEY, JSON.stringify(stats));
+}
+
+function recordAnswer(categoryId, correct) {
+  const stats = getStats();
+  stats.total++;
+
+  if (correct) stats.correct++;
+  else stats.wrong++;
+
+  if (!stats.byCategory[categoryId]) {
+    stats.byCategory[categoryId] = { total: 0, correct: 0, wrong: 0 };
+  }
+
+  const categoryStats = stats.byCategory[categoryId];
+  categoryStats.total++;
+
+  if (correct) categoryStats.correct++;
+  else categoryStats.wrong++;
+
+  saveStats(stats);
+}
+
+function incrementCompletedTests() {
+  const stats = getStats();
+  stats.tests++;
+  saveStats(stats);
+}
+
+function openStats() {
+  renderStats();
+  showOnly("statsScreen");
+}
+
+function renderStats() {
+  const stats = getStats();
+  const percentage = stats.total > 0
+    ? Math.round((stats.correct / stats.total) * 100)
+    : 0;
+
+  document.getElementById("statsTotal").textContent = stats.total;
+  document.getElementById("statsCorrect").textContent = stats.correct;
+  document.getElementById("statsWrong").textContent = stats.wrong;
+  document.getElementById("statsPercent").textContent = `${percentage}%`;
+  document.getElementById("statsTests").textContent = stats.tests;
+  document.getElementById("statsFavorites").textContent = getFavorites().length;
+  document.getElementById("statsSavedWrongs").textContent = getWrongs().length;
+
+  const body = document.getElementById("statsByCategory");
+  body.innerHTML = "";
+
+  categories.forEach(category => {
+    const categoryStats = stats.byCategory[category.id] || { total: 0, correct: 0, wrong: 0 };
+    const categoryPercentage = categoryStats.total > 0
+      ? Math.round((categoryStats.correct / categoryStats.total) * 100)
+      : 0;
+
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${category.name}</td>
+      <td>${categoryStats.correct}</td>
+      <td>${categoryStats.wrong}</td>
+      <td>${categoryStats.total}</td>
+      <td><strong>${categoryPercentage}%</strong></td>
+    `;
+    body.appendChild(row);
+  });
+}
+
+function resetStats() {
+  if (!confirm(
+    "Θέλεις να μηδενίσεις όλα τα στατιστικά; Οι αγαπημένες και τα αποθηκευμένα λάθη δεν θα διαγραφούν."
+  )) return;
+
+  localStorage.removeItem(STATS_KEY);
+  renderStats();
+  showMessage("Τα στατιστικά μηδενίστηκαν.");
 }
 
 function clearStudyTimer() {
