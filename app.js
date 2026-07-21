@@ -51,6 +51,7 @@ async function init() {
 function showOnly(id) {
   [
     "home",
+    "testHub",
     "testSetup",
     "testHome",
     "studySetup",
@@ -1003,4 +1004,37 @@ function showMessage(text) {
   setTimeout(() => {
     message.classList.add("hidden");
   }, 2600);
+}
+
+
+function openTestHub(){
+  showOnly("testHub");
+}
+
+function comingSoon(name){
+  showMessage(name + " - Προσεχώς");
+}
+
+async function startQuickTest(){
+  const selected = getSavedCategories();
+  if(selected.length===0){ openTest(); return; }
+
+  const byCategory = {};
+  for(const id of selected){
+    byCategory[id] = await fetch(`data/${FILES[id]}?v=${DATA_VERSION}`).then(r=>r.json());
+  }
+
+  currentQuestions = buildProportionalTest(byCategory,10);
+  mode="test";
+  score=0;
+  currentIndex=0;
+  testAnswered=0;
+  quizFinished=false;
+
+  showOnly("quizScreen");
+  renderQuestion();
+}
+
+function startSmartTest(){
+  showMessage("Έξυπνο Τεστ v1 στην επόμενη έκδοση");
 }

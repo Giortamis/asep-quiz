@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#0b5cab">
   <title>ΑΣΕΠ Quiz</title>
-  <link rel="stylesheet" href="style.css?v=5">
+  <link rel="stylesheet" href="style.css?v=8">
 </head>
 <body>
 <main class="app">
@@ -18,14 +18,28 @@
     <h2>Αρχικό μενού</h2>
     <div class="menu">
       <button onclick="openStudy()">📚 Διάβασμα</button>
-      <button onclick="openTest()">🎯 Τεστ</button>
+      <button onclick="openTestHub()">🎯 Τεστ Μητρώου</button>
       <button onclick="openStats()">📊 Στατιστικά</button>
-      <button onclick="openStudyFiltered('wrongs')">❌ Τα λάθη μου</button>
-      <button onclick="openStudyFiltered('favorites')">⭐ Αγαπημένες</button>
+      <button onclick="comingSoon('🧠 Μέθοδος CAT')">🧠 Μέθοδος CAT</button>
+      <button onclick="comingSoon('🎭 Διαχείριση Εργασιακών Σεναρίων')">🎭 Διαχείριση Εργασιακών Σεναρίων</button>
+      <button onclick="comingSoon('📖 Οδηγός ΑΣΕΠ')">📖 Οδηγός ΑΣΕΠ</button>
     </div>
   </section>
 
-  <section id="testSetup" class="card hidden">
+  
+  <section id="testHub" class="card hidden">
+    <h2>🎯 Τεστ Μητρώου</h2>
+    <div class="menu">
+      <button onclick="startQuickTest()">⚡ Γρήγορο Τεστ 10 Ερωτήσεων</button>
+      <button onclick="openTest()">🎯 Τεστ Ενοτήτων</button>
+      <button onclick="startSmartTest()">🧠 Έξυπνο Τεστ</button>
+    </div>
+    <div class="actions">
+      <button class="secondary" onclick="goHome()">Πίσω</button>
+    </div>
+  </section>
+
+<section id="testSetup" class="card hidden">
     <h2>Ρύθμιση ενοτήτων διαγωνισμού</h2>
     <p>Επίλεξε τις ενότητες που θα χρησιμοποιούνται στα τεστ. Η επιλογή αποθηκεύεται στη συσκευή.</p>
     <label class="check all-check"><input type="checkbox" id="allCategories"> <strong>All — Όλες οι ενότητες</strong></label>
@@ -134,6 +148,6 @@
   <div id="message" class="message hidden"></div>
   <footer>Πηγή δεδομένων: Επίσημο Μητρώο Θεμάτων Γνώσεων ΑΣΕΠ</footer>
 </main>
-<script src="app.js?v=7"></script>
+<script src="app.js?v=8"></script>
 </body>
 </html>
