@@ -45,3 +45,10 @@ footer{text-align:center;color:var(--muted);font-size:.78rem;margin-top:12px}
 .smart-preview{margin-top:16px;padding:14px;border:1px solid #bdd4ec;border-radius:12px;background:#f4f9ff;line-height:1.65}
 .smart-preview strong{color:var(--blue2)}
 .smart-preview small{display:block;margin-top:8px;color:var(--muted)}
+
+.study-filters{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 16px}
+.study-filter{border:1px solid var(--border);border-radius:12px;padding:12px;background:#fff;color:var(--text);font-size:.95rem;font-weight:700;cursor:pointer}
+.study-filter.active{border-color:var(--blue);background:#eaf3fc;color:var(--blue2)}
+.favorite-filter{border-color:#e2b544;background:#fff8db;color:#755500}
+.wrong-filter{border-color:#e1a3a7;background:#fdebec;color:#9f2028}
+@media(max-width:520px){.study-filters{grid-template-columns:1fr}}

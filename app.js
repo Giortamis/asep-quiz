@@ -79,8 +79,6 @@ function renderCategoryControls() {
   study.innerHTML = "";
 
   study.add(new Option("Όλες οι ενότητες", "all"));
-  study.add(new Option("⭐ Μόνο αγαπημένες", "favorites"));
-  study.add(new Option("❌ Μόνο λάθη", "wrongs"));
 
   categories.forEach(category => {
     const label = document.createElement("label");
@@ -97,6 +95,11 @@ function renderCategoryControls() {
 
     checks.appendChild(label);
     study.add(new Option(category.name, category.id));
+  });
+
+  study.addEventListener("change", () => {
+    study.dataset.filter = "";
+    updateStudyFilterState("");
   });
 
   ensureClearWrongsButton();
@@ -369,17 +372,34 @@ function buildProportionalTest(byCategory, total) {
 }
 
 function openStudy() {
+  const study = document.getElementById("studyCategory");
+  study.value = "all";
+  study.dataset.filter = "";
+  updateStudyFilterState("");
   showOnly("studySetup");
 }
 
 function openStudyFiltered(filter) {
+  document.getElementById("studyCategory").dataset.filter = filter;
+  updateStudyFilterState(filter);
   showOnly("studySetup");
-  document.getElementById("studyCategory").value = filter;
+}
+
+function updateStudyFilterState(filter) {
+  document.querySelectorAll(".study-filter").forEach(button => {
+    button.classList.remove("active");
+  });
+
+  if (filter === "favorites") {
+    document.querySelector(".favorite-filter")?.classList.add("active");
+  } else if (filter === "wrongs") {
+    document.querySelector(".wrong-filter")?.classList.add("active");
+  }
 }
 
 async function startStudy() {
-  const selected =
-    document.getElementById("studyCategory").value;
+  const studySelect = document.getElementById("studyCategory");
+  const selected = studySelect.dataset.filter || studySelect.value;
 
   studySeconds = parseInt(
     document.getElementById("studySeconds").value,
@@ -1017,31 +1037,30 @@ function comingSoon(name){
 }
 
 async function startQuickTest(){
-  const selected = getSavedCategories();
-  if(selected.length===0){ openTest(); return; }
+  const saved = getSavedCategories();
+  const selected = saved.length > 0
+    ? saved
+    : categories.map(category => category.id);
 
   const byCategory = {};
-  for(const id of selected){
-    byCategory[id] = await fetch(`data/${FILES[id]}?v=${DATA_VERSION}`).then(r=>r.json());
+  for (const id of selected) {
+    byCategory[id] = await fetch(
+      `data/${FILES[id]}?v=${DATA_VERSION}`
+    ).then(response => response.json());
   }
 
-  currentQuestions = buildProportionalTest(byCategory,10);
-  mode="test";
-  score=0;
-  currentIndex=0;
-  testAnswered=0;
-  quizFinished=false;
+  currentQuestions = buildProportionalTest(byCategory, 10);
+  mode = "test";
+  score = 0;
+  currentIndex = 0;
+  testAnswered = 0;
+  quizFinished = false;
 
   showOnly("quizScreen");
   renderQuestion();
 }
 
 function startSmartTest(){
-  const stats=getStats();
-  if(stats.total<20){
-    showMessage("Χρειάζονται τουλάχιστον 20 απαντημένες ερωτήσεις για το Έξυπνο Τεστ.");
-    return;
-  }
   document.getElementById("smartPreview").classList.add("hidden");
   document.getElementById("smartPrepareButton").classList.remove("hidden");
   document.getElementById("smartStartButton").classList.add("hidden");
@@ -1068,10 +1087,6 @@ function takeUnique(pool,count,used){
 async function prepareSmartTest(){
   const total=parseInt(document.getElementById("smartCount").value,10);
   const stats=getStats();
-  if(stats.total<20){
-    showMessage("Χρειάζονται τουλάχιστον 20 απαντημένες ερωτήσεις.");
-    return;
-  }
 
   const allQuestions=await loadQuestions(categories.map(category=>category.id));
   const wrongSet=new Set(getWrongs());
@@ -1126,6 +1141,9 @@ async function prepareSmartTest(){
     <div>📉 ${window.smartComposition.weak} ερωτήσεις από τις 3 χειρότερες ενότητες</div>
     <div>🎲 ${window.smartComposition.random} τυχαίες ερωτήσεις</div>
     <small><strong>Αδύναμες ενότητες:</strong> ${weakNames}</small>
+    ${stats.total < 20
+      ? '<small>Το ιστορικό είναι ακόμη μικρό, επομένως το υπόλοιπο τεστ συμπληρώθηκε με τυχαίες ερωτήσεις.</small>'
+      : ''}
   `;
   preview.classList.remove("hidden");
   document.getElementById("smartPrepareButton").classList.add("hidden");
