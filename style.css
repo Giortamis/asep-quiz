@@ -39,3 +39,9 @@ footer{text-align:center;color:var(--muted);font-size:.78rem;margin-top:12px}
 .stats-table th{background:#edf5fd;color:var(--blue2);font-size:.9rem}
 .danger{border:1px solid #e1a3a7;border-radius:12px;padding:14px;background:#fdebec;color:#9f2028;font-size:1rem;font-weight:700;cursor:pointer}
 @media(max-width:520px){.stats-grid{grid-template-columns:1fr}}
+
+
+/* Έκδοση 9 — Έξυπνο Τεστ */
+.smart-preview{margin-top:16px;padding:14px;border:1px solid #bdd4ec;border-radius:12px;background:#f4f9ff;line-height:1.65}
+.smart-preview strong{color:var(--blue2)}
+.smart-preview small{display:block;margin-top:8px;color:var(--muted)}

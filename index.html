@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#0b5cab">
   <title>ΑΣΕΠ Quiz</title>
-  <link rel="stylesheet" href="style.css?v=8">
+  <link rel="stylesheet" href="style.css?v=9">
 </head>
 <body>
 <main class="app">
@@ -36,6 +36,28 @@
     </div>
     <div class="actions">
       <button class="secondary" onclick="goHome()">Πίσω</button>
+    </div>
+  </section>
+
+
+  <section id="smartSetup" class="card hidden">
+    <h2>🧠 Έξυπνο Τεστ</h2>
+    <p>Το τεστ προσαρμόζεται στα λάθη σου και στις τρεις ενότητες με τη χαμηλότερη επίδοση.</p>
+
+    <label for="smartCount">Αριθμός ερωτήσεων</label>
+    <select id="smartCount">
+      <option value="10">10 ερωτήσεις</option>
+      <option value="25" selected>25 ερωτήσεις</option>
+      <option value="50">50 ερωτήσεις</option>
+      <option value="100">100 ερωτήσεις</option>
+    </select>
+
+    <div id="smartPreview" class="smart-preview hidden"></div>
+
+    <div class="actions">
+      <button class="secondary" onclick="openTestHub()">Πίσω</button>
+      <button id="smartPrepareButton" class="primary" onclick="prepareSmartTest()">Δημιουργία τεστ</button>
+      <button id="smartStartButton" class="primary hidden" onclick="launchSmartTest()">Έναρξη</button>
     </div>
   </section>
 
@@ -148,6 +170,6 @@
   <div id="message" class="message hidden"></div>
   <footer>Πηγή δεδομένων: Επίσημο Μητρώο Θεμάτων Γνώσεων ΑΣΕΠ</footer>
 </main>
-<script src="app.js?v=8"></script>
+<script src="app.js?v=9"></script>
 </body>
 </html>

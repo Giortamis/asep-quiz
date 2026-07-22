@@ -52,6 +52,7 @@ function showOnly(id) {
   [
     "home",
     "testHub",
+    "smartSetup",
     "testSetup",
     "testHome",
     "studySetup",
@@ -1036,5 +1037,111 @@ async function startQuickTest(){
 }
 
 function startSmartTest(){
-  showMessage("Έξυπνο Τεστ v1 στην επόμενη έκδοση");
+  const stats=getStats();
+  if(stats.total<20){
+    showMessage("Χρειάζονται τουλάχιστον 20 απαντημένες ερωτήσεις για το Έξυπνο Τεστ.");
+    return;
+  }
+  document.getElementById("smartPreview").classList.add("hidden");
+  document.getElementById("smartPrepareButton").classList.remove("hidden");
+  document.getElementById("smartStartButton").classList.add("hidden");
+  showOnly("smartSetup");
+}
+
+function questionUniqueKey(question){
+  return `${question.categoryId}:${question.id}`;
+}
+
+function takeUnique(pool,count,used){
+  const picked=[];
+  const candidates=shuffle([...pool]);
+  for(const question of candidates){
+    const key=questionUniqueKey(question);
+    if(used.has(key))continue;
+    used.add(key);
+    picked.push(question);
+    if(picked.length>=count)break;
+  }
+  return picked;
+}
+
+async function prepareSmartTest(){
+  const total=parseInt(document.getElementById("smartCount").value,10);
+  const stats=getStats();
+  if(stats.total<20){
+    showMessage("Χρειάζονται τουλάχιστον 20 απαντημένες ερωτήσεις.");
+    return;
+  }
+
+  const allQuestions=await loadQuestions(categories.map(category=>category.id));
+  const wrongSet=new Set(getWrongs());
+  const wrongPool=allQuestions.filter(question=>wrongSet.has(questionUniqueKey(question)));
+
+  const weakest=categories
+    .map(category=>{
+      const item=stats.byCategory[category.id]||{total:0,correct:0};
+      return {
+        id:category.id,
+        total:item.total,
+        percent:item.total>0 ? item.correct/item.total : 1
+      };
+    })
+    .filter(item=>item.total>0)
+    .sort((a,b)=>a.percent-b.percent || b.total-a.total)
+    .slice(0,3)
+    .map(item=>item.id);
+
+  const weakSet=new Set(weakest);
+  const weakPool=allQuestions.filter(question=>weakSet.has(question.categoryId));
+
+  const wrongTarget=Math.floor(total*0.50);
+  const weakTarget=Math.floor(total*0.30);
+  const randomTarget=total-wrongTarget-weakTarget;
+  const used=new Set();
+
+  const fromWrongs=takeUnique(wrongPool,wrongTarget,used);
+  const fromWeak=takeUnique(weakPool,weakTarget+(wrongTarget-fromWrongs.length),used);
+  const initialRandomNeed=randomTarget+
+    Math.max(0,weakTarget+(wrongTarget-fromWrongs.length)-fromWeak.length);
+  const fromRandom=takeUnique(allQuestions,initialRandomNeed,used);
+
+  let selected=[...fromWrongs,...fromWeak,...fromRandom];
+  if(selected.length<total){
+    selected.push(...takeUnique(allQuestions,total-selected.length,used));
+  }
+
+  currentQuestions=shuffle(selected.slice(0,total));
+  window.smartComposition={
+    wrongs:fromWrongs.length,
+    weak:fromWeak.length,
+    random:currentQuestions.length-fromWrongs.length-fromWeak.length,
+    weakest
+  };
+
+  const weakNames=weakest.map(id=>categoryMap.get(id)?.name||id).join(" · ") || "Δεν υπάρχουν ακόμη";
+  const preview=document.getElementById("smartPreview");
+  preview.innerHTML=`
+    <strong>Το τεστ δημιουργήθηκε από:</strong>
+    <div>❌ ${window.smartComposition.wrongs} ερωτήσεις από τα λάθη σου</div>
+    <div>📉 ${window.smartComposition.weak} ερωτήσεις από τις 3 χειρότερες ενότητες</div>
+    <div>🎲 ${window.smartComposition.random} τυχαίες ερωτήσεις</div>
+    <small><strong>Αδύναμες ενότητες:</strong> ${weakNames}</small>
+  `;
+  preview.classList.remove("hidden");
+  document.getElementById("smartPrepareButton").classList.add("hidden");
+  document.getElementById("smartStartButton").classList.remove("hidden");
+}
+
+function launchSmartTest(){
+  if(!currentQuestions.length){
+    showMessage("Δημιούργησε πρώτα το Έξυπνο Τεστ.");
+    return;
+  }
+  mode="test";
+  score=0;
+  currentIndex=0;
+  testAnswered=0;
+  quizFinished=false;
+  showOnly("quizScreen");
+  renderQuestion();
 }
