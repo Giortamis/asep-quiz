@@ -1340,6 +1340,24 @@ function clearWorkTimer() {
   }
 }
 
+function setWorkInstruction(text, state = "active") {
+  const banner = document.getElementById("workInstruction");
+  if (!banner) return;
+
+  banner.textContent = text;
+  banner.classList.remove(
+    "work-instruction-pulse",
+    "work-instruction-complete"
+  );
+
+  if (state === "complete") {
+    banner.classList.add("work-instruction-complete");
+  } else {
+    void banner.offsetWidth;
+    banner.classList.add("work-instruction-pulse");
+  }
+}
+
 function renderWorkTriad() {
   const triad = workTriads[workIndex];
   workFirstChoice = null;
@@ -1367,8 +1385,9 @@ function renderWorkTriad() {
     box.appendChild(button);
   });
 
-  document.getElementById("workChoiceStatus").textContent =
-    "Επίλεξε πρώτα τη δήλωση που σε αντιπροσωπεύει περισσότερο.";
+  setWorkInstruction(
+    "Επίλεξε πρώτα τη δήλωση που σε αντιπροσωπεύει περισσότερο."
+  );
 
   document.getElementById("workNextButton").disabled = true;
 }
@@ -1378,8 +1397,9 @@ function chooseWorkStatement(statementId) {
     workFirstChoice = statementId;
     updateWorkStatementButtons();
 
-    document.getElementById("workChoiceStatus").textContent =
-      "Τώρα επίλεξε τη δεύτερη δήλωση που σε αντιπροσωπεύει περισσότερο.";
+    setWorkInstruction(
+      "Επίλεξε τώρα τη δεύτερη πιο κοντινή σε εσένα δήλωση."
+    );
     return;
   }
 
@@ -1388,8 +1408,9 @@ function chooseWorkStatement(statementId) {
     workSecondChoice = null;
     updateWorkStatementButtons();
 
-    document.getElementById("workChoiceStatus").textContent =
-      "Επίλεξε πρώτα τη δήλωση που σε αντιπροσωπεύει περισσότερο.";
+    setWorkInstruction(
+      "Επίλεξε πρώτα τη δήλωση που σε αντιπροσωπεύει περισσότερο."
+    );
     document.getElementById("workNextButton").disabled = true;
     return;
   }
@@ -1398,8 +1419,10 @@ function chooseWorkStatement(statementId) {
     workSecondChoice = statementId;
     updateWorkStatementButtons();
 
-    document.getElementById("workChoiceStatus").textContent =
-      "Η κατάταξη ολοκληρώθηκε. Πάτησε «Επόμενη».";
+    setWorkInstruction(
+      "Η κατάταξη ολοκληρώθηκε. Πάτησε «Επόμενη».",
+      "complete"
+    );
     document.getElementById("workNextButton").disabled = false;
     return;
   }
@@ -1408,8 +1431,9 @@ function chooseWorkStatement(statementId) {
     workSecondChoice = null;
     updateWorkStatementButtons();
 
-    document.getElementById("workChoiceStatus").textContent =
-      "Επίλεξε ξανά τη δεύτερη δήλωση.";
+    setWorkInstruction(
+      "Επίλεξε τώρα τη δεύτερη πιο κοντινή σε εσένα δήλωση."
+    );
     document.getElementById("workNextButton").disabled = true;
   }
 }

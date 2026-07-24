@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#0b5cab">
   <title>ΑΣΕΠ Quiz</title>
-  <link rel="stylesheet" href="style.css?v=11">
+  <link rel="stylesheet" href="style.css?v=11.1">
 </head>
 <body>
 <main class="app">
@@ -184,12 +184,10 @@
 
     <section class="card">
       <div class="badge">Εργασιακές Συμπεριφορές</div>
-      <p class="work-instruction">
-        1. Επίλεξε τη δήλωση που σε αντιπροσωπεύει περισσότερο.<br>
-        2. Έπειτα επίλεξε τη δεύτερη πιο κοντινή σε εσένα.
-      </p>
+      <div id="workInstruction" class="work-instruction work-instruction-pulse">
+        Επίλεξε πρώτα τη δήλωση που σε αντιπροσωπεύει περισσότερο.
+      </div>
       <div id="workStatements" class="work-statements"></div>
-      <div id="workChoiceStatus" class="work-choice-status"></div>
 
       <div class="actions">
         <button class="secondary" onclick="finishWorkEarly()">Τέλος</button>
@@ -261,6 +259,6 @@
   <div id="message" class="message hidden"></div>
   <footer id="appFooter">Πηγή δεδομένων: Επίσημο Μητρώο Θεμάτων Γνώσεων ΑΣΕΠ</footer>
 </main>
-<script src="app.js?v=11"></script>
+<script src="app.js?v=11.1"></script>
 </body>
 </html>

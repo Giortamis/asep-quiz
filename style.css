@@ -58,7 +58,7 @@ footer{text-align:center;color:var(--muted);font-size:.78rem;margin-top:12px}
 .work-intro{line-height:1.55;color:var(--muted)}
 .work-menu{margin-top:18px}
 .work-disclaimer{margin-top:18px;padding:12px;border-left:4px solid #d4a72c;background:#fff9df;color:#66500b;font-size:.86rem;line-height:1.45}
-.work-instruction{background:#f4f9ff;border:1px solid #bdd4ec;border-radius:12px;padding:12px;line-height:1.55;color:var(--blue2)}
+.work-instruction{background:var(--blue);border:1px solid var(--blue2);border-radius:12px;padding:15px 16px;line-height:1.45;color:#fff;font-size:1.08rem;font-weight:800;text-align:center;box-shadow:0 6px 16px rgba(11,92,171,.18)}
 .work-statements{display:grid;gap:12px;margin-top:16px}
 .work-statement{display:grid;grid-template-columns:auto 1fr auto;align-items:start;gap:12px;width:100%;text-align:left;border:2px solid var(--border);background:#fff;border-radius:14px;padding:14px;color:var(--text);font-size:.98rem;line-height:1.45;cursor:pointer}
 .work-letter{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:#eaf3fc;color:var(--blue2);font-weight:800}
@@ -69,7 +69,6 @@ footer{text-align:center;color:var(--muted);font-size:.78rem;margin-top:12px}
 .work-statement.rank-first .work-rank{color:#198754}
 .work-statement.rank-second .work-rank{color:#0b5cab}
 .work-statement.rank-third .work-rank{color:#687386}
-.work-choice-status{min-height:24px;margin-top:14px;text-align:center;font-weight:700;color:var(--blue2)}
 #workNextButton:disabled{opacity:.45;cursor:not-allowed}
 .work-result-summary{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:14px;background:#f4f9ff;border:1px solid #bdd4ec;border-radius:12px;margin-bottom:16px}
 .work-skills-results{display:grid;gap:12px}
@@ -93,3 +92,13 @@ footer{text-align:center;color:var(--muted);font-size:.78rem;margin-top:12px}
   .work-statement{grid-template-columns:auto 1fr}
   .work-rank{grid-column:2;text-align:left}
 }
+
+
+/* V11.1 — δυναμική οδηγία εργασιακών συμπεριφορών */
+@keyframes workInstructionPulse{
+  0%,100%{transform:scale(1);filter:brightness(1)}
+  35%{transform:scale(1.012);filter:brightness(1.12)}
+  70%{transform:scale(1);filter:brightness(1)}
+}
+.work-instruction-pulse{animation:workInstructionPulse .75s ease-in-out 2}
+.work-instruction-complete{background:#198754;border-color:#146c43}
