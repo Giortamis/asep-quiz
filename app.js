@@ -1191,7 +1191,7 @@ function setFooter(section) {
   if (!footer) return;
 
   if (section === "work") {
-    footer.textContent = "Εκπαιδευτικό υλικό προσομοίωσης εργασιακών συμπεριφορών — μη επίσημη τράπεζα ΑΣΕΠ";
+    footer.textContent = "Εκπαιδευτικό υλικό προσομοίωσης εργασιακών συμπεριφορών — μη επίσημη πιστοποιημένη βαθμολογία ή τράπεζα ΑΣΕΠ";
   } else if (section === "home") {
     footer.textContent = "Εφαρμογή προετοιμασίας για τον Γραπτό Διαγωνισμό ΑΣΕΠ";
   } else {
