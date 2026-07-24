@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#0b5cab">
   <title>ΑΣΕΠ Quiz</title>
-  <link rel="stylesheet" href="style.css?v=11.1">
+  <link rel="stylesheet" href="style.css?v=12">
 </head>
 <body>
 <main class="app">
@@ -20,13 +20,121 @@
       <button onclick="openStudy()">📚 Διάβασμα</button>
       <button onclick="openTestHub()">🎯 Τεστ Μητρώου</button>
       <button onclick="openStats()">📊 Στατιστικά</button>
-      <button onclick="comingSoon('🧠 Μέθοδος CAT')">🧠 Μέθοδος CAT</button>
+      <button onclick="openCatHub()">🧠 Μέθοδος CAT</button>
       <button onclick="openWorkBehaviour()">🎭 Εργασιακές Συμπεριφορές</button>
       <button onclick="comingSoon('📖 Οδηγός ΑΣΕΠ')">📖 Οδηγός ΑΣΕΠ</button>
     </div>
   </section>
 
   
+
+  <section id="catHub" class="card hidden">
+    <h2>🧠 Μέθοδος CAT</h2>
+    <p class="cat-intro">
+      Εξάσκηση επαγωγικού συλλογισμού με δυναμικά παραγόμενες ερωτήσεις.
+    </p>
+    <div class="menu">
+      <button onclick="openCatPracticeSetup()">🧩 Απλό Τεστ Εξάσκησης</button>
+      <button onclick="openAdaptiveCatSetup()">🎯 Πραγματικές Συνθήκες CAT</button>
+    </div>
+    <div class="actions">
+      <button class="secondary" onclick="goHome()">Πίσω</button>
+    </div>
+  </section>
+
+  <section id="catPracticeSetup" class="card hidden">
+    <h2>🧩 Απλό Τεστ Εξάσκησης</h2>
+
+    <label for="catPracticeCount">Αριθμός ερωτήσεων</label>
+    <select id="catPracticeCount">
+      <option value="10">10 ερωτήσεις</option>
+      <option value="20" selected>20 ερωτήσεις</option>
+      <option value="30">30 ερωτήσεις</option>
+      <option value="50">50 ερωτήσεις</option>
+    </select>
+
+    <label for="catPracticeCategory">Κατηγορία</label>
+    <select id="catPracticeCategory">
+      <option value="all">Όλες οι κατηγορίες</option>
+      <option value="numeric">Αριθμητικές ακολουθίες</option>
+      <option value="symbols">Σύμβολα και μετασχηματισμοί</option>
+      <option value="matrix">Λογικοί πίνακες</option>
+    </select>
+
+    <div class="actions">
+      <button class="secondary" onclick="openCatHub()">Πίσω</button>
+      <button class="primary" onclick="startCatPractice()">Έναρξη</button>
+    </div>
+  </section>
+
+  <section id="adaptiveCatSetup" class="card hidden">
+    <h2>🎯 Πραγματικές Συνθήκες CAT</h2>
+    <div class="cat-rules">
+      <strong>Προσαρμοστική λειτουργία</strong>
+      <span>Αρχική δυσκολία: 5/10</span>
+      <span>Σωστή απάντηση: δυσκολότερη επόμενη ερώτηση</span>
+      <span>Λάθος ή λήξη χρόνου: ευκολότερη επόμενη ερώτηση</span>
+      <span>Δεν υπάρχει παράλειψη ή επιστροφή.</span>
+    </div>
+
+    <label for="catAdaptiveCount">Αριθμός ερωτήσεων</label>
+    <select id="catAdaptiveCount">
+      <option value="18" selected>18 ερωτήσεις</option>
+      <option value="25">25 ερωτήσεις</option>
+    </select>
+
+    <label for="catQuestionTime">Χρόνος ανά ερώτηση</label>
+    <select id="catQuestionTime">
+      <option value="30">30 δευτερόλεπτα</option>
+      <option value="45">45 δευτερόλεπτα</option>
+      <option value="60" selected>60 δευτερόλεπτα</option>
+    </select>
+
+    <div class="actions">
+      <button class="secondary" onclick="openCatHub()">Πίσω</button>
+      <button class="primary" onclick="startAdaptiveCat()">Έναρξη CAT</button>
+    </div>
+
+    <p class="cat-note">
+      Η λειτουργία αποτελεί εκπαιδευτική προσομοίωση προσαρμοστικού τεστ και όχι
+      αναπαραγωγή του επίσημου αλγορίθμου βαθμολόγησης του ΑΣΕΠ.
+    </p>
+  </section>
+
+  <section id="catQuiz" class="hidden">
+    <div class="topbar">
+      <span id="catCounter"></span>
+      <span id="catTimer"></span>
+    </div>
+    <div class="progress"><div id="catProgress"></div></div>
+
+    <section class="card">
+      <div class="cat-meta">
+        <span id="catCategoryBadge" class="badge"></span>
+        <span id="catDifficultyBadge" class="badge"></span>
+      </div>
+      <h2 id="catQuestionText" class="question"></h2>
+      <div id="catVisual" class="cat-visual"></div>
+      <div id="catAnswers" class="answers"></div>
+      <div id="catFeedback" class="feedback"></div>
+
+      <div class="actions">
+        <button class="secondary" onclick="finishCatEarly()">Τέλος</button>
+        <button id="catNextButton" class="primary hidden" onclick="nextCatQuestion()">Επόμενη</button>
+      </div>
+    </section>
+  </section>
+
+  <section id="catResults" class="card hidden">
+    <h2 id="catResultTitle">Αποτέλεσμα CAT</h2>
+    <div id="catResultScore" class="score"></div>
+    <div id="catResultDetails" class="cat-result-details"></div>
+    <div class="actions">
+      <button class="secondary" onclick="openCatHub()">Νέα προσπάθεια</button>
+      <button class="primary" onclick="goHome()">Αρχικό μενού</button>
+    </div>
+  </section>
+
   <section id="testHub" class="card hidden">
     <h2>🎯 Τεστ Μητρώου</h2>
     <div class="menu">
@@ -253,6 +361,6 @@
   <div id="message" class="message hidden"></div>
   <footer id="appFooter">Πηγή δεδομένων: Επίσημο Μητρώο Θεμάτων Γνώσεων ΑΣΕΠ</footer>
 </main>
-<script src="app.js?v=11.1"></script>
+<script src="app.js?v=12"></script>
 </body>
 </html>

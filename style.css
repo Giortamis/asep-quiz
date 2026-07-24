@@ -101,3 +101,24 @@ footer{text-align:center;color:var(--muted);font-size:.78rem;margin-top:12px}
 }
 .work-instruction-pulse{animation:workInstructionPulse .75s ease-in-out 2}
 .work-instruction-complete{background:#198754;border-color:#146c43}
+
+
+/* Έκδοση 12 — Μέθοδος CAT */
+.cat-intro{color:var(--muted);line-height:1.55}
+.cat-rules{display:grid;gap:8px;margin:12px 0 18px;padding:14px;border:1px solid #bdd4ec;border-radius:12px;background:#f4f9ff;color:var(--blue2)}
+.cat-rules strong{font-size:1.05rem}
+.cat-note{margin-top:16px;color:var(--muted);font-size:.86rem;line-height:1.45}
+.cat-meta{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.cat-visual{white-space:pre-line;text-align:center;font-size:1.7rem;font-weight:800;letter-spacing:.08em;padding:20px 10px;margin:8px 0 18px;border:1px solid var(--border);border-radius:14px;background:#f8fbff;line-height:1.7}
+.cat-result-details{display:grid;gap:16px}
+.cat-result-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.cat-result-grid>div{padding:12px;border:1px solid var(--border);border-radius:12px;background:#f8fbff}
+.cat-result-grid span{display:block;color:var(--muted);font-size:.84rem;margin-bottom:5px}
+.cat-result-grid strong{font-size:1.25rem;color:var(--blue)}
+.cat-category-results{display:grid;gap:7px}
+.cat-category-results>div{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--border)}
+.cat-result-note{padding:11px;border-left:4px solid var(--blue);background:#f4f9ff;color:var(--blue2);font-size:.88rem;line-height:1.45}
+@media(max-width:520px){
+  .cat-result-grid{grid-template-columns:1fr}
+  .cat-visual{font-size:1.35rem}
+}

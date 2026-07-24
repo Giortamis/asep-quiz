@@ -48,6 +48,24 @@ let workStartedAt = null;
 let workIsFullSimulation = false;
 let workTimedMode = false;
 
+let catMode = "";
+let catQuestions = [];
+let catIndex = 0;
+let catScore = 0;
+let catAnswered = 0;
+let catCurrentDifficulty = 5;
+let catDifficultyHistory = [];
+let catQuestionTimer = null;
+let catTimeRemaining = 0;
+let catPerQuestionSeconds = 60;
+let catLocked = false;
+let catCurrentQuestion = null;
+let catCategoryStats = {
+  numeric: {total: 0, correct: 0},
+  symbols: {total: 0, correct: 0},
+  matrix: {total: 0, correct: 0}
+};
+
 document.addEventListener("DOMContentLoaded", init);
 
 async function init() {
@@ -66,6 +84,11 @@ async function init() {
 function showOnly(id) {
   [
     "home",
+    "catHub",
+    "catPracticeSetup",
+    "adaptiveCatSetup",
+    "catQuiz",
+    "catResults",
     "testHub",
     "smartSetup",
     "testSetup",
@@ -88,6 +111,7 @@ function showOnly(id) {
 function goHome() {
   clearStudyTimer();
   clearWorkTimer();
+  clearCatTimer();
   setFooter("home");
   showOnly("home");
 }
@@ -1192,6 +1216,8 @@ function setFooter(section) {
 
   if (section === "work") {
     footer.textContent = "Εκπαιδευτικό υλικό προσομοίωσης εργασιακών συμπεριφορών — μη επίσημη πιστοποιημένη βαθμολογία ή τράπεζα ΑΣΕΠ";
+  } else if (section === "cat") {
+    footer.textContent = "Εκπαιδευτική προσομοίωση επαγωγικού συλλογισμού και προσαρμοστικού CAT";
   } else if (section === "home") {
     footer.textContent = "Εφαρμογή προετοιμασίας για τον Γραπτό Διαγωνισμό ΑΣΕΠ";
   } else {
@@ -1690,4 +1716,597 @@ function clearWorkHistory() {
   localStorage.removeItem(WORK_HISTORY_KEY);
   renderWorkHistory();
   showMessage("Το ιστορικό διαγράφηκε.");
+}
+
+
+function openCatHub() {
+  clearCatTimer();
+  setFooter("cat");
+  showOnly("catHub");
+}
+
+function openCatPracticeSetup() {
+  setFooter("cat");
+  showOnly("catPracticeSetup");
+}
+
+function openAdaptiveCatSetup() {
+  setFooter("cat");
+  showOnly("adaptiveCatSetup");
+}
+
+function catRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function catShuffleCopy(items) {
+  return shuffle([...items]);
+}
+
+function catBuildOptions(correct, distractors) {
+  const unique = [...new Set([correct, ...distractors])]
+    .filter(value => Number.isFinite(value) || typeof value === "string");
+
+  let offset = 1;
+  while (unique.length < 4) {
+    if (typeof correct === "number") {
+      unique.push(correct + offset);
+      if (unique.length < 4) unique.push(correct - offset);
+    } else {
+      unique.push(`${correct}${offset}`);
+    }
+    offset++;
+  }
+
+  return catShuffleCopy(unique.slice(0, 4));
+}
+
+function generateArithmeticSequence(difficulty) {
+  const start = catRandomInt(1, 12 + difficulty);
+  const step = catRandomInt(1, 2 + Math.ceil(difficulty / 2));
+  const sequence = Array.from({length: 5}, (_, i) => start + i * step);
+  const correct = start + 5 * step;
+
+  return {
+    category: "numeric",
+    generator: "arithmetic",
+    difficulty,
+    question: "Ποιος αριθμός συνεχίζει σωστά την ακολουθία;",
+    visual: sequence.join("   "),
+    options: catBuildOptions(correct, [correct + step, correct - step, correct + 2 * step]),
+    correct,
+    explanation: `Ο κανόνας είναι σταθερή πρόσθεση ${step}.`
+  };
+}
+
+function generateGeometricSequence(difficulty) {
+  const ratio = catRandomInt(2, difficulty >= 7 ? 4 : 3);
+  const start = catRandomInt(1, difficulty >= 6 ? 4 : 3);
+  const length = difficulty >= 8 ? 5 : 4;
+  const sequence = Array.from({length}, (_, i) => start * (ratio ** i));
+  const correct = start * (ratio ** length);
+
+  return {
+    category: "numeric",
+    generator: "geometric",
+    difficulty,
+    question: "Ποιος αριθμός συνεχίζει σωστά την ακολουθία;",
+    visual: sequence.join("   "),
+    options: catBuildOptions(correct, [correct + ratio, correct - ratio, sequence.at(-1) + ratio]),
+    correct,
+    explanation: `Κάθε όρος πολλαπλασιάζεται επί ${ratio}.`
+  };
+}
+
+function generateAlternatingSequence(difficulty) {
+  const start = catRandomInt(2, 10);
+  const add = catRandomInt(2, 3 + Math.floor(difficulty / 3));
+  const multiply = difficulty >= 7 ? 3 : 2;
+  const seq = [start];
+
+  for (let i = 1; i < 6; i++) {
+    seq.push(i % 2 === 1 ? seq.at(-1) + add : seq.at(-1) * multiply);
+  }
+
+  const correct = seq.at(-1) + add;
+
+  return {
+    category: "numeric",
+    generator: "alternating",
+    difficulty,
+    question: "Ποιος αριθμός συνεχίζει σωστά την εναλλασσόμενη ακολουθία;",
+    visual: seq.join("   "),
+    options: catBuildOptions(correct, [seq.at(-1) * multiply, correct + add, correct - add]),
+    correct,
+    explanation: `Οι πράξεις εναλλάσσονται: +${add}, ×${multiply}.`
+  };
+}
+
+function generateFibonacciLike(difficulty) {
+  const a = catRandomInt(1, 4 + Math.floor(difficulty / 3));
+  const b = catRandomInt(a, a + 5);
+  const seq = [a, b];
+
+  while (seq.length < 6) {
+    seq.push(seq.at(-1) + seq.at(-2));
+  }
+
+  const correct = seq.at(-1) + seq.at(-2);
+
+  return {
+    category: "numeric",
+    generator: "fibonacci",
+    difficulty,
+    question: "Ποιος αριθμός συνεχίζει σωστά την ακολουθία;",
+    visual: seq.join("   "),
+    options: catBuildOptions(correct, [seq.at(-1) * 2, correct + a, correct - b]),
+    correct,
+    explanation: "Κάθε όρος είναι το άθροισμα των δύο προηγούμενων."
+  };
+}
+
+function generateSquareSequence(difficulty) {
+  const start = catRandomInt(1, 4 + Math.floor(difficulty / 2));
+  const count = 5;
+  const seq = Array.from({length: count}, (_, i) => (start + i) ** 2);
+  const correct = (start + count) ** 2;
+
+  return {
+    category: "numeric",
+    generator: "squares",
+    difficulty,
+    question: "Ποιος αριθμός συνεχίζει σωστά την ακολουθία;",
+    visual: seq.join("   "),
+    options: catBuildOptions(correct, [correct + 2 * (start + count), correct - 2 * (start + count), (start + count + 1) ** 2]),
+    correct,
+    explanation: "Οι όροι είναι διαδοχικά τετράγωνα αριθμών."
+  };
+}
+
+function rotateSymbol(symbol, steps = 1) {
+  const arrows = ["↑", "→", "↓", "←"];
+  const index = arrows.indexOf(symbol);
+  if (index < 0) return symbol;
+  return arrows[(index + steps) % arrows.length];
+}
+
+function generateRotationSymbols(difficulty) {
+  const arrows = ["↑", "→", "↓", "←"];
+  const startIndex = catRandomInt(0, 3);
+  const step = difficulty >= 7 ? 2 : 1;
+  const seq = Array.from({length: 5}, (_, i) => arrows[(startIndex + i * step) % 4]);
+  const correct = arrows[(startIndex + 5 * step) % 4];
+
+  return {
+    category: "symbols",
+    generator: "rotation",
+    difficulty,
+    question: "Ποιο σύμβολο συνεχίζει σωστά τη μεταβολή;",
+    visual: seq.join("   "),
+    options: catShuffleCopy(arrows),
+    correct,
+    explanation: `Το βέλος περιστρέφεται κατά ${step === 1 ? "90°" : "180°"} κάθε φορά.`
+  };
+}
+
+function generateAlternatingSymbols(difficulty) {
+  const pairs = [
+    ["●", "○"],
+    ["■", "□"],
+    ["▲", "△"],
+    ["◆", "◇"]
+  ];
+  const [a, b] = pairs[catRandomInt(0, pairs.length - 1)];
+  const seq = Array.from({length: 7}, (_, i) => i % 2 === 0 ? a : b);
+  const correct = b;
+
+  const pool = ["●","○","■","□","▲","△","◆","◇"].filter(x => x !== correct);
+
+  return {
+    category: "symbols",
+    generator: "alternating_symbols",
+    difficulty,
+    question: "Ποιο σύμβολο συνεχίζει σωστά το μοτίβο;",
+    visual: seq.join("   "),
+    options: catShuffleCopy([correct, ...catShuffleCopy(pool).slice(0, 3)]),
+    correct,
+    explanation: "Τα δύο σύμβολα εναλλάσσονται."
+  };
+}
+
+function generateGrowingSymbols(difficulty) {
+  const symbol = ["●","■","▲","◆"][catRandomInt(0, 3)];
+  const groups = difficulty >= 7 ? [1, 2, 4, 7] : [1, 2, 3, 4];
+  const correctCount = difficulty >= 7 ? 11 : 5;
+  const visual = groups.map(count => symbol.repeat(count)).join("   ");
+
+  const options = [correctCount, correctCount - 1, correctCount + 1, correctCount + 2]
+    .map(count => symbol.repeat(Math.max(1, count)));
+
+  return {
+    category: "symbols",
+    generator: "growing_symbols",
+    difficulty,
+    question: "Ποια ομάδα συμβόλων συνεχίζει σωστά το μοτίβο;",
+    visual,
+    options: catShuffleCopy(options),
+    correct: symbol.repeat(correctCount),
+    explanation: difficulty >= 7
+      ? "Το πλήθος αυξάνεται κατά 1, έπειτα 2, έπειτα 3 και μετά 4."
+      : "Το πλήθος των συμβόλων αυξάνεται κατά ένα."
+  };
+}
+
+function generateMatrixShift(difficulty) {
+  const symbols = ["●","■","▲"];
+  const shift = difficulty >= 7 ? 2 : 1;
+  const row1 = symbols;
+  const row2 = symbols.map((_, i) => symbols[(i + shift) % 3]);
+  const row3 = symbols.map((_, i) => symbols[(i + 2 * shift) % 3]);
+  const correct = row3[2];
+
+  return {
+    category: "matrix",
+    generator: "matrix_shift",
+    difficulty,
+    question: "Ποιο σύμβολο λείπει από τον πίνακα;",
+    visual: `${row1.join("  ")}\n${row2.join("  ")}\n${row3[0]}  ${row3[1]}  ?`,
+    options: catShuffleCopy(["●","■","▲","◆"]),
+    correct,
+    explanation: "Κάθε σειρά αποτελεί κυκλική μετατόπιση της προηγούμενης."
+  };
+}
+
+function generateMatrixCount(difficulty) {
+  const symbol = ["●","■","▲"][catRandomInt(0, 2)];
+  const base = difficulty >= 7 ? 2 : 1;
+  const counts = [
+    [base, base + 1, base + 2],
+    [base + 1, base + 2, base + 3],
+    [base + 2, base + 3, null]
+  ];
+  const correctCount = base + 4;
+
+  const lines = counts.map(row =>
+    row.map(value => value === null ? "?" : symbol.repeat(value)).join("   ")
+  );
+
+  const options = [correctCount, correctCount - 1, correctCount + 1, correctCount + 2]
+    .map(count => symbol.repeat(count));
+
+  return {
+    category: "matrix",
+    generator: "matrix_count",
+    difficulty,
+    question: "Ποια ομάδα συμβόλων συμπληρώνει σωστά τον πίνακα;",
+    visual: lines.join("\n"),
+    options: catShuffleCopy(options),
+    correct: symbol.repeat(correctCount),
+    explanation: "Το πλήθος αυξάνεται κατά ένα προς τα δεξιά και προς τα κάτω."
+  };
+}
+
+function generateMatrixRotation(difficulty) {
+  const row1 = ["↑","→","↓"];
+  const row2 = row1.map(x => rotateSymbol(x, 1));
+  const row3 = row2.map(x => rotateSymbol(x, 1));
+  const correct = row3[2];
+
+  return {
+    category: "matrix",
+    generator: "matrix_rotation",
+    difficulty,
+    question: "Ποιο βέλος λείπει από τον πίνακα;",
+    visual: `${row1.join("  ")}\n${row2.join("  ")}\n${row3[0]}  ${row3[1]}  ?`,
+    options: catShuffleCopy(["↑","→","↓","←"]),
+    correct,
+    explanation: "Κάθε στοιχείο περιστρέφεται κατά 90° στην επόμενη σειρά."
+  };
+}
+
+const CAT_GENERATORS = [
+  {category: "numeric", min: 1, max: 10, fn: generateArithmeticSequence},
+  {category: "numeric", min: 2, max: 10, fn: generateGeometricSequence},
+  {category: "numeric", min: 4, max: 10, fn: generateAlternatingSequence},
+  {category: "numeric", min: 3, max: 10, fn: generateFibonacciLike},
+  {category: "numeric", min: 2, max: 9, fn: generateSquareSequence},
+  {category: "symbols", min: 1, max: 10, fn: generateRotationSymbols},
+  {category: "symbols", min: 1, max: 7, fn: generateAlternatingSymbols},
+  {category: "symbols", min: 3, max: 10, fn: generateGrowingSymbols},
+  {category: "matrix", min: 3, max: 10, fn: generateMatrixShift},
+  {category: "matrix", min: 4, max: 10, fn: generateMatrixCount},
+  {category: "matrix", min: 5, max: 10, fn: generateMatrixRotation}
+];
+
+function generateCatQuestion(difficulty, category = "all") {
+  const eligible = CAT_GENERATORS.filter(generator =>
+    difficulty >= generator.min &&
+    difficulty <= generator.max &&
+    (category === "all" || generator.category === category)
+  );
+
+  const fallback = CAT_GENERATORS.filter(generator =>
+    category === "all" || generator.category === category
+  );
+
+  const pool = eligible.length > 0 ? eligible : fallback;
+  const selected = pool[catRandomInt(0, pool.length - 1)];
+  return selected.fn(difficulty);
+}
+
+function resetCatStats() {
+  catCategoryStats = {
+    numeric: {total: 0, correct: 0},
+    symbols: {total: 0, correct: 0},
+    matrix: {total: 0, correct: 0}
+  };
+}
+
+function startCatPractice() {
+  const count = parseInt(document.getElementById("catPracticeCount").value, 10);
+  const category = document.getElementById("catPracticeCategory").value;
+
+  catMode = "practice";
+  catQuestions = Array.from({length: count}, () => {
+    const difficulty = catRandomInt(2, 8);
+    return generateCatQuestion(difficulty, category);
+  });
+
+  catIndex = 0;
+  catScore = 0;
+  catAnswered = 0;
+  catDifficultyHistory = [];
+  resetCatStats();
+  clearCatTimer();
+  setFooter("cat");
+  showOnly("catQuiz");
+  renderCatQuestion();
+}
+
+function startAdaptiveCat() {
+  const count = parseInt(document.getElementById("catAdaptiveCount").value, 10);
+  catPerQuestionSeconds = parseInt(document.getElementById("catQuestionTime").value, 10);
+
+  catMode = "adaptive";
+  catQuestions = new Array(count);
+  catIndex = 0;
+  catScore = 0;
+  catAnswered = 0;
+  catCurrentDifficulty = 5;
+  catDifficultyHistory = [];
+  resetCatStats();
+  setFooter("cat");
+  showOnly("catQuiz");
+  renderCatQuestion();
+}
+
+function renderCatQuestion() {
+  clearCatTimer();
+  catLocked = false;
+
+  if (catMode === "adaptive") {
+    catCurrentQuestion = generateCatQuestion(catCurrentDifficulty, "all");
+    catQuestions[catIndex] = catCurrentQuestion;
+  } else {
+    catCurrentQuestion = catQuestions[catIndex];
+  }
+
+  const question = catCurrentQuestion;
+  const total = catQuestions.length;
+
+  document.getElementById("catCounter").textContent =
+    `Ερώτηση ${catIndex + 1} από ${total}`;
+
+  document.getElementById("catProgress").style.width =
+    `${(catIndex / total) * 100}%`;
+
+  document.getElementById("catCategoryBadge").textContent =
+    question.category === "numeric"
+      ? "Αριθμητικές ακολουθίες"
+      : question.category === "symbols"
+      ? "Σύμβολα και μετασχηματισμοί"
+      : "Λογικοί πίνακες";
+
+  document.getElementById("catDifficultyBadge").textContent =
+    `Δυσκολία ${question.difficulty}/10`;
+
+  document.getElementById("catQuestionText").textContent = question.question;
+  document.getElementById("catVisual").textContent = question.visual;
+  document.getElementById("catFeedback").textContent = "";
+  document.getElementById("catNextButton").classList.add("hidden");
+
+  const answers = document.getElementById("catAnswers");
+  answers.innerHTML = "";
+
+  question.options.forEach((option, index) => {
+    const button = document.createElement("button");
+    button.className = "answer cat-answer";
+    button.textContent = `${["Α","Β","Γ","Δ"][index]}. ${option}`;
+    button.onclick = () => chooseCatAnswer(option, button);
+    answers.appendChild(button);
+  });
+
+  if (catMode === "adaptive") {
+    catTimeRemaining = catPerQuestionSeconds;
+    updateCatTimerDisplay();
+    catQuestionTimer = setInterval(() => {
+      catTimeRemaining--;
+      updateCatTimerDisplay();
+
+      if (catTimeRemaining <= 0) {
+        clearCatTimer();
+        handleCatTimeout();
+      }
+    }, 1000);
+  } else {
+    document.getElementById("catTimer").textContent = "Εξάσκηση";
+  }
+}
+
+function updateCatTimerDisplay() {
+  document.getElementById("catTimer").textContent =
+    `${catTimeRemaining}″`;
+}
+
+function clearCatTimer() {
+  if (catQuestionTimer) {
+    clearInterval(catQuestionTimer);
+    catQuestionTimer = null;
+  }
+}
+
+function chooseCatAnswer(selected, selectedButton) {
+  if (catLocked) return;
+  catLocked = true;
+  clearCatTimer();
+
+  const question = catCurrentQuestion;
+  const isCorrect = selected === question.correct;
+  catAnswered++;
+
+  catCategoryStats[question.category].total++;
+  if (isCorrect) {
+    catScore++;
+    catCategoryStats[question.category].correct++;
+  }
+
+  document.querySelectorAll(".cat-answer").forEach(button => {
+    button.disabled = true;
+    const value = button.textContent.replace(/^[Α-Δ]\.\s*/, "");
+    if (value === String(question.correct)) {
+      button.classList.add("correct");
+    }
+  });
+
+  if (!isCorrect) {
+    selectedButton.classList.add("wrong");
+  }
+
+  catDifficultyHistory.push(question.difficulty);
+
+  if (catMode === "adaptive") {
+    catCurrentDifficulty = Math.max(
+      1,
+      Math.min(10, catCurrentDifficulty + (isCorrect ? 1 : -1))
+    );
+
+    document.getElementById("catFeedback").textContent = isCorrect
+      ? "Σωστή απάντηση — η επόμενη ερώτηση θα είναι δυσκολότερη."
+      : "Λάθος απάντηση — η επόμενη ερώτηση θα είναι ευκολότερη.";
+
+    setTimeout(nextCatQuestion, 1100);
+  } else {
+    document.getElementById("catFeedback").textContent =
+      `${isCorrect ? "✓ Σωστή απάντηση" : "✗ Λάθος απάντηση"} — ${question.explanation}`;
+    document.getElementById("catNextButton").classList.remove("hidden");
+  }
+}
+
+function handleCatTimeout() {
+  if (catLocked) return;
+  catLocked = true;
+  catAnswered++;
+
+  const question = catCurrentQuestion;
+  catCategoryStats[question.category].total++;
+  catDifficultyHistory.push(question.difficulty);
+  catCurrentDifficulty = Math.max(1, catCurrentDifficulty - 1);
+
+  document.querySelectorAll(".cat-answer").forEach(button => {
+    button.disabled = true;
+    const value = button.textContent.replace(/^[Α-Δ]\.\s*/, "");
+    if (value === String(question.correct)) {
+      button.classList.add("correct");
+    }
+  });
+
+  document.getElementById("catFeedback").textContent =
+    "Ο χρόνος έληξε — η ερώτηση θεωρήθηκε λανθασμένη.";
+
+  setTimeout(nextCatQuestion, 1100);
+}
+
+function nextCatQuestion() {
+  clearCatTimer();
+  catIndex++;
+
+  if (catIndex < catQuestions.length) {
+    renderCatQuestion();
+  } else {
+    finishCat(false);
+  }
+}
+
+function finishCatEarly() {
+  if (!confirm("Θέλεις να τερματίσεις το τεστ;")) return;
+  finishCat(true);
+}
+
+function finishCat(stoppedEarly = false) {
+  clearCatTimer();
+
+  const attempted = catAnswered;
+  const percentage = attempted > 0
+    ? Math.round((catScore / attempted) * 100)
+    : 0;
+
+  const averageDifficulty = catDifficultyHistory.length > 0
+    ? catDifficultyHistory.reduce((sum, value) => sum + value, 0) /
+      catDifficultyHistory.length
+    : 0;
+
+  const ability = catMode === "adaptive"
+    ? Math.round(
+        Math.max(
+          0,
+          Math.min(
+            100,
+            ((catCurrentDifficulty - 1) / 9) * 100
+          )
+        )
+      )
+    : percentage;
+
+  document.getElementById("catResultTitle").textContent =
+    catMode === "adaptive"
+      ? "Αποτέλεσμα Προσομοίωσης CAT"
+      : "Αποτέλεσμα Εξάσκησης";
+
+  document.getElementById("catResultScore").textContent =
+    catMode === "adaptive"
+      ? `${(catCurrentDifficulty).toFixed(1)} / 10`
+      : `${percentage}%`;
+
+  const categoryRows = Object.entries(catCategoryStats)
+    .filter(([, stats]) => stats.total > 0)
+    .map(([category, stats]) => {
+      const name = category === "numeric"
+        ? "Αριθμητικές ακολουθίες"
+        : category === "symbols"
+        ? "Σύμβολα"
+        : "Λογικοί πίνακες";
+      const pct = Math.round((stats.correct / stats.total) * 100);
+      return `<div><span>${name}</span><strong>${pct}%</strong></div>`;
+    })
+    .join("");
+
+  document.getElementById("catResultDetails").innerHTML = `
+    <div class="cat-result-grid">
+      <div><span>Απαντήθηκαν</span><strong>${attempted}</strong></div>
+      <div><span>Σωστές</span><strong>${catScore}</strong></div>
+      <div><span>Λάθος / χρόνος</span><strong>${Math.max(0, attempted - catScore)}</strong></div>
+      <div><span>Μέση δυσκολία</span><strong>${averageDifficulty.toFixed(1)}/10</strong></div>
+      ${catMode === "adaptive"
+        ? `<div><span>Δείκτης ικανότητας</span><strong>${ability}/100</strong></div>`
+        : `<div><span>Ποσοστό επιτυχίας</span><strong>${percentage}%</strong></div>`}
+    </div>
+    <div class="cat-category-results">${categoryRows}</div>
+    ${stoppedEarly ? '<p class="cat-result-note">Η προσπάθεια τερματίστηκε πρόωρα.</p>' : ''}
+    ${catMode === "adaptive"
+      ? '<p class="cat-result-note">Ο δείκτης αποτελεί εκπαιδευτική εκτίμηση της εφαρμογής και όχι επίσημη βαθμολογία ΑΣΕΠ.</p>'
+      : ''}
+  `;
+
+  setFooter("cat");
+  showOnly("catResults");
 }
