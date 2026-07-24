@@ -7,5 +7,6 @@
 - data/categories.json
 - data/*.json
 
+
 Ανεβάστε ΟΛΑ τα περιεχόμενα αυτού του φακέλου στη ρίζα του GitHub repository.
 Ο φάκελος data πρέπει να διατηρηθεί ως φάκελος.
