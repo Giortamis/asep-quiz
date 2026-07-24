@@ -52,3 +52,44 @@ footer{text-align:center;color:var(--muted);font-size:.78rem;margin-top:12px}
 .favorite-filter{border-color:#e2b544;background:#fff8db;color:#755500}
 .wrong-filter{border-color:#e1a3a7;background:#fdebec;color:#9f2028}
 @media(max-width:520px){.study-filters{grid-template-columns:1fr}}
+
+
+/* Έκδοση 11 — Εργασιακές Συμπεριφορές */
+.work-intro{line-height:1.55;color:var(--muted)}
+.work-menu{margin-top:18px}
+.work-disclaimer{margin-top:18px;padding:12px;border-left:4px solid #d4a72c;background:#fff9df;color:#66500b;font-size:.86rem;line-height:1.45}
+.work-instruction{background:#f4f9ff;border:1px solid #bdd4ec;border-radius:12px;padding:12px;line-height:1.55;color:var(--blue2)}
+.work-statements{display:grid;gap:12px;margin-top:16px}
+.work-statement{display:grid;grid-template-columns:auto 1fr auto;align-items:start;gap:12px;width:100%;text-align:left;border:2px solid var(--border);background:#fff;border-radius:14px;padding:14px;color:var(--text);font-size:.98rem;line-height:1.45;cursor:pointer}
+.work-letter{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:#eaf3fc;color:var(--blue2);font-weight:800}
+.work-rank{min-width:34px;text-align:center;font-weight:800}
+.work-statement.rank-first{border-color:#198754;background:#ecf8f1}
+.work-statement.rank-second{border-color:#0b5cab;background:#eef6ff}
+.work-statement.rank-third{border-color:#9aa5b1;background:#f4f5f7}
+.work-statement.rank-first .work-rank{color:#198754}
+.work-statement.rank-second .work-rank{color:#0b5cab}
+.work-statement.rank-third .work-rank{color:#687386}
+.work-choice-status{min-height:24px;margin-top:14px;text-align:center;font-weight:700;color:var(--blue2)}
+#workNextButton:disabled{opacity:.45;cursor:not-allowed}
+.work-result-summary{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:14px;background:#f4f9ff;border:1px solid #bdd4ec;border-radius:12px;margin-bottom:16px}
+.work-skills-results{display:grid;gap:12px}
+.work-skill-card{padding:13px;border:1px solid var(--border);border-radius:12px;background:#fff}
+.work-skill-head{display:flex;justify-content:space-between;gap:12px;align-items:center}
+.work-skill-head span{font-size:1.1rem;font-weight:800}
+.work-skill-bar{height:9px;margin:10px 0 7px;background:#e5eaf0;border-radius:999px;overflow:hidden}
+.work-skill-bar>div{height:100%;background:var(--blue);border-radius:999px}
+.work-skill-card small{color:var(--muted)}
+.work-score-high{color:#198754}
+.work-score-good{color:#3c7d25}
+.work-score-mid{color:#d17b00}
+.work-score-low{color:#c92a32}
+.work-history-item{border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:10px;background:#fff}
+.work-history-item summary{display:flex;justify-content:space-between;gap:12px;cursor:pointer;font-weight:700}
+.work-history-item p{color:var(--muted)}
+.work-history-scores{display:grid;gap:6px}
+.work-history-scores>div{display:flex;justify-content:space-between;gap:12px;border-top:1px solid #eef1f5;padding-top:6px;font-size:.9rem}
+@media(max-width:520px){
+  .work-result-summary{align-items:flex-start;flex-direction:column}
+  .work-statement{grid-template-columns:auto 1fr}
+  .work-rank{grid-column:2;text-align:left}
+}

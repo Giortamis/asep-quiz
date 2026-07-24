@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#0b5cab">
   <title>ΑΣΕΠ Quiz</title>
-  <link rel="stylesheet" href="style.css?v=10">
+  <link rel="stylesheet" href="style.css?v=11">
 </head>
 <body>
 <main class="app">
@@ -21,7 +21,7 @@
       <button onclick="openTestHub()">🎯 Τεστ Μητρώου</button>
       <button onclick="openStats()">📊 Στατιστικά</button>
       <button onclick="comingSoon('🧠 Μέθοδος CAT')">🧠 Μέθοδος CAT</button>
-      <button onclick="comingSoon('🎭 Διαχείριση Εργασιακών Σεναρίων')">🎭 Διαχείριση Εργασιακών Σεναρίων</button>
+      <button onclick="openWorkBehaviour()">🎭 Εργασιακές Συμπεριφορές</button>
       <button onclick="comingSoon('📖 Οδηγός ΑΣΕΠ')">📖 Οδηγός ΑΣΕΠ</button>
     </div>
   </section>
@@ -138,6 +138,91 @@
     <button class="primary full" onclick="goHome()">Επιστροφή στο αρχικό μενού</button>
   </section>
 
+
+  <section id="workHome" class="card hidden">
+    <h2>🎭 Εργασιακές Συμπεριφορές</h2>
+    <p class="work-intro">
+      Εκπαιδευτική προσομοίωση κατάταξης δηλώσεων στις 9 δεξιότητες.
+      Δεν υπάρχουν σωστές ή λάθος απαντήσεις.
+    </p>
+
+    <label for="workCount">Αριθμός τριάδων εξάσκησης</label>
+    <select id="workCount">
+      <option value="5">5 τριάδες</option>
+      <option value="10" selected>10 τριάδες</option>
+      <option value="20">20 τριάδες</option>
+      <option value="40">40 τριάδες</option>
+    </select>
+
+    <label class="check">
+      <input type="checkbox" id="workTimed">
+      Εξάσκηση με συνολικό χρονόμετρο
+    </label>
+
+    <div class="menu work-menu">
+      <button onclick="startWorkPractice()">▶ Έναρξη εξάσκησης</button>
+      <button onclick="startFullWorkSimulation()">🎯 Πλήρης προσομοίωση — 76 τριάδες / 30 λεπτά</button>
+      <button onclick="openWorkHistory()">📊 Τα αποτελέσματά μου</button>
+    </div>
+
+    <div class="actions">
+      <button class="secondary" onclick="goHome()">Πίσω</button>
+    </div>
+
+    <p class="work-disclaimer">
+      Το περιεχόμενο και οι δείκτες αποτελούν εκπαιδευτική προσομοίωση και δεν
+      αντιστοιχούν σε επίσημη ή ψυχομετρικά πιστοποιημένη βαθμολογία ΑΣΕΠ.
+    </p>
+  </section>
+
+  <section id="workQuiz" class="hidden">
+    <div class="topbar">
+      <span id="workCounter"></span>
+      <span id="workTimer"></span>
+    </div>
+    <div class="progress"><div id="workProgress"></div></div>
+
+    <section class="card">
+      <div class="badge">Εργασιακές Συμπεριφορές</div>
+      <p class="work-instruction">
+        1. Επίλεξε τη δήλωση που σε αντιπροσωπεύει περισσότερο.<br>
+        2. Έπειτα επίλεξε τη δεύτερη πιο κοντινή σε εσένα.
+      </p>
+      <div id="workStatements" class="work-statements"></div>
+      <div id="workChoiceStatus" class="work-choice-status"></div>
+
+      <div class="actions">
+        <button class="secondary" onclick="finishWorkEarly()">Τέλος</button>
+        <button id="workNextButton" class="primary" onclick="nextWorkTriad()" disabled>Επόμενη</button>
+      </div>
+    </section>
+  </section>
+
+  <section id="workResults" class="card hidden">
+    <h2>Εκπαιδευτικό Προφίλ Προσομοίωσης</h2>
+    <div id="workResultSummary" class="work-result-summary"></div>
+    <div id="workSkillsResults" class="work-skills-results"></div>
+
+    <p class="work-disclaimer">
+      Οι δείκτες είναι εκπαιδευτικές εκτιμήσεις της συγκεκριμένης προσομοίωσης.
+      Δεν αποτελούν επίσημη βαθμολογία, διάγνωση ή πιστοποιημένη ψυχομετρική αξιολόγηση.
+    </p>
+
+    <div class="actions">
+      <button class="secondary" onclick="openWorkBehaviour()">Νέα προσπάθεια</button>
+      <button class="primary" onclick="goHome()">Αρχικό μενού</button>
+    </div>
+  </section>
+
+  <section id="workHistory" class="card hidden">
+    <h2>📊 Ιστορικό Εργασιακών Συμπεριφορών</h2>
+    <div id="workHistoryList"></div>
+    <div class="actions">
+      <button class="secondary" onclick="openWorkBehaviour()">Πίσω</button>
+      <button class="danger" onclick="clearWorkHistory()">Διαγραφή ιστορικού</button>
+    </div>
+  </section>
+
   <section id="statsScreen" class="card hidden">
     <h2>📊 Στατιστικά</h2>
 
@@ -174,8 +259,8 @@
   </section>
 
   <div id="message" class="message hidden"></div>
-  <footer>Πηγή δεδομένων: Επίσημο Μητρώο Θεμάτων Γνώσεων ΑΣΕΠ</footer>
+  <footer id="appFooter">Πηγή δεδομένων: Επίσημο Μητρώο Θεμάτων Γνώσεων ΑΣΕΠ</footer>
 </main>
-<script src="app.js?v=10"></script>
+<script src="app.js?v=11"></script>
 </body>
 </html>

@@ -3,6 +3,9 @@ const DATA_VERSION = "5";
 const FAVORITES_KEY = "asepFavorites";
 const WRONGS_KEY = "asepWrongs";
 const STATS_KEY = "asepStats";
+const WORK_HISTORY_KEY = "asepWorkBehaviourHistory";
+const WORK_SEEN_KEY = "asepWorkBehaviourSeen";
+const WORK_DATA_URL = "data/work_behaviour.json?v=11";
 
 const FILES = {
   constitutional: "constitutional.json",
@@ -33,6 +36,18 @@ let studyTimer = null;
 let studySeconds = 5;
 let autoNext = false;
 
+let workBank = null;
+let workTriads = [];
+let workIndex = 0;
+let workAnswers = [];
+let workFirstChoice = null;
+let workSecondChoice = null;
+let workTimerInterval = null;
+let workTimeRemaining = 0;
+let workStartedAt = null;
+let workIsFullSimulation = false;
+let workTimedMode = false;
+
 document.addEventListener("DOMContentLoaded", init);
 
 async function init() {
@@ -58,6 +73,10 @@ function showOnly(id) {
     "studySetup",
     "quizScreen",
     "resultScreen",
+    "workHome",
+    "workQuiz",
+    "workResults",
+    "workHistory",
     "statsScreen"
   ].forEach(screenId => {
     document
@@ -68,6 +87,8 @@ function showOnly(id) {
 
 function goHome() {
   clearStudyTimer();
+  clearWorkTimer();
+  setFooter("home");
   showOnly("home");
 }
 
@@ -1162,4 +1183,487 @@ function launchSmartTest(){
   quizFinished=false;
   showOnly("quizScreen");
   renderQuestion();
+}
+
+
+function setFooter(section) {
+  const footer = document.getElementById("appFooter");
+  if (!footer) return;
+
+  if (section === "work") {
+    footer.textContent = "Εκπαιδευτικό υλικό προσομοίωσης εργασιακών συμπεριφορών — μη επίσημη τράπεζα ΑΣΕΠ";
+  } else if (section === "home") {
+    footer.textContent = "Εφαρμογή προετοιμασίας για τον Γραπτό Διαγωνισμό ΑΣΕΠ";
+  } else {
+    footer.textContent = "Πηγή δεδομένων: Επίσημο Μητρώο Θεμάτων Γνώσεων ΑΣΕΠ";
+  }
+}
+
+async function loadWorkBank() {
+  if (workBank) return workBank;
+
+  const response = await fetch(WORK_DATA_URL);
+  if (!response.ok) {
+    throw new Error("Δεν φορτώθηκε το work_behaviour.json");
+  }
+
+  workBank = await response.json();
+  return workBank;
+}
+
+async function openWorkBehaviour() {
+  clearWorkTimer();
+  setFooter("work");
+
+  try {
+    await loadWorkBank();
+    showOnly("workHome");
+  } catch (error) {
+    console.error(error);
+    showMessage("Σφάλμα φόρτωσης της τράπεζας εργασιακών συμπεριφορών.");
+  }
+}
+
+function getWorkSeenIds() {
+  try {
+    const ids = JSON.parse(localStorage.getItem(WORK_SEEN_KEY) || "[]");
+    return Array.isArray(ids) ? ids : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveWorkSeenIds(ids) {
+  localStorage.setItem(WORK_SEEN_KEY, JSON.stringify(ids));
+}
+
+function chooseWorkTriads(count) {
+  const all = workBank.triads;
+  let seen = new Set(getWorkSeenIds());
+  let unseen = all.filter(item => !seen.has(item.id));
+
+  if (unseen.length < count) {
+    seen = new Set();
+    unseen = [...all];
+  }
+
+  const selected = shuffle([...unseen]).slice(0, count);
+  selected.forEach(item => seen.add(item.id));
+  saveWorkSeenIds([...seen]);
+
+  return selected;
+}
+
+async function startWorkPractice() {
+  try {
+    await loadWorkBank();
+
+    const count = parseInt(document.getElementById("workCount").value, 10);
+    workTimedMode = document.getElementById("workTimed").checked;
+    workIsFullSimulation = false;
+
+    const seconds = workTimedMode
+      ? Math.max(120, Math.round(count * (1800 / 76)))
+      : 0;
+
+    beginWorkAttempt(count, seconds);
+  } catch (error) {
+    console.error(error);
+    showMessage("Δεν ήταν δυνατή η έναρξη της εξάσκησης.");
+  }
+}
+
+async function startFullWorkSimulation() {
+  try {
+    await loadWorkBank();
+
+    if (!confirm(
+      "Η πλήρης προσομοίωση περιλαμβάνει 76 τριάδες και συνολικό χρόνο 30 λεπτών. Θέλεις να ξεκινήσεις;"
+    )) return;
+
+    workTimedMode = true;
+    workIsFullSimulation = true;
+    beginWorkAttempt(76, 30 * 60);
+  } catch (error) {
+    console.error(error);
+    showMessage("Δεν ήταν δυνατή η έναρξη της πλήρους προσομοίωσης.");
+  }
+}
+
+function beginWorkAttempt(count, seconds) {
+  workTriads = chooseWorkTriads(count);
+  workIndex = 0;
+  workAnswers = [];
+  workFirstChoice = null;
+  workSecondChoice = null;
+  workStartedAt = Date.now();
+  workTimeRemaining = seconds;
+
+  setFooter("work");
+  showOnly("workQuiz");
+
+  if (seconds > 0) {
+    startWorkTimer();
+  } else {
+    document.getElementById("workTimer").textContent = "Χωρίς χρόνο";
+  }
+
+  renderWorkTriad();
+}
+
+function startWorkTimer() {
+  clearWorkTimer();
+  updateWorkTimerDisplay();
+
+  workTimerInterval = setInterval(() => {
+    workTimeRemaining--;
+    updateWorkTimerDisplay();
+
+    if (workTimeRemaining <= 0) {
+      clearWorkTimer();
+      finishWorkAttempt(true);
+    }
+  }, 1000);
+}
+
+function updateWorkTimerDisplay() {
+  const minutes = Math.floor(Math.max(0, workTimeRemaining) / 60);
+  const seconds = Math.max(0, workTimeRemaining) % 60;
+  document.getElementById("workTimer").textContent =
+    `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+}
+
+function clearWorkTimer() {
+  if (workTimerInterval) {
+    clearInterval(workTimerInterval);
+    workTimerInterval = null;
+  }
+}
+
+function renderWorkTriad() {
+  const triad = workTriads[workIndex];
+  workFirstChoice = null;
+  workSecondChoice = null;
+
+  document.getElementById("workCounter").textContent =
+    `Τριάδα ${workIndex + 1} από ${workTriads.length}`;
+
+  document.getElementById("workProgress").style.width =
+    `${(workIndex / workTriads.length) * 100}%`;
+
+  const box = document.getElementById("workStatements");
+  box.innerHTML = "";
+
+  triad.statements.forEach(statement => {
+    const button = document.createElement("button");
+    button.className = "work-statement";
+    button.dataset.statementId = statement.id;
+    button.innerHTML = `
+      <span class="work-letter">${statement.id}</span>
+      <span>${statement.text}</span>
+      <span class="work-rank"></span>
+    `;
+    button.onclick = () => chooseWorkStatement(statement.id);
+    box.appendChild(button);
+  });
+
+  document.getElementById("workChoiceStatus").textContent =
+    "Επίλεξε πρώτα τη δήλωση που σε αντιπροσωπεύει περισσότερο.";
+
+  document.getElementById("workNextButton").disabled = true;
+}
+
+function chooseWorkStatement(statementId) {
+  if (!workFirstChoice) {
+    workFirstChoice = statementId;
+    updateWorkStatementButtons();
+
+    document.getElementById("workChoiceStatus").textContent =
+      "Τώρα επίλεξε τη δεύτερη δήλωση που σε αντιπροσωπεύει περισσότερο.";
+    return;
+  }
+
+  if (statementId === workFirstChoice) {
+    workFirstChoice = null;
+    workSecondChoice = null;
+    updateWorkStatementButtons();
+
+    document.getElementById("workChoiceStatus").textContent =
+      "Επίλεξε πρώτα τη δήλωση που σε αντιπροσωπεύει περισσότερο.";
+    document.getElementById("workNextButton").disabled = true;
+    return;
+  }
+
+  if (!workSecondChoice) {
+    workSecondChoice = statementId;
+    updateWorkStatementButtons();
+
+    document.getElementById("workChoiceStatus").textContent =
+      "Η κατάταξη ολοκληρώθηκε. Πάτησε «Επόμενη».";
+    document.getElementById("workNextButton").disabled = false;
+    return;
+  }
+
+  if (statementId === workSecondChoice) {
+    workSecondChoice = null;
+    updateWorkStatementButtons();
+
+    document.getElementById("workChoiceStatus").textContent =
+      "Επίλεξε ξανά τη δεύτερη δήλωση.";
+    document.getElementById("workNextButton").disabled = true;
+  }
+}
+
+function updateWorkStatementButtons() {
+  const triad = workTriads[workIndex];
+  const thirdChoice = workFirstChoice && workSecondChoice
+    ? triad.statements
+        .map(item => item.id)
+        .find(id => id !== workFirstChoice && id !== workSecondChoice)
+    : null;
+
+  document.querySelectorAll(".work-statement").forEach(button => {
+    const id = button.dataset.statementId;
+    const rank = button.querySelector(".work-rank");
+
+    button.classList.remove("rank-first", "rank-second", "rank-third");
+    rank.textContent = "";
+
+    if (id === workFirstChoice) {
+      button.classList.add("rank-first");
+      rank.textContent = "1η";
+    } else if (id === workSecondChoice) {
+      button.classList.add("rank-second");
+      rank.textContent = "2η";
+    } else if (id === thirdChoice) {
+      button.classList.add("rank-third");
+      rank.textContent = "3η";
+    }
+  });
+}
+
+function nextWorkTriad() {
+  if (!workFirstChoice || !workSecondChoice) {
+    showMessage("Ολοκλήρωσε πρώτα την κατάταξη.");
+    return;
+  }
+
+  const triad = workTriads[workIndex];
+  const thirdChoice = triad.statements
+    .map(item => item.id)
+    .find(id => id !== workFirstChoice && id !== workSecondChoice);
+
+  workAnswers.push({
+    triadId: triad.id,
+    ranking: [workFirstChoice, workSecondChoice, thirdChoice]
+  });
+
+  workIndex++;
+
+  if (workIndex < workTriads.length) {
+    renderWorkTriad();
+  } else {
+    finishWorkAttempt(false);
+  }
+}
+
+function finishWorkEarly() {
+  if (!confirm("Θέλεις να τερματίσεις την προσπάθεια;")) return;
+  finishWorkAttempt(false, true);
+}
+
+function finishWorkAttempt(timeExpired = false, stoppedEarly = false) {
+  clearWorkTimer();
+
+  const completed = workAnswers.length;
+  const required = workTriads.length;
+
+  if (workFirstChoice && workSecondChoice && workIndex < workTriads.length) {
+    const triad = workTriads[workIndex];
+    const thirdChoice = triad.statements
+      .map(item => item.id)
+      .find(id => id !== workFirstChoice && id !== workSecondChoice);
+
+    workAnswers.push({
+      triadId: triad.id,
+      ranking: [workFirstChoice, workSecondChoice, thirdChoice]
+    });
+  }
+
+  const result = calculateWorkProfile();
+  const record = {
+    id: Date.now(),
+    date: new Date().toISOString(),
+    type: workIsFullSimulation ? "full" : "practice",
+    requestedTriads: required,
+    completedTriads: workAnswers.length,
+    timed: workTimedMode,
+    timeExpired,
+    stoppedEarly,
+    durationSeconds: Math.max(0, Math.round((Date.now() - workStartedAt) / 1000)),
+    scores: result.scores
+  };
+
+  saveWorkHistoryRecord(record);
+  renderWorkResults(record);
+  showOnly("workResults");
+}
+
+function calculateWorkProfile() {
+  const raw = {};
+  const max = {};
+
+  workBank.skills.forEach(skill => {
+    raw[skill.id] = 0;
+    max[skill.id] = 0;
+  });
+
+  const triadById = new Map(workBank.triads.map(item => [item.id, item]));
+
+  workAnswers.forEach(answer => {
+    const triad = triadById.get(answer.triadId);
+    if (!triad) return;
+
+    answer.ranking.forEach((statementId, index) => {
+      const statement = triad.statements.find(item => item.id === statementId);
+      if (!statement) return;
+
+      const rankMultiplier = [3, 2, 1][index];
+
+      Object.entries(statement.skills).forEach(([skillId, weight]) => {
+        if (raw[skillId] === undefined) {
+          raw[skillId] = 0;
+          max[skillId] = 0;
+        }
+
+        raw[skillId] += weight * rankMultiplier;
+        max[skillId] += weight * 3;
+      });
+    });
+  });
+
+  const scores = {};
+  Object.keys(raw).forEach(skillId => {
+    scores[skillId] = max[skillId] > 0
+      ? Math.round((raw[skillId] / max[skillId]) * 100)
+      : 0;
+  });
+
+  return { raw, max, scores };
+}
+
+function workScoreLabel(score) {
+  if (score >= 90) return "Πολύ Ισχυρή Ένδειξη";
+  if (score >= 75) return "Ισχυρή Ένδειξη";
+  if (score >= 60) return "Καλή Ένδειξη";
+  if (score >= 40) return "Μέτρια Ένδειξη";
+  return "Χρειάζεται Βελτίωση";
+}
+
+function workScoreClass(score) {
+  if (score >= 75) return "work-score-high";
+  if (score >= 60) return "work-score-good";
+  if (score >= 40) return "work-score-mid";
+  return "work-score-low";
+}
+
+function renderWorkResults(record) {
+  const summary = document.getElementById("workResultSummary");
+  const completionText = `${record.completedTriads}/${record.requestedTriads} τριάδες`;
+
+  let status = "Ολοκληρωμένη προσπάθεια";
+  if (record.timeExpired) status = "Ο χρόνος ολοκληρώθηκε";
+  if (record.stoppedEarly) status = "Η προσπάθεια τερματίστηκε πρόωρα";
+
+  summary.innerHTML = `
+    <strong>${status}</strong>
+    <span>${completionText}</span>
+  `;
+
+  const container = document.getElementById("workSkillsResults");
+  container.innerHTML = "";
+
+  workBank.skills.forEach(skill => {
+    const score = record.scores[skill.id] || 0;
+    const item = document.createElement("div");
+    item.className = "work-skill-card";
+    item.innerHTML = `
+      <div class="work-skill-head">
+        <strong>${skill.name}</strong>
+        <span class="${workScoreClass(score)}">${score}%</span>
+      </div>
+      <div class="work-skill-bar">
+        <div style="width:${score}%"></div>
+      </div>
+      <small>${workScoreLabel(score)}</small>
+    `;
+    container.appendChild(item);
+  });
+}
+
+function getWorkHistory() {
+  try {
+    const history = JSON.parse(localStorage.getItem(WORK_HISTORY_KEY) || "[]");
+    return Array.isArray(history) ? history : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveWorkHistoryRecord(record) {
+  const history = getWorkHistory();
+  history.unshift(record);
+  localStorage.setItem(WORK_HISTORY_KEY, JSON.stringify(history.slice(0, 50)));
+}
+
+function openWorkHistory() {
+  setFooter("work");
+  renderWorkHistory();
+  showOnly("workHistory");
+}
+
+function renderWorkHistory() {
+  const history = getWorkHistory();
+  const box = document.getElementById("workHistoryList");
+  box.innerHTML = "";
+
+  if (history.length === 0) {
+    box.innerHTML = "<p>Δεν υπάρχουν ακόμη αποθηκευμένες προσπάθειες.</p>";
+    return;
+  }
+
+  history.forEach((record, index) => {
+    const date = new Date(record.date).toLocaleString("el-GR");
+    const average = Math.round(
+      Object.values(record.scores || {}).reduce((sum, value) => sum + value, 0) /
+      Math.max(1, Object.keys(record.scores || {}).length)
+    );
+
+    const item = document.createElement("details");
+    item.className = "work-history-item";
+
+    const scoreRows = workBank.skills.map(skill => {
+      const score = record.scores?.[skill.id] || 0;
+      return `<div><span>${skill.name}</span><strong>${score}%</strong></div>`;
+    }).join("");
+
+    item.innerHTML = `
+      <summary>
+        <span>${record.type === "full" ? "Πλήρης προσομοίωση" : "Εξάσκηση"} — ${date}</span>
+        <strong>${average}%</strong>
+      </summary>
+      <p>${record.completedTriads}/${record.requestedTriads} τριάδες</p>
+      <div class="work-history-scores">${scoreRows}</div>
+    `;
+
+    box.appendChild(item);
+  });
+}
+
+function clearWorkHistory() {
+  if (!confirm("Θέλεις να διαγράψεις όλο το ιστορικό εργασιακών συμπεριφορών;")) return;
+
+  localStorage.removeItem(WORK_HISTORY_KEY);
+  renderWorkHistory();
+  showMessage("Το ιστορικό διαγράφηκε.");
 }
