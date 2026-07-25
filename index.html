@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#0b5cab">
   <title>ΑΣΕΠ Quiz</title>
-  <link rel="stylesheet" href="style.css?v=13.1">
+  <link rel="stylesheet" href="style.css?v=13.2">
 </head>
 <body>
 <main class="app">
@@ -132,8 +132,23 @@
     <h2 id="catResultTitle">Αποτέλεσμα CAT</h2>
     <div id="catResultScore" class="score"></div>
     <div id="catResultDetails" class="cat-result-details"></div>
-    <div class="actions">
+    <div class="actions cat-result-actions">
       <button class="secondary" onclick="openCatHub()">Νέα προσπάθεια</button>
+      <button class="secondary" onclick="openCatReview('wrong')">Δες τις απαντήσεις</button>
+      <button class="primary" onclick="goHome()">Αρχικό μενού</button>
+    </div>
+  </section>
+
+  <section id="catReview" class="card hidden">
+    <h2>Ανασκόπηση απαντήσεων</h2>
+    <div class="cat-review-filters" aria-label="Φίλτρα απαντήσεων">
+      <button type="button" data-cat-review-filter="wrong" onclick="setCatReviewFilter('wrong')">Μόνο λάθος</button>
+      <button type="button" data-cat-review-filter="all" onclick="setCatReviewFilter('all')">Όλες</button>
+      <button type="button" data-cat-review-filter="correct" onclick="setCatReviewFilter('correct')">Μόνο σωστές</button>
+    </div>
+    <div id="catReviewList" class="cat-review-list"></div>
+    <div class="actions">
+      <button class="secondary" onclick="showOnly('catResults')">Πίσω στα αποτελέσματα</button>
       <button class="primary" onclick="goHome()">Αρχικό μενού</button>
     </div>
   </section>
@@ -364,6 +379,6 @@
   <div id="message" class="message hidden"></div>
   <footer id="appFooter">Πηγή δεδομένων: Επίσημο Μητρώο Θεμάτων Γνώσεων ΑΣΕΠ</footer>
 </main>
-<script src="app.js?v=13.1"></script>
+<script src="app.js?v=13.2"></script>
 </body>
 </html>

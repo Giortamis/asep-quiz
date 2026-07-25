@@ -169,3 +169,30 @@ body.cat-exam-setup .app{max-width:820px;padding-top:22px}
   .cat-start-actions{grid-template-columns:1fr}
   .cat-preparing{margin-top:28px;padding:28px 18px}
 }
+
+
+/* V13.2 — ευκρινή σύμβολα, μοναδικές ερωτήσεις και ανασκόπηση */
+.cat-visual{font-size:2rem;letter-spacing:.16em;word-spacing:.55em;line-height:1.9}
+.cat-answer{font-size:1.05rem;line-height:1.7;letter-spacing:.08em;word-spacing:.18em}
+.cat-result-actions{grid-template-columns:repeat(3,minmax(0,1fr))}
+.cat-review-filters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:14px 0 18px}
+.cat-review-filters button{min-height:44px;border:1px solid var(--border);border-radius:10px;background:#f8fbff;color:var(--blue2);font-weight:700}
+.cat-review-filters button.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+.cat-review-list{display:grid;gap:14px;margin-bottom:18px}
+.cat-review-item{padding:15px;border:1px solid var(--border);border-left-width:5px;border-radius:12px;background:#fff}
+.cat-review-item.is-wrong{border-left-color:#c0392b}
+.cat-review-item.is-correct{border-left-color:#198754}
+.cat-review-heading{display:flex;justify-content:space-between;gap:12px;margin-bottom:10px}
+.cat-review-item.is-wrong .cat-review-heading span{color:#a5281b;font-weight:800}
+.cat-review-item.is-correct .cat-review-heading span{color:#146c43;font-weight:800}
+.cat-review-question{font-weight:800}
+.cat-review-visual{margin:10px 0;padding:16px;text-align:center;border:1px solid var(--border);border-radius:10px;background:#f8fbff;font-size:1.65rem;letter-spacing:.14em;word-spacing:.45em;line-height:1.8}
+.cat-review-item p{margin:7px 0}
+.cat-review-explanation{padding-top:8px;border-top:1px solid var(--border)}
+.cat-review-empty{padding:20px;text-align:center;color:var(--muted);background:#f8fbff;border-radius:10px}
+@media(max-width:620px){
+  .cat-visual{font-size:1.7rem;letter-spacing:.12em;word-spacing:.35em}
+  .cat-answer{font-size:1rem;letter-spacing:.06em}
+  .cat-result-actions,.cat-review-filters{grid-template-columns:1fr}
+  .cat-review-visual{font-size:1.45rem}
+}

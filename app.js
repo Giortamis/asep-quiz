@@ -62,6 +62,9 @@ let catStartedAt = null;
 let catEndedByTime = false;
 let catLocked = false;
 let catCurrentQuestion = null;
+let catUsedQuestionSignatures = new Set();
+let catReviewRecords = [];
+let catReviewFilter = "wrong";
 let catCategoryStats = {
   numeric: {total: 0, correct: 0},
   symbols: {total: 0, correct: 0},
@@ -92,6 +95,7 @@ function showOnly(id) {
     "catPreparing",
     "catQuiz",
     "catResults",
+    "catReview",
     "testHub",
     "smartSetup",
     "testSetup",
@@ -2041,6 +2045,29 @@ function generateCatQuestion(difficulty, category = "all") {
   return selected.fn(difficulty);
 }
 
+function catQuestionSignature(question) {
+  return `${question.generator}|${question.visual}|${question.correct}`;
+}
+
+function generateUniqueCatQuestion(difficulty, category = "all") {
+  let question = null;
+  for (let attempt = 0; attempt < 120; attempt++) {
+    question = generateCatQuestion(difficulty, category);
+    const signature = catQuestionSignature(question);
+    if (!catUsedQuestionSignatures.has(signature)) {
+      catUsedQuestionSignatures.add(signature);
+      return question;
+    }
+  }
+  // Πολύ σπάνιο fallback: κρατάμε την τελευταία ερώτηση αντί να μπλοκάρει το τεστ.
+  return question;
+}
+
+function formatCatSymbols(value) {
+  const text = String(value);
+  return text.replace(/[●○■□▲△◆◇]{2,}/g, run => Array.from(run).join(" "));
+}
+
 function resetCatStats() {
   catCategoryStats = {
     numeric: {total: 0, correct: 0},
@@ -2054,9 +2081,11 @@ function startCatPractice() {
   const category = document.getElementById("catPracticeCategory").value;
 
   catMode = "practice";
+  catUsedQuestionSignatures = new Set();
+  catReviewRecords = [];
   catQuestions = Array.from({length: count}, () => {
     const difficulty = catRandomInt(2, 8);
-    return generateCatQuestion(difficulty, category);
+    return generateUniqueCatQuestion(difficulty, category);
   });
 
   catIndex = 0;
@@ -2089,6 +2118,8 @@ function beginAdaptiveCatExam() {
   catAnswered = 0;
   catCurrentDifficulty = 5;
   catDifficultyHistory = [];
+  catUsedQuestionSignatures = new Set();
+  catReviewRecords = [];
   catTimeRemaining = catTotalSeconds;
   catStartedAt = Date.now();
   catEndedByTime = false;
@@ -2103,7 +2134,7 @@ function renderCatQuestion() {
   catLocked = false;
 
   if (catMode === "adaptive") {
-    catCurrentQuestion = generateCatQuestion(catCurrentDifficulty, "all");
+    catCurrentQuestion = generateUniqueCatQuestion(catCurrentDifficulty, "all");
     catQuestions[catIndex] = catCurrentQuestion;
   } else {
     catCurrentQuestion = catQuestions[catIndex];
@@ -2133,7 +2164,7 @@ function renderCatQuestion() {
   categoryBadge.classList.toggle("hidden", catMode === "adaptive");
 
   document.getElementById("catQuestionText").textContent = question.question;
-  document.getElementById("catVisual").textContent = question.visual;
+  document.getElementById("catVisual").textContent = formatCatSymbols(question.visual);
   document.getElementById("catFeedback").textContent = "";
   document.getElementById("catNextButton").classList.add("hidden");
 
@@ -2143,7 +2174,8 @@ function renderCatQuestion() {
   question.options.forEach((option, index) => {
     const button = document.createElement("button");
     button.className = "answer cat-answer";
-    button.textContent = `${["Α","Β","Γ","Δ"][index]}. ${option}`;
+    button.dataset.optionIndex = String(index);
+    button.textContent = `${["Α","Β","Γ","Δ"][index]}. ${formatCatSymbols(option)}`;
     button.onclick = () => chooseCatAnswer(option, button);
     answers.appendChild(button);
   });
@@ -2190,6 +2222,13 @@ function chooseCatAnswer(selected, selectedButton) {
   const question = catCurrentQuestion;
   const isCorrect = selected === question.correct;
   catAnswered++;
+  catReviewRecords.push({
+    number: catIndex + 1,
+    question: {...question},
+    selected,
+    correct: question.correct,
+    isCorrect
+  });
 
   catCategoryStats[question.category].total++;
   if (isCorrect) {
@@ -2201,8 +2240,8 @@ function chooseCatAnswer(selected, selectedButton) {
     button.disabled = true;
 
     if (catMode === "practice") {
-      const value = button.textContent.replace(/^[Α-Δ]\.\s*/, "");
-      if (value === String(question.correct)) {
+      const optionIndex = Number(button.dataset.optionIndex);
+      if (question.options[optionIndex] === question.correct) {
         button.classList.add("correct");
       }
     }
@@ -2292,15 +2331,9 @@ function finishCat(stoppedEarly = false) {
     : 0;
 
   const ability = catMode === "adaptive"
-    ? Math.round(
-        Math.max(
-          0,
-          Math.min(
-            100,
-            ((catCurrentDifficulty - 1) / 9) * 100
-          )
-        )
-      )
+    ? Math.round(Math.max(0, Math.min(100,
+        (((averageDifficulty - 1) / 9) * 60) + (percentage * 0.40)
+      )))
     : percentage;
 
   document.getElementById("catResultTitle").textContent =
@@ -2310,7 +2343,7 @@ function finishCat(stoppedEarly = false) {
 
   document.getElementById("catResultScore").textContent =
     catMode === "adaptive"
-      ? `${(catCurrentDifficulty).toFixed(1)} / 10`
+      ? `${(ability / 10).toFixed(1)} / 10`
       : `${percentage}%`;
 
   const categoryRows = Object.entries(catCategoryStats)
@@ -2348,4 +2381,52 @@ function finishCat(stoppedEarly = false) {
 
   setFooter("cat");
   showOnly("catResults");
+}
+
+
+function openCatReview(filter = "wrong") {
+  catReviewFilter = filter;
+  renderCatReview();
+  setFooter("cat");
+  showOnly("catReview");
+}
+
+function setCatReviewFilter(filter) {
+  catReviewFilter = filter;
+  renderCatReview();
+}
+
+function renderCatReview() {
+  const filters = document.querySelectorAll("[data-cat-review-filter]");
+  filters.forEach(button => button.classList.toggle("active", button.dataset.catReviewFilter === catReviewFilter));
+
+  const records = catReviewRecords.filter(record =>
+    catReviewFilter === "all" ||
+    (catReviewFilter === "wrong" && !record.isCorrect) ||
+    (catReviewFilter === "correct" && record.isCorrect)
+  );
+
+  const list = document.getElementById("catReviewList");
+  if (!records.length) {
+    list.innerHTML = `<p class="cat-review-empty">Δεν υπάρχουν ${catReviewFilter === "wrong" ? "λάθος" : "σωστές"} απαντήσεις.</p>`;
+    return;
+  }
+
+  list.innerHTML = records.map(record => {
+    const q = record.question;
+    const selectedText = record.selected === undefined ? "Δεν απαντήθηκε" : formatCatSymbols(record.selected);
+    const correctText = formatCatSymbols(record.correct);
+    return `
+      <article class="cat-review-item ${record.isCorrect ? "is-correct" : "is-wrong"}">
+        <div class="cat-review-heading">
+          <strong>Ερώτηση ${record.number}</strong>
+          <span>${record.isCorrect ? "✓ Σωστή" : "✗ Λάθος"}</span>
+        </div>
+        <p class="cat-review-question">${q.question}</p>
+        <div class="cat-review-visual">${formatCatSymbols(q.visual).replace(/\n/g, "<br>")}</div>
+        <p><b>Η απάντησή σου:</b> ${selectedText}</p>
+        <p><b>Σωστή απάντηση:</b> ${correctText}</p>
+        <p class="cat-review-explanation"><b>Εξήγηση:</b> ${q.explanation}</p>
+      </article>`;
+  }).join("");
 }
