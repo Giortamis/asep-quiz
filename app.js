@@ -89,6 +89,7 @@ function showOnly(id) {
     "catHub",
     "catPracticeSetup",
     "adaptiveCatSetup",
+    "catPreparing",
     "catQuiz",
     "catResults",
     "testHub",
@@ -111,7 +112,7 @@ function showOnly(id) {
 }
 
 function goHome() {
-  document.body.classList.remove("cat-exam-active");
+  document.body.classList.remove("cat-exam-active", "cat-exam-setup");
   clearStudyTimer();
   clearWorkTimer();
   clearCatTimer();
@@ -1723,7 +1724,7 @@ function clearWorkHistory() {
 
 
 function openCatHub() {
-  document.body.classList.remove("cat-exam-active");
+  document.body.classList.remove("cat-exam-active", "cat-exam-setup");
   clearCatTimer();
   setFooter("cat");
   showOnly("catHub");
@@ -1736,6 +1737,7 @@ function openCatPracticeSetup() {
 
 function openAdaptiveCatSetup() {
   document.body.classList.remove("cat-exam-active");
+  document.body.classList.add("cat-exam-setup");
   setFooter("cat");
   showOnly("adaptiveCatSetup");
 }
@@ -2069,6 +2071,15 @@ function startCatPractice() {
 }
 
 function startAdaptiveCat() {
+  clearCatTimer();
+  document.body.classList.remove("cat-exam-setup");
+  document.body.classList.add("cat-exam-active");
+  showOnly("catPreparing");
+
+  window.setTimeout(beginAdaptiveCatExam, 1300);
+}
+
+function beginAdaptiveCatExam() {
   const count = 18;
 
   catMode = "adaptive";
@@ -2082,9 +2093,7 @@ function startAdaptiveCat() {
   catStartedAt = Date.now();
   catEndedByTime = false;
   resetCatStats();
-  clearCatTimer();
   setFooter("cat");
-  document.body.classList.add("cat-exam-active");
   showOnly("catQuiz");
   startCatTotalTimer();
   renderCatQuestion();
@@ -2261,7 +2270,7 @@ function finishCatEarly() {
 
 function finishCat(stoppedEarly = false) {
   clearCatTimer();
-  document.body.classList.remove("cat-exam-active");
+  document.body.classList.remove("cat-exam-active", "cat-exam-setup");
 
   const attempted = catAnswered;
   const totalQuestions = catQuestions.length;
