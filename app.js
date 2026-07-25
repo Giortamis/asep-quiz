@@ -57,7 +57,9 @@ let catCurrentDifficulty = 5;
 let catDifficultyHistory = [];
 let catQuestionTimer = null;
 let catTimeRemaining = 0;
-let catPerQuestionSeconds = 60;
+let catTotalSeconds = 24 * 60;
+let catStartedAt = null;
+let catEndedByTime = false;
 let catLocked = false;
 let catCurrentQuestion = null;
 let catCategoryStats = {
@@ -109,6 +111,7 @@ function showOnly(id) {
 }
 
 function goHome() {
+  document.body.classList.remove("cat-exam-active");
   clearStudyTimer();
   clearWorkTimer();
   clearCatTimer();
@@ -1217,7 +1220,7 @@ function setFooter(section) {
   if (section === "work") {
     footer.textContent = "Εκπαιδευτικό υλικό προσομοίωσης εργασιακών συμπεριφορών — μη επίσημη πιστοποιημένη βαθμολογία ή τράπεζα ΑΣΕΠ";
   } else if (section === "cat") {
-    footer.textContent = "Εκπαιδευτική προσομοίωση επαγωγικού συλλογισμού και προσαρμοστικού CAT";
+    footer.textContent = "Εκπαιδευτική προσομοίωση της προσαρμοστικής εξέτασης (CAT) του ΑΣΕΠ";
   } else if (section === "home") {
     footer.textContent = "Εφαρμογή προετοιμασίας για τον Γραπτό Διαγωνισμό ΑΣΕΠ";
   } else {
@@ -1720,6 +1723,7 @@ function clearWorkHistory() {
 
 
 function openCatHub() {
+  document.body.classList.remove("cat-exam-active");
   clearCatTimer();
   setFooter("cat");
   showOnly("catHub");
@@ -1731,6 +1735,7 @@ function openCatPracticeSetup() {
 }
 
 function openAdaptiveCatSetup() {
+  document.body.classList.remove("cat-exam-active");
   setFooter("cat");
   showOnly("adaptiveCatSetup");
 }
@@ -2064,8 +2069,7 @@ function startCatPractice() {
 }
 
 function startAdaptiveCat() {
-  const count = parseInt(document.getElementById("catAdaptiveCount").value, 10);
-  catPerQuestionSeconds = parseInt(document.getElementById("catQuestionTime").value, 10);
+  const count = 18;
 
   catMode = "adaptive";
   catQuestions = new Array(count);
@@ -2074,14 +2078,19 @@ function startAdaptiveCat() {
   catAnswered = 0;
   catCurrentDifficulty = 5;
   catDifficultyHistory = [];
+  catTimeRemaining = catTotalSeconds;
+  catStartedAt = Date.now();
+  catEndedByTime = false;
   resetCatStats();
+  clearCatTimer();
   setFooter("cat");
+  document.body.classList.add("cat-exam-active");
   showOnly("catQuiz");
+  startCatTotalTimer();
   renderCatQuestion();
 }
 
 function renderCatQuestion() {
-  clearCatTimer();
   catLocked = false;
 
   if (catMode === "adaptive") {
@@ -2098,7 +2107,7 @@ function renderCatQuestion() {
     `Ερώτηση ${catIndex + 1} από ${total}`;
 
   document.getElementById("catProgress").style.width =
-    `${(catIndex / total) * 100}%`;
+    `${((catIndex + 1) / total) * 100}%`;
 
   document.getElementById("catCategoryBadge").textContent =
     question.category === "numeric"
@@ -2107,8 +2116,12 @@ function renderCatQuestion() {
       ? "Σύμβολα και μετασχηματισμοί"
       : "Λογικοί πίνακες";
 
-  document.getElementById("catDifficultyBadge").textContent =
-    `Δυσκολία ${question.difficulty}/10`;
+  const difficultyBadge = document.getElementById("catDifficultyBadge");
+  difficultyBadge.textContent = `Δυσκολία ${question.difficulty}/10`;
+  difficultyBadge.classList.toggle("hidden", catMode === "adaptive");
+
+  const categoryBadge = document.getElementById("catCategoryBadge");
+  categoryBadge.classList.toggle("hidden", catMode === "adaptive");
 
   document.getElementById("catQuestionText").textContent = question.question;
   document.getElementById("catVisual").textContent = question.visual;
@@ -2127,25 +2140,31 @@ function renderCatQuestion() {
   });
 
   if (catMode === "adaptive") {
-    catTimeRemaining = catPerQuestionSeconds;
     updateCatTimerDisplay();
-    catQuestionTimer = setInterval(() => {
-      catTimeRemaining--;
-      updateCatTimerDisplay();
-
-      if (catTimeRemaining <= 0) {
-        clearCatTimer();
-        handleCatTimeout();
-      }
-    }, 1000);
   } else {
     document.getElementById("catTimer").textContent = "Εξάσκηση";
   }
 }
 
+function startCatTotalTimer() {
+  updateCatTimerDisplay();
+  catQuestionTimer = setInterval(() => {
+    const elapsed = Math.floor((Date.now() - catStartedAt) / 1000);
+    catTimeRemaining = Math.max(0, catTotalSeconds - elapsed);
+    updateCatTimerDisplay();
+
+    if (catTimeRemaining <= 0) {
+      catEndedByTime = true;
+      finishCat(false);
+    }
+  }, 250);
+}
+
 function updateCatTimerDisplay() {
+  const minutes = Math.floor(catTimeRemaining / 60);
+  const seconds = catTimeRemaining % 60;
   document.getElementById("catTimer").textContent =
-    `${catTimeRemaining}″`;
+    `⏱ ${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
 }
 
 function clearCatTimer() {
@@ -2158,7 +2177,6 @@ function clearCatTimer() {
 function chooseCatAnswer(selected, selectedButton) {
   if (catLocked) return;
   catLocked = true;
-  clearCatTimer();
 
   const question = catCurrentQuestion;
   const isCorrect = selected === question.correct;
@@ -2172,13 +2190,16 @@ function chooseCatAnswer(selected, selectedButton) {
 
   document.querySelectorAll(".cat-answer").forEach(button => {
     button.disabled = true;
-    const value = button.textContent.replace(/^[Α-Δ]\.\s*/, "");
-    if (value === String(question.correct)) {
-      button.classList.add("correct");
+
+    if (catMode === "practice") {
+      const value = button.textContent.replace(/^[Α-Δ]\.\s*/, "");
+      if (value === String(question.correct)) {
+        button.classList.add("correct");
+      }
     }
   });
 
-  if (!isCorrect) {
+  if (!isCorrect && catMode === "practice") {
     selectedButton.classList.add("wrong");
   }
 
@@ -2190,11 +2211,8 @@ function chooseCatAnswer(selected, selectedButton) {
       Math.min(10, catCurrentDifficulty + (isCorrect ? 1 : -1))
     );
 
-    document.getElementById("catFeedback").textContent = isCorrect
-      ? "Σωστή απάντηση — η επόμενη ερώτηση θα είναι δυσκολότερη."
-      : "Λάθος απάντηση — η επόμενη ερώτηση θα είναι ευκολότερη.";
-
-    setTimeout(nextCatQuestion, 1100);
+    document.getElementById("catFeedback").textContent = "Η απάντηση καταχωρίστηκε.";
+    setTimeout(nextCatQuestion, 350);
   } else {
     document.getElementById("catFeedback").textContent =
       `${isCorrect ? "✓ Σωστή απάντηση" : "✗ Λάθος απάντηση"} — ${question.explanation}`;
@@ -2227,7 +2245,6 @@ function handleCatTimeout() {
 }
 
 function nextCatQuestion() {
-  clearCatTimer();
   catIndex++;
 
   if (catIndex < catQuestions.length) {
@@ -2244,8 +2261,18 @@ function finishCatEarly() {
 
 function finishCat(stoppedEarly = false) {
   clearCatTimer();
+  document.body.classList.remove("cat-exam-active");
 
   const attempted = catAnswered;
+  const totalQuestions = catQuestions.length;
+  const unanswered = Math.max(0, totalQuestions - attempted);
+  const wrongAnswers = Math.max(0, attempted - catScore);
+  const usedSeconds = catMode === "adaptive" && catStartedAt
+    ? Math.min(catTotalSeconds, Math.floor((Date.now() - catStartedAt) / 1000))
+    : 0;
+  const usedMinutes = Math.floor(usedSeconds / 60);
+  const usedRemainder = usedSeconds % 60;
+  const usedTimeText = `${String(usedMinutes).padStart(2, "0")}:${String(usedRemainder).padStart(2, "0")}`;
   const percentage = attempted > 0
     ? Math.round((catScore / attempted) * 100)
     : 0;
@@ -2294,7 +2321,9 @@ function finishCat(stoppedEarly = false) {
     <div class="cat-result-grid">
       <div><span>Απαντήθηκαν</span><strong>${attempted}</strong></div>
       <div><span>Σωστές</span><strong>${catScore}</strong></div>
-      <div><span>Λάθος / χρόνος</span><strong>${Math.max(0, attempted - catScore)}</strong></div>
+      <div><span>Λάθος</span><strong>${wrongAnswers}</strong></div>
+      ${catMode === "adaptive" ? `<div><span>Αναπάντητες</span><strong>${unanswered}</strong></div>` : ""}
+      ${catMode === "adaptive" ? `<div><span>Χρόνος που χρησιμοποιήθηκε</span><strong>${usedTimeText}</strong></div>` : ""}
       <div><span>Μέση δυσκολία</span><strong>${averageDifficulty.toFixed(1)}/10</strong></div>
       ${catMode === "adaptive"
         ? `<div><span>Δείκτης ικανότητας</span><strong>${ability}/100</strong></div>`
@@ -2302,6 +2331,7 @@ function finishCat(stoppedEarly = false) {
     </div>
     <div class="cat-category-results">${categoryRows}</div>
     ${stoppedEarly ? '<p class="cat-result-note">Η προσπάθεια τερματίστηκε πρόωρα.</p>' : ''}
+    ${catEndedByTime ? '<p class="cat-result-note">Ο συνολικός χρόνος των 24 λεπτών ολοκληρώθηκε.</p>' : ''}
     ${catMode === "adaptive"
       ? '<p class="cat-result-note">Ο δείκτης αποτελεί εκπαιδευτική εκτίμηση της εφαρμογής και όχι επίσημη βαθμολογία ΑΣΕΠ.</p>'
       : ''}

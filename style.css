@@ -122,3 +122,23 @@ footer{text-align:center;color:var(--muted);font-size:.78rem;margin-top:12px}
   .cat-result-grid{grid-template-columns:1fr}
   .cat-visual{font-size:1.35rem}
 }
+
+/* V13 — Προσομοίωση Εξέτασης CAT */
+.cat-exam-summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:14px 0 18px}
+.cat-exam-summary>div{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:92px;padding:14px;border:1px solid var(--border);border-radius:14px;background:#f8fbff;text-align:center}
+.cat-exam-summary strong{font-size:1.65rem;color:var(--blue);line-height:1.1}
+.cat-exam-summary span{margin-top:6px;color:var(--muted);font-size:.9rem}
+body.cat-exam-active{background:#f4f7fb}
+body.cat-exam-active .header,
+body.cat-exam-active #appFooter{display:none}
+body.cat-exam-active .app{max-width:920px;padding-top:18px}
+body.cat-exam-active #catQuiz .topbar{position:sticky;top:0;z-index:5;padding:12px 14px;margin:0 0 8px;background:#f4f7fb;border-bottom:1px solid var(--border);font-size:1rem}
+body.cat-exam-active #catQuiz>.progress{margin:0 14px 16px}
+body.cat-exam-active #catQuiz>.card{margin-top:0}
+body.cat-exam-active #catFeedback{min-height:24px}
+@media(max-width:520px){
+  .cat-exam-summary{grid-template-columns:1fr 1fr;gap:8px}
+  .cat-exam-summary>div{min-height:80px;padding:10px}
+  .cat-exam-summary strong{font-size:1.35rem}
+  body.cat-exam-active .app{padding:8px}
+}

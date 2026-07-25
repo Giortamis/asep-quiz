@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#0b5cab">
   <title>ΑΣΕΠ Quiz</title>
-  <link rel="stylesheet" href="style.css?v=12">
+  <link rel="stylesheet" href="style.css?v=13">
 </head>
 <body>
 <main class="app">
@@ -35,7 +35,7 @@
     </p>
     <div class="menu">
       <button onclick="openCatPracticeSetup()">🧩 Απλό Τεστ Εξάσκησης</button>
-      <button onclick="openAdaptiveCatSetup()">🎯 Πραγματικές Συνθήκες CAT</button>
+      <button onclick="openAdaptiveCatSetup()">🎯 Προσομοίωση Εξέτασης CAT</button>
     </div>
     <div class="actions">
       <button class="secondary" onclick="goHome()">Πίσω</button>
@@ -68,36 +68,29 @@
   </section>
 
   <section id="adaptiveCatSetup" class="card hidden">
-    <h2>🎯 Πραγματικές Συνθήκες CAT</h2>
-    <div class="cat-rules">
-      <strong>Προσαρμοστική λειτουργία</strong>
-      <span>Αρχική δυσκολία: 5/10</span>
-      <span>Σωστή απάντηση: δυσκολότερη επόμενη ερώτηση</span>
-      <span>Λάθος ή λήξη χρόνου: ευκολότερη επόμενη ερώτηση</span>
-      <span>Δεν υπάρχει παράλειψη ή επιστροφή.</span>
+    <h2>🎯 Προσομοίωση Εξέτασης CAT</h2>
+
+    <div class="cat-exam-summary" aria-label="Στοιχεία εξέτασης">
+      <div><strong>18</strong><span>ερωτήσεις</span></div>
+      <div><strong>24:00</strong><span>συνολικός χρόνος</span></div>
     </div>
 
-    <label for="catAdaptiveCount">Αριθμός ερωτήσεων</label>
-    <select id="catAdaptiveCount">
-      <option value="18" selected>18 ερωτήσεις</option>
-      <option value="25">25 ερωτήσεις</option>
-    </select>
-
-    <label for="catQuestionTime">Χρόνος ανά ερώτηση</label>
-    <select id="catQuestionTime">
-      <option value="30">30 δευτερόλεπτα</option>
-      <option value="45">45 δευτερόλεπτα</option>
-      <option value="60" selected>60 δευτερόλεπτα</option>
-    </select>
+    <div class="cat-rules">
+      <strong>Πριν ξεκινήσετε</strong>
+      <span>Η δυσκολία προσαρμόζεται δυναμικά στις απαντήσεις σας.</span>
+      <span>Δεν μπορείτε να παραλείψετε ερώτηση.</span>
+      <span>Δεν μπορείτε να επιστρέψετε σε προηγούμενη ερώτηση.</span>
+      <span>Όταν λήξει ο συνολικός χρόνος, η εξέταση ολοκληρώνεται αυτόματα.</span>
+      <span>Το χρονόμετρο ξεκινά μόνο όταν πατήσετε «Έναρξη Εξέτασης».</span>
+    </div>
 
     <div class="actions">
       <button class="secondary" onclick="openCatHub()">Πίσω</button>
-      <button class="primary" onclick="startAdaptiveCat()">Έναρξη CAT</button>
+      <button class="primary" onclick="startAdaptiveCat()">Έναρξη Εξέτασης</button>
     </div>
 
     <p class="cat-note">
-      Η λειτουργία αποτελεί εκπαιδευτική προσομοίωση προσαρμοστικού τεστ και όχι
-      αναπαραγωγή του επίσημου αλγορίθμου βαθμολόγησης του ΑΣΕΠ.
+      Εκπαιδευτική προσομοίωση της προσαρμοστικής εξέτασης (CAT) του ΑΣΕΠ.
     </p>
   </section>
 
@@ -119,7 +112,7 @@
       <div id="catFeedback" class="feedback"></div>
 
       <div class="actions">
-        <button class="secondary" onclick="finishCatEarly()">Τέλος</button>
+        <button id="catFinishButton" class="secondary" onclick="finishCatEarly()">Τέλος εξέτασης</button>
         <button id="catNextButton" class="primary hidden" onclick="nextCatQuestion()">Επόμενη</button>
       </div>
     </section>
@@ -361,6 +354,6 @@
   <div id="message" class="message hidden"></div>
   <footer id="appFooter">Πηγή δεδομένων: Επίσημο Μητρώο Θεμάτων Γνώσεων ΑΣΕΠ</footer>
 </main>
-<script src="app.js?v=12"></script>
+<script src="app.js?v=13"></script>
 </body>
 </html>
