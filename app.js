@@ -2068,6 +2068,36 @@ function formatCatSymbols(value) {
   return text.replace(/[●○■□▲△◆◇]{2,}/g, run => Array.from(run).join(" "));
 }
 
+function catSymbolSvg(symbol) {
+  const common = 'viewBox="0 0 24 24" aria-hidden="true" focusable="false"';
+  const shapes = {
+    "●": `<svg ${common}><circle cx="12" cy="12" r="7" fill="currentColor"/></svg>`,
+    "○": `<svg ${common}><circle cx="12" cy="12" r="7" fill="none" stroke="currentColor" stroke-width="2.2"/></svg>`,
+    "■": `<svg ${common}><rect x="5" y="5" width="14" height="14" fill="currentColor"/></svg>`,
+    "□": `<svg ${common}><rect x="5" y="5" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2"/></svg>`,
+    "▲": `<svg ${common}><path d="M12 4 L20 19 H4 Z" fill="currentColor"/></svg>`,
+    "△": `<svg ${common}><path d="M12 4 L20 19 H4 Z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg>`,
+    "◆": `<svg ${common}><path d="M12 3 L21 12 L12 21 L3 12 Z" fill="currentColor"/></svg>`,
+    "◇": `<svg ${common}><path d="M12 3 L21 12 L12 21 L3 12 Z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg>`
+  };
+  return shapes[symbol] || null;
+}
+
+function renderCatSymbolsHtml(value) {
+  const text = formatCatSymbols(value);
+  return Array.from(text).map(char => {
+    const svg = catSymbolSvg(char);
+    if (svg) {
+      return `<span class="cat-symbol-glyph" aria-label="${char}">${svg}</span>`;
+    }
+    if (char === "&") return "&amp;";
+    if (char === "<") return "&lt;";
+    if (char === ">") return "&gt;";
+    if (char === '"') return "&quot;";
+    return char;
+  }).join("");
+}
+
 function resetCatStats() {
   catCategoryStats = {
     numeric: {total: 0, correct: 0},
@@ -2164,7 +2194,7 @@ function renderCatQuestion() {
   categoryBadge.classList.toggle("hidden", catMode === "adaptive");
 
   document.getElementById("catQuestionText").textContent = question.question;
-  document.getElementById("catVisual").textContent = formatCatSymbols(question.visual);
+  document.getElementById("catVisual").innerHTML = renderCatSymbolsHtml(question.visual).replace(/\n/g, "<br>");
   document.getElementById("catFeedback").textContent = "";
   document.getElementById("catNextButton").classList.add("hidden");
 
@@ -2175,7 +2205,7 @@ function renderCatQuestion() {
     const button = document.createElement("button");
     button.className = "answer cat-answer";
     button.dataset.optionIndex = String(index);
-    button.textContent = `${["Α","Β","Γ","Δ"][index]}. ${formatCatSymbols(option)}`;
+    button.innerHTML = `<span class="cat-option-label">${["Α","Β","Γ","Δ"][index]}.</span><span class="cat-option-content">${renderCatSymbolsHtml(option)}</span>`;
     button.onclick = () => chooseCatAnswer(option, button);
     answers.appendChild(button);
   });
@@ -2414,8 +2444,8 @@ function renderCatReview() {
 
   list.innerHTML = records.map(record => {
     const q = record.question;
-    const selectedText = record.selected === undefined ? "Δεν απαντήθηκε" : formatCatSymbols(record.selected);
-    const correctText = formatCatSymbols(record.correct);
+    const selectedText = record.selected === undefined ? "Δεν απαντήθηκε" : renderCatSymbolsHtml(record.selected);
+    const correctText = renderCatSymbolsHtml(record.correct);
     return `
       <article class="cat-review-item ${record.isCorrect ? "is-correct" : "is-wrong"}">
         <div class="cat-review-heading">
@@ -2423,7 +2453,7 @@ function renderCatReview() {
           <span>${record.isCorrect ? "✓ Σωστή" : "✗ Λάθος"}</span>
         </div>
         <p class="cat-review-question">${q.question}</p>
-        <div class="cat-review-visual">${formatCatSymbols(q.visual).replace(/\n/g, "<br>")}</div>
+        <div class="cat-review-visual">${renderCatSymbolsHtml(q.visual).replace(/\n/g, "<br>")}</div>
         <p><b>Η απάντησή σου:</b> ${selectedText}</p>
         <p><b>Σωστή απάντηση:</b> ${correctText}</p>
         <p class="cat-review-explanation"><b>Εξήγηση:</b> ${q.explanation}</p>
