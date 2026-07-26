@@ -89,6 +89,7 @@ async function init() {
 function showOnly(id) {
   [
     "home",
+    "registryHub",
     "catHub",
     "catPracticeSetup",
     "adaptiveCatSetup",
@@ -104,6 +105,7 @@ function showOnly(id) {
     "quizScreen",
     "resultScreen",
     "workHome",
+    "workPracticeSetup",
     "workQuiz",
     "workResults",
     "workHistory",
@@ -123,6 +125,18 @@ function goHome() {
   updateHomeDashboard();
   setFooter("home");
   showOnly("home");
+}
+
+function openRegistryHub() {
+  document.body.classList.remove("cat-exam-active", "cat-exam-setup");
+  updateHomeDashboard();
+  setFooter("registry");
+  showOnly("registryHub");
+}
+
+function openWorkPracticeSetup() {
+  setFooter("work");
+  showOnly("workPracticeSetup");
 }
 
 function updateHomeDashboard() {

@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#0b5cab">
-  <title>ΑΣΕΠ Quiz</title>
-  <link rel="stylesheet" href="style.css?v=13.3">
+  <title>ΑΣΕΠ Quiz V13.4</title>
+  <link rel="stylesheet" href="style.css?v=13.4">
 </head>
 <body>
 <main class="app">
@@ -15,78 +15,50 @@
   </header>
 
   <section id="home" class="home-dashboard">
-    <div class="home-heading">
-      <div>
-        <h2>Αρχικό μενού</h2>
-        <p>Επίλεξε ενότητα και συνέχισε από εκεί που σταμάτησες.</p>
-      </div>
-    </div>
-
-    <div class="dashboard-grid">
-      <button class="dashboard-tile tile-study" type="button" onclick="openStudy()">
-        <span class="tile-icon" aria-hidden="true">📖</span>
-        <span class="tile-title">Διάβασμα</span>
-        <span class="tile-description">Μελέτη ερωτήσεων ανά ενότητα</span>
+    <div class="home-heading"><div><h2>Αρχικό μενού</h2><p>Επίλεξε τη βασική ενότητα προετοιμασίας.</p></div></div>
+    <div class="dashboard-grid main-four">
+      <button class="dashboard-tile tile-registry" type="button" onclick="openRegistryHub()">
+        <span class="tile-icon">📚</span><span class="tile-title">Επίσημο Μητρώο Ερωτήσεων</span>
+        <span class="tile-description">Διάβασμα, τεστ και στατιστικά του επίσημου μητρώου ΑΣΕΠ</span>
         <span class="tile-footer"><span id="homeStudyMetric">1.989 ερωτήσεις</span><span class="tile-arrow">›</span></span>
       </button>
-
-      <button class="dashboard-tile tile-tests" type="button" onclick="openTestHub()">
-        <span class="tile-icon" aria-hidden="true">🎯</span>
-        <span class="tile-title">Τεστ Μητρώου</span>
-        <span class="tile-description">Γρήγορο, ανά ενότητα ή έξυπνο τεστ</span>
-        <span class="tile-footer"><span id="homeTestsMetric">11 ενότητες</span><span class="tile-arrow">›</span></span>
-      </button>
-
-      <button class="dashboard-tile tile-stats" type="button" onclick="openStats()">
-        <span class="tile-icon" aria-hidden="true">📊</span>
-        <span class="tile-title">Στατιστικά</span>
-        <span class="tile-description">Αναλυτική εικόνα της προόδου σου</span>
-        <span class="tile-footer"><span id="homeStatsMetric">Μέση επιτυχία 0%</span><span class="tile-arrow">›</span></span>
-      </button>
-
       <button class="dashboard-tile tile-cat" type="button" onclick="openCatHub()">
-        <span class="tile-icon" aria-hidden="true">🧠</span>
-        <span class="tile-title">Μέθοδος CAT</span>
-        <span class="tile-description">Προσαρμοστική δοκιμασία δεξιοτήτων</span>
+        <span class="tile-icon">🧠</span><span class="tile-title">Μέθοδος CAT</span>
+        <span class="tile-description">Εξάσκηση και προσομοίωση προσαρμοστικής εξέτασης</span>
         <span class="tile-footer"><span>18 ερωτήσεις • 24′</span><span class="tile-arrow">›</span></span>
       </button>
-
       <button class="dashboard-tile tile-work" type="button" onclick="openWorkBehaviour()">
-        <span class="tile-icon" aria-hidden="true">🎭</span>
-        <span class="tile-title">Εργασιακές Συμπεριφορές</span>
-        <span class="tile-description">Προσομοίωση εργασιακών σεναρίων</span>
+        <span class="tile-icon">🎭</span><span class="tile-title">Εργασιακές Συμπεριφορές</span>
+        <span class="tile-description">Άσκηση, πλήρης προσομοίωση και αποτελέσματα</span>
         <span class="tile-footer"><span id="homeWorkMetric">0 / 228 τριάδες</span><span class="tile-arrow">›</span></span>
       </button>
-
-      <button class="dashboard-tile tile-guide" type="button" onclick="comingSoon('📖 Οδηγός ΑΣΕΠ')">
-        <span class="tile-icon" aria-hidden="true">📘</span>
-        <span class="tile-title">Οδηγός ΑΣΕΠ</span>
-        <span class="tile-description">Χρήσιμες πληροφορίες για τον διαγωνισμό</span>
+      <button class="dashboard-tile tile-guide" type="button" onclick="comingSoon('📘 Οδηγός ΑΣΕΠ')">
+        <span class="tile-icon">📘</span><span class="tile-title">Οδηγός ΑΣΕΠ</span>
+        <span class="tile-description">Πληροφορίες και οδηγίες για όλες τις δοκιμασίες</span>
         <span class="tile-footer"><span>Οδηγός προετοιμασίας</span><span class="tile-arrow">›</span></span>
       </button>
     </div>
-
-    <div class="home-overview" aria-label="Σύνοψη προόδου">
-      <div><strong id="homeSuccess">0%</strong><span>Μέση επιτυχία</span></div>
-      <div><strong id="homeWrongs">0</strong><span>Λάθη για επανάληψη</span></div>
-      <div><strong id="homeFavorites">0</strong><span>Αγαπημένες</span></div>
-      <div><strong id="homeCompletedTests">0</strong><span>Ολοκληρωμένα τεστ</span></div>
-    </div>
   </section>
 
-  
+  <section id="registryHub" class="card submenu-screen hidden">
+    <button class="screen-back" onclick="goHome()">← Επιστροφή</button>
+    <h2>📚 Επίσημο Μητρώο Ερωτήσεων</h2><p class="submenu-intro">Μελέτη και αξιολόγηση των ερωτήσεων του Μητρώου.</p>
+    <div class="dashboard-grid submenu-grid">
+      <button class="dashboard-tile tile-study" onclick="openStudy()"><span class="tile-icon">📖</span><span class="tile-title">Διάβασμα</span><span class="tile-description">Μελέτη ερωτήσεων ανά ενότητα</span><span class="tile-footer"><span>Μελέτη</span><span class="tile-arrow">›</span></span></button>
+      <button class="dashboard-tile tile-tests" onclick="openTestHub()"><span class="tile-icon">🎯</span><span class="tile-title">Τεστ Μητρώου</span><span class="tile-description">Γρήγορο, ανά ενότητα ή έξυπνο τεστ</span><span class="tile-footer"><span>3 επιλογές</span><span class="tile-arrow">›</span></span></button>
+      <button class="dashboard-tile tile-stats" onclick="openStats()"><span class="tile-icon">📊</span><span class="tile-title">Στατιστικά Μητρώου</span><span class="tile-description">Αποτελέσματα μόνο από τις ερωτήσεις μητρώου</span><span class="tile-footer"><span id="homeStatsMetric">Μέση επιτυχία 0%</span><span class="tile-arrow">›</span></span></button>
+    </div>
+  </section>
 
   <section id="catHub" class="card hidden">
     <h2>🧠 Μέθοδος CAT</h2>
     <p class="cat-intro">
       Εξάσκηση επαγωγικού συλλογισμού με δυναμικά παραγόμενες ερωτήσεις.
     </p>
-    <div class="menu">
-      <button onclick="openCatPracticeSetup()">🧩 Απλό Τεστ Εξάσκησης</button>
-      <button onclick="openAdaptiveCatSetup()">🎯 Προσομοίωση Εξέτασης CAT</button>
-    </div>
-    <div class="actions">
-      <button class="secondary" onclick="goHome()">Πίσω</button>
+    <button class="screen-back" onclick="goHome()">← Επιστροφή</button>
+    <div class="dashboard-grid submenu-grid two-items">
+      <button class="dashboard-tile tile-cat" onclick="openCatPracticeSetup()"><span class="tile-icon">🧩</span><span class="tile-title">Τεστ Εξάσκησης</span><span class="tile-description">Εξάσκηση ανά κατηγορία και αριθμό ερωτήσεων</span><span class="tile-footer"><span>Ελεύθερη εξάσκηση</span><span class="tile-arrow">›</span></span></button>
+      <button class="dashboard-tile tile-cat" onclick="openAdaptiveCatSetup()"><span class="tile-icon">🎓</span><span class="tile-title">Προσομοίωση Εξέτασης CAT</span><span class="tile-description">18 ερωτήσεις, 24 λεπτά, χωρίς επιστροφή</span><span class="tile-footer"><span>Πλήρης προσομοίωση</span><span class="tile-arrow">›</span></span></button>
     </div>
   </section>
 
@@ -209,7 +181,7 @@
       <button onclick="startSmartTest()">🧠 Έξυπνο Τεστ</button>
     </div>
     <div class="actions">
-      <button class="secondary" onclick="goHome()">Πίσω</button>
+      <button class="secondary" onclick="openRegistryHub()">Πίσω</button>
     </div>
   </section>
 
@@ -313,37 +285,23 @@
   </section>
 
 
-  <section id="workHome" class="card hidden">
-    <h2>🎭 Εργασιακές Συμπεριφορές</h2>
-    <p class="work-intro">
-      Εκπαιδευτική προσομοίωση κατάταξης δηλώσεων στις 9 δεξιότητες.
-      Δεν υπάρχουν σωστές ή λάθος απαντήσεις.
-    </p>
+  <section id="workHome" class="card submenu-screen hidden">
+    <button class="screen-back" onclick="goHome()">← Επιστροφή</button>
+    <h2>🎭 Εργασιακές Συμπεριφορές</h2><p class="work-intro">Εξάσκηση και προσομοίωση κατάταξης δηλώσεων στις 9 δεξιότητες.</p>
+    <div class="dashboard-grid submenu-grid">
+      <button class="dashboard-tile tile-work" onclick="openWorkPracticeSetup()"><span class="tile-icon">📝</span><span class="tile-title">Έναρξη Άσκησης</span><span class="tile-description">Όρισε πρώτα τον αριθμό τριάδων εξάσκησης</span><span class="tile-footer"><span>5–40 τριάδες</span><span class="tile-arrow">›</span></span></button>
+      <button class="dashboard-tile tile-work" onclick="startFullWorkSimulation()"><span class="tile-icon">🏁</span><span class="tile-title">Πλήρης Προσομοίωση</span><span class="tile-description">76 τριάδες σε πραγματικές συνθήκες χρόνου</span><span class="tile-footer"><span>76 τριάδες • 30′</span><span class="tile-arrow">›</span></span></button>
+      <button class="dashboard-tile tile-work" onclick="openWorkHistory()"><span class="tile-icon">📈</span><span class="tile-title">Τα Αποτελέσματά μου</span><span class="tile-description">Ιστορικό προσπαθειών και προφίλ δεξιοτήτων</span><span class="tile-footer"><span>Προβολή ιστορικού</span><span class="tile-arrow">›</span></span></button>
+    </div>
+  </section>
 
+  <section id="workPracticeSetup" class="card hidden">
+    <button class="screen-back" onclick="openWorkBehaviour()">← Επιστροφή</button>
+    <h2>📝 Έναρξη Άσκησης</h2>
     <label for="workCount">Αριθμός τριάδων εξάσκησης</label>
-    <select id="workCount">
-      <option value="5">5 τριάδες</option>
-      <option value="10" selected>10 τριάδες</option>
-      <option value="20">20 τριάδες</option>
-      <option value="40">40 τριάδες</option>
-    </select>
-
-    <label class="check">
-      <input type="checkbox" id="workTimed">
-      Εξάσκηση με συνολικό χρονόμετρο
-    </label>
-
-    <div class="menu work-menu">
-      <button onclick="startWorkPractice()">▶ Έναρξη εξάσκησης</button>
-      <button onclick="startFullWorkSimulation()">🎯 Πλήρης προσομοίωση — 76 τριάδες / 30 λεπτά</button>
-      <button onclick="openWorkHistory()">📊 Τα αποτελέσματά μου</button>
-    </div>
-
-    <div class="actions">
-      <button class="secondary" onclick="goHome()">Πίσω</button>
-    </div>
-
-
+    <select id="workCount"><option value="5">5 τριάδες</option><option value="10" selected>10 τριάδες</option><option value="20">20 τριάδες</option><option value="40">40 τριάδες</option></select>
+    <label class="check"><input type="checkbox" id="workTimed"> Εξάσκηση με συνολικό χρονόμετρο</label>
+    <div class="actions"><button class="secondary" onclick="openWorkBehaviour()">Πίσω</button><button class="primary" onclick="startWorkPractice()">Έναρξη</button></div>
   </section>
 
   <section id="workQuiz" class="hidden">
@@ -390,7 +348,7 @@
   </section>
 
   <section id="statsScreen" class="card hidden">
-    <h2>📊 Στατιστικά</h2>
+    <h2>📊 Στατιστικά Μητρώου</h2>
 
     <div class="stats-grid">
       <div class="stat-box"><span>Συνολικές απαντήσεις</span><strong id="statsTotal">0</strong></div>
@@ -419,7 +377,7 @@
     </div>
 
     <div class="actions">
-      <button class="secondary" onclick="goHome()">Πίσω</button>
+      <button class="secondary" onclick="openRegistryHub()">Πίσω</button>
       <button class="danger" onclick="resetStats()">Μηδενισμός στατιστικών</button>
     </div>
   </section>
@@ -427,6 +385,6 @@
   <div id="message" class="message hidden"></div>
   <footer id="appFooter">Πηγή δεδομένων: Επίσημο Μητρώο Θεμάτων Γνώσεων ΑΣΕΠ</footer>
 </main>
-<script src="app.js?v=13.3"></script>
+<script src="app.js?v=13.4"></script>
 </body>
 </html>
