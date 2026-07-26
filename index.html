@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#0b5cab">
   <title>ΑΣΕΠ Quiz</title>
-  <link rel="stylesheet" href="style.css?v=13.2.1">
+  <link rel="stylesheet" href="style.css?v=13.3">
 </head>
 <body>
 <main class="app">
@@ -14,15 +14,63 @@
     <p>Οργανωμένη έκδοση με στατιστικά</p>
   </header>
 
-  <section id="home" class="card">
-    <h2>Αρχικό μενού</h2>
-    <div class="menu">
-      <button onclick="openStudy()">📚 Διάβασμα</button>
-      <button onclick="openTestHub()">🎯 Τεστ Μητρώου</button>
-      <button onclick="openStats()">📊 Στατιστικά</button>
-      <button onclick="openCatHub()">🧠 Μέθοδος CAT</button>
-      <button onclick="openWorkBehaviour()">🎭 Εργασιακές Συμπεριφορές</button>
-      <button onclick="comingSoon('📖 Οδηγός ΑΣΕΠ')">📖 Οδηγός ΑΣΕΠ</button>
+  <section id="home" class="home-dashboard">
+    <div class="home-heading">
+      <div>
+        <h2>Αρχικό μενού</h2>
+        <p>Επίλεξε ενότητα και συνέχισε από εκεί που σταμάτησες.</p>
+      </div>
+    </div>
+
+    <div class="dashboard-grid">
+      <button class="dashboard-tile tile-study" type="button" onclick="openStudy()">
+        <span class="tile-icon" aria-hidden="true">📖</span>
+        <span class="tile-title">Διάβασμα</span>
+        <span class="tile-description">Μελέτη ερωτήσεων ανά ενότητα</span>
+        <span class="tile-footer"><span id="homeStudyMetric">1.989 ερωτήσεις</span><span class="tile-arrow">›</span></span>
+      </button>
+
+      <button class="dashboard-tile tile-tests" type="button" onclick="openTestHub()">
+        <span class="tile-icon" aria-hidden="true">🎯</span>
+        <span class="tile-title">Τεστ Μητρώου</span>
+        <span class="tile-description">Γρήγορο, ανά ενότητα ή έξυπνο τεστ</span>
+        <span class="tile-footer"><span id="homeTestsMetric">11 ενότητες</span><span class="tile-arrow">›</span></span>
+      </button>
+
+      <button class="dashboard-tile tile-stats" type="button" onclick="openStats()">
+        <span class="tile-icon" aria-hidden="true">📊</span>
+        <span class="tile-title">Στατιστικά</span>
+        <span class="tile-description">Αναλυτική εικόνα της προόδου σου</span>
+        <span class="tile-footer"><span id="homeStatsMetric">Μέση επιτυχία 0%</span><span class="tile-arrow">›</span></span>
+      </button>
+
+      <button class="dashboard-tile tile-cat" type="button" onclick="openCatHub()">
+        <span class="tile-icon" aria-hidden="true">🧠</span>
+        <span class="tile-title">Μέθοδος CAT</span>
+        <span class="tile-description">Προσαρμοστική δοκιμασία δεξιοτήτων</span>
+        <span class="tile-footer"><span>18 ερωτήσεις • 24′</span><span class="tile-arrow">›</span></span>
+      </button>
+
+      <button class="dashboard-tile tile-work" type="button" onclick="openWorkBehaviour()">
+        <span class="tile-icon" aria-hidden="true">🎭</span>
+        <span class="tile-title">Εργασιακές Συμπεριφορές</span>
+        <span class="tile-description">Προσομοίωση εργασιακών σεναρίων</span>
+        <span class="tile-footer"><span id="homeWorkMetric">0 / 228 τριάδες</span><span class="tile-arrow">›</span></span>
+      </button>
+
+      <button class="dashboard-tile tile-guide" type="button" onclick="comingSoon('📖 Οδηγός ΑΣΕΠ')">
+        <span class="tile-icon" aria-hidden="true">📘</span>
+        <span class="tile-title">Οδηγός ΑΣΕΠ</span>
+        <span class="tile-description">Χρήσιμες πληροφορίες για τον διαγωνισμό</span>
+        <span class="tile-footer"><span>Οδηγός προετοιμασίας</span><span class="tile-arrow">›</span></span>
+      </button>
+    </div>
+
+    <div class="home-overview" aria-label="Σύνοψη προόδου">
+      <div><strong id="homeSuccess">0%</strong><span>Μέση επιτυχία</span></div>
+      <div><strong id="homeWrongs">0</strong><span>Λάθη για επανάληψη</span></div>
+      <div><strong id="homeFavorites">0</strong><span>Αγαπημένες</span></div>
+      <div><strong id="homeCompletedTests">0</strong><span>Ολοκληρωμένα τεστ</span></div>
     </div>
   </section>
 
@@ -379,6 +427,6 @@
   <div id="message" class="message hidden"></div>
   <footer id="appFooter">Πηγή δεδομένων: Επίσημο Μητρώο Θεμάτων Γνώσεων ΑΣΕΠ</footer>
 </main>
-<script src="app.js?v=13.2.1"></script>
+<script src="app.js?v=13.3"></script>
 </body>
 </html>

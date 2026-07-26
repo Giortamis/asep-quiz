@@ -120,8 +120,39 @@ function goHome() {
   clearStudyTimer();
   clearWorkTimer();
   clearCatTimer();
+  updateHomeDashboard();
   setFooter("home");
   showOnly("home");
+}
+
+function updateHomeDashboard() {
+  const stats = getStats();
+  const success = stats.total > 0
+    ? Math.round((stats.correct / stats.total) * 100)
+    : 0;
+  const favorites = getFavorites().length;
+  const wrongs = getWrongs().length;
+  const workSeen = getWorkSeenIds().length;
+
+  const values = {
+    homeStudyMetric: stats.total > 0
+      ? `${stats.total.toLocaleString("el-GR")} απαντημένες`
+      : "1.989 ερωτήσεις",
+    homeTestsMetric: stats.tests > 0
+      ? `${stats.tests} ολοκληρωμένα τεστ`
+      : `${categories.length || 11} ενότητες`,
+    homeStatsMetric: `Μέση επιτυχία ${success}%`,
+    homeWorkMetric: `${Math.min(workSeen, 228)} / 228 τριάδες`,
+    homeSuccess: `${success}%`,
+    homeWrongs: wrongs.toLocaleString("el-GR"),
+    homeFavorites: favorites.toLocaleString("el-GR"),
+    homeCompletedTests: stats.tests.toLocaleString("el-GR")
+  };
+
+  Object.entries(values).forEach(([id, value]) => {
+    const element = document.getElementById(id);
+    if (element) element.textContent = value;
+  });
 }
 
 function renderCategoryControls() {
