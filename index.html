@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#0b5cab">
-  <title>ΑΣΕΠ Quiz V13.4</title>
-  <link rel="stylesheet" href="style.css?v=13.4">
+  <title>ΑΣΕΠ Quiz V13.5</title>
+  <link rel="stylesheet" href="style.css?v=13.5">
 </head>
 <body>
 <main class="app">
@@ -63,6 +63,7 @@
   </section>
 
   <section id="catPracticeSetup" class="card hidden">
+    <button class="screen-back" onclick="openCatHub()">← Επιστροφή</button>
     <h2>🧩 Απλό Τεστ Εξάσκησης</h2>
 
     <label for="catPracticeCount">Αριθμός ερωτήσεων</label>
@@ -81,13 +82,13 @@
       <option value="matrix">Λογικοί πίνακες</option>
     </select>
 
-    <div class="actions">
-      <button class="secondary" onclick="openCatHub()">Πίσω</button>
-      <button class="primary" onclick="startCatPractice()">Έναρξη</button>
+    <div class="actions actions-single">
+      <button class="primary start-action full" onclick="startCatPractice()">Έναρξη</button>
     </div>
   </section>
 
   <section id="adaptiveCatSetup" class="card cat-exam-setup-card hidden">
+    <button class="screen-back" onclick="openCatHub()">← Επιστροφή</button>
     <h2>🎯 Προσομοίωση Εξέτασης CAT</h2>
     <p class="cat-start-notice">Ο χρόνος ξεκινά μόνο όταν πατήσετε «Έναρξη Εξέτασης».</p>
 
@@ -106,9 +107,8 @@
       </ul>
     </div>
 
-    <div class="actions cat-start-actions">
-      <button class="secondary" onclick="openCatHub()">Πίσω</button>
-      <button class="primary cat-start-button" onclick="startAdaptiveCat()">Έναρξη Εξέτασης</button>
+    <div class="actions actions-single cat-start-actions">
+      <button class="primary start-action full cat-start-button" onclick="startAdaptiveCat()">Έναρξη Εξέτασης</button>
     </div>
 
     <p class="cat-note">Εκπαιδευτική προσομοίωση της προσαρμοστικής εξέτασης (CAT) του ΑΣΕΠ.</p>
@@ -174,19 +174,18 @@
   </section>
 
   <section id="testHub" class="card hidden">
+    <button class="screen-back" onclick="openRegistryHub()">← Επιστροφή</button>
     <h2>🎯 Τεστ Μητρώου</h2>
     <div class="menu">
       <button onclick="startQuickTest()">⚡ Γρήγορο Τεστ 10 Ερωτήσεων</button>
       <button onclick="openTest()">🎯 Τεστ Ενοτήτων</button>
       <button onclick="startSmartTest()">🧠 Έξυπνο Τεστ</button>
     </div>
-    <div class="actions">
-      <button class="secondary" onclick="openRegistryHub()">Πίσω</button>
-    </div>
   </section>
 
 
   <section id="smartSetup" class="card hidden">
+    <button class="screen-back" onclick="openTestHub()">← Επιστροφή</button>
     <h2>🧠 Έξυπνο Τεστ</h2>
     <p>Το τεστ προσαρμόζεται στα λάθη σου και στις τρεις ενότητες με τη χαμηλότερη επίδοση.</p>
 
@@ -200,40 +199,40 @@
 
     <div id="smartPreview" class="smart-preview hidden"></div>
 
-    <div class="actions">
-      <button class="secondary" onclick="openTestHub()">Πίσω</button>
-      <button id="smartPrepareButton" class="primary" onclick="prepareSmartTest()">Δημιουργία τεστ</button>
-      <button id="smartStartButton" class="primary hidden" onclick="launchSmartTest()">Έναρξη</button>
+    <div class="actions actions-single">
+      <button id="smartPrepareButton" class="primary start-action full" onclick="prepareSmartTest()">Δημιουργία τεστ</button>
+      <button id="smartStartButton" class="primary start-action full hidden" onclick="launchSmartTest()">Έναρξη</button>
     </div>
   </section>
 
 <section id="testSetup" class="card hidden">
+    <button class="screen-back" onclick="openTestHub()">← Επιστροφή</button>
     <h2>Ρύθμιση ενοτήτων διαγωνισμού</h2>
     <p>Επίλεξε τις ενότητες που θα χρησιμοποιούνται στα τεστ. Η επιλογή αποθηκεύεται στη συσκευή.</p>
     <label class="check all-check"><input type="checkbox" id="allCategories"> <strong>All — Όλες οι ενότητες</strong></label>
     <div id="categoryChecks" class="checks"></div>
-    <div class="actions">
-      <button class="secondary" onclick="goHome()">Πίσω</button>
-      <button class="primary" onclick="saveTestCategories()">Αποθήκευση επιλογών</button>
+    <div class="actions actions-single">
+      <button class="primary start-action full" onclick="saveTestCategories()">Αποθήκευση επιλογών</button>
     </div>
   </section>
 
   <section id="testHome" class="card hidden">
+    <button class="screen-back" onclick="openTestHub()">← Επιστροφή</button>
     <h2>Τεστ</h2>
     <p id="activeSummary"></p>
 
     <label for="testCount">Αριθμός ερωτήσεων</label>
     <input id="testCount" type="number" min="1" max="100" value="25">
 
-    <div class="actions">
-      <button class="secondary" onclick="goHome()">Πίσω</button>
-      <button class="primary" onclick="startTest()">Έναρξη</button>
+    <div class="actions actions-single">
+      <button class="primary start-action full" onclick="startTest()">Έναρξη</button>
     </div>
 
     <button class="reset" onclick="resetTestCategories()">Reset ενοτήτων</button>
   </section>
 
   <section id="studySetup" class="card hidden">
+    <button class="screen-back" onclick="openRegistryHub()">← Επιστροφή</button>
     <h2>Διάβασμα</h2>
 
     <div class="study-filters">
@@ -250,9 +249,8 @@
     <label class="check"><input type="checkbox" id="randomStudy" checked> Τυχαία σειρά</label>
     <label class="check"><input type="checkbox" id="autoNextStudy"> Αυτόματη μετάβαση μετά την εμφάνιση της απάντησης</label>
 
-    <div class="actions">
-      <button class="secondary" onclick="goHome()">Πίσω</button>
-      <button class="primary" onclick="startStudy()">Έναρξη</button>
+    <div class="actions actions-single">
+      <button class="primary start-action full" onclick="startStudy()">Έναρξη</button>
     </div>
   </section>
 
@@ -301,7 +299,7 @@
     <label for="workCount">Αριθμός τριάδων εξάσκησης</label>
     <select id="workCount"><option value="5">5 τριάδες</option><option value="10" selected>10 τριάδες</option><option value="20">20 τριάδες</option><option value="40">40 τριάδες</option></select>
     <label class="check"><input type="checkbox" id="workTimed"> Εξάσκηση με συνολικό χρονόμετρο</label>
-    <div class="actions"><button class="secondary" onclick="openWorkBehaviour()">Πίσω</button><button class="primary" onclick="startWorkPractice()">Έναρξη</button></div>
+    <div class="actions actions-single"><button class="primary start-action full" onclick="startWorkPractice()">Έναρξη</button></div>
   </section>
 
   <section id="workQuiz" class="hidden">
@@ -385,6 +383,6 @@
   <div id="message" class="message hidden"></div>
   <footer id="appFooter">Πηγή δεδομένων: Επίσημο Μητρώο Θεμάτων Γνώσεων ΑΣΕΠ</footer>
 </main>
-<script src="app.js?v=13.4"></script>
+<script src="app.js?v=13.5"></script>
 </body>
 </html>
