@@ -301,3 +301,120 @@ body.cat-exam-setup .app{max-width:820px;padding-top:22px}
   box-shadow:0 6px 14px rgba(11,92,171,.18);
 }
 .start-action:focus-visible{outline:3px solid rgba(11,92,171,.28);outline-offset:3px}
+
+/* V13.6 — ενιαίο design system και χρωματική ταυτότητα ανά ενότητα */
+:root{
+  --registry-accent:#1769aa;
+  --registry-dark:#0c4f86;
+  --registry-soft:#eaf4fd;
+  --registry-shadow:rgba(23,105,170,.24);
+  --cat-accent:#e47a18;
+  --cat-dark:#a94e05;
+  --cat-soft:#fff2e5;
+  --cat-shadow:rgba(228,122,24,.25);
+  --work-accent:#087f8c;
+  --work-dark:#05616b;
+  --work-soft:#e7f7f8;
+  --work-shadow:rgba(8,127,140,.24);
+  --guide-accent:#52677d;
+  --guide-dark:#34485b;
+  --guide-soft:#edf1f5;
+}
+
+.theme-registry{--section-accent:var(--registry-accent);--section-dark:var(--registry-dark);--section-soft:var(--registry-soft);--section-shadow:var(--registry-shadow)}
+.theme-cat{--section-accent:var(--cat-accent);--section-dark:var(--cat-dark);--section-soft:var(--cat-soft);--section-shadow:var(--cat-shadow)}
+.theme-work{--section-accent:var(--work-accent);--section-dark:var(--work-dark);--section-soft:var(--work-soft);--section-shadow:var(--work-shadow)}
+
+/* Διακριτικό, ενιαίο κουμπί επιστροφής */
+.screen-back{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:40px;
+  margin:0 0 16px;
+  padding:8px 13px;
+  border:1px solid #d4dde8;
+  border-radius:11px;
+  background:#fff;
+  color:var(--section-dark,var(--blue2));
+  box-shadow:0 3px 10px rgba(23,37,61,.07);
+  font-weight:800;
+  text-decoration:none;
+  transition:transform .17s ease,box-shadow .17s ease,border-color .17s ease,background .17s ease;
+}
+.screen-back:hover{
+  text-decoration:none;
+  transform:translateY(-2px);
+  border-color:var(--section-accent,var(--blue));
+  background:var(--section-soft,#eef6ff);
+  box-shadow:0 7px 16px rgba(23,37,61,.11);
+}
+.screen-back:active{transform:translateY(0);box-shadow:0 2px 7px rgba(23,37,61,.08)}
+.screen-back:focus-visible{outline:3px solid color-mix(in srgb,var(--section-accent,var(--blue)) 25%,transparent);outline-offset:2px}
+
+/* Κοινή γεωμετρία και συμπεριφορά καρτών */
+.dashboard-tile{
+  border-color:color-mix(in srgb,var(--tile-accent,var(--blue)) 18%,#dfe6ef);
+  transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease,filter .18s ease;
+}
+.dashboard-tile:hover{
+  transform:translateY(-4px);
+  border-color:var(--tile-accent,var(--blue));
+  box-shadow:0 16px 30px color-mix(in srgb,var(--tile-accent,var(--blue)) 22%,transparent);
+  filter:brightness(1.01);
+}
+.dashboard-tile:active{transform:translateY(-1px) scale(.993)}
+.dashboard-tile:focus-visible{outline:3px solid color-mix(in srgb,var(--tile-accent,var(--blue)) 25%,transparent);outline-offset:3px}
+
+.tile-registry,.tile-study,.tile-tests,.tile-stats{--tile-accent:var(--registry-accent);--tile-soft:var(--registry-soft)}
+.tile-cat{--tile-accent:var(--cat-accent);--tile-soft:var(--cat-soft)}
+.tile-work{--tile-accent:var(--work-accent);--tile-soft:var(--work-soft)}
+.tile-guide{--tile-accent:var(--guide-accent);--tile-soft:var(--guide-soft)}
+
+/* Κουμπιά έναρξης με το χρώμα της αντίστοιχης ενότητας */
+.theme-registry .start-action{background:var(--registry-accent);box-shadow:0 8px 22px var(--registry-shadow)}
+.theme-cat .start-action{background:var(--cat-accent);box-shadow:0 8px 22px var(--cat-shadow)}
+.theme-work .start-action{background:var(--work-accent);box-shadow:0 8px 22px var(--work-shadow)}
+.theme-registry .start-action:hover{box-shadow:0 14px 28px var(--registry-shadow)}
+.theme-cat .start-action:hover{box-shadow:0 14px 28px var(--cat-shadow)}
+.theme-work .start-action:hover{box-shadow:0 14px 28px var(--work-shadow)}
+.theme-registry .start-action:focus-visible,.theme-cat .start-action:focus-visible,.theme-work .start-action:focus-visible{outline-color:color-mix(in srgb,var(--section-accent) 30%,transparent)}
+
+/* Θεματικά βοηθητικά στοιχεία */
+.theme-registry .badge,.theme-registry .cat-result-note{background:var(--registry-soft);color:var(--registry-dark);border-color:var(--registry-accent)}
+.theme-cat .badge,.theme-cat .cat-result-note{background:var(--cat-soft);color:var(--cat-dark);border-color:var(--cat-accent)}
+.theme-work .badge{background:var(--work-soft);color:var(--work-dark)}
+.theme-registry .score,.theme-registry .stat-box strong{color:var(--registry-accent)}
+.theme-cat .score,.theme-cat .cat-result-grid strong{color:var(--cat-accent)}
+.theme-work .score{color:var(--work-accent)}
+
+body.theme-screen-registry .progress>div{background:var(--registry-accent)}
+body.theme-screen-cat .progress>div{background:var(--cat-accent)}
+body.theme-screen-work .progress>div{background:var(--work-accent)}
+body.theme-screen-registry .badge{background:var(--registry-soft);color:var(--registry-dark)}
+body.theme-screen-cat .badge{background:var(--cat-soft);color:var(--cat-dark)}
+body.theme-screen-work .badge{background:var(--work-soft);color:var(--work-dark)}
+
+/* Επιλεγμένα στοιχεία ακολουθούν την ενότητα */
+.theme-registry select:focus,.theme-registry input:focus{border-color:var(--registry-accent);outline:3px solid color-mix(in srgb,var(--registry-accent) 16%,transparent)}
+.theme-cat select:focus,.theme-cat input:focus{border-color:var(--cat-accent);outline:3px solid color-mix(in srgb,var(--cat-accent) 16%,transparent)}
+.theme-work select:focus,.theme-work input:focus{border-color:var(--work-accent);outline:3px solid color-mix(in srgb,var(--work-accent) 16%,transparent)}
+.theme-registry .study-filter.active{border-color:var(--registry-accent);background:var(--registry-soft);color:var(--registry-dark)}
+.theme-cat .cat-review-filters button.active{background:var(--cat-accent);border-color:var(--cat-accent)}
+
+/* Εργασιακές συμπεριφορές */
+.work-instruction{background:var(--work-accent);border-color:var(--work-dark);box-shadow:0 6px 16px var(--work-shadow)}
+.work-skill-bar>div{background:var(--work-accent)}
+.work-statement.rank-second{border-color:var(--work-accent);background:var(--work-soft)}
+.work-statement.rank-second .work-rank{color:var(--work-accent)}
+
+/* CAT */
+.cat-start-notice{border-left-color:var(--cat-accent);background:var(--cat-soft);color:var(--cat-dark)}
+.theme-cat .cat-rules{border-color:#f1c99f;background:var(--cat-soft);color:var(--cat-dark)}
+.cat-preparing-spinner{border-top-color:var(--cat-accent)}
+.cat-preparing-steps{color:var(--cat-dark)}
+
+@media(max-width:520px){
+  .screen-back{min-height:38px;padding:7px 11px}
+  .start-action{min-height:54px}
+}

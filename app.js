@@ -87,6 +87,15 @@ async function init() {
 }
 
 function showOnly(id) {
+  const registryScreens = new Set(["registryHub","testHub","smartSetup","testSetup","testHome","studySetup","quizScreen","resultScreen","statsScreen"]);
+  const catScreens = new Set(["catHub","catPracticeSetup","adaptiveCatSetup","catPreparing","catQuiz","catResults","catReview"]);
+  const workScreens = new Set(["workHome","workPracticeSetup","workQuiz","workResults","workHistory"]);
+
+  document.body.classList.remove("theme-screen-registry", "theme-screen-cat", "theme-screen-work");
+  if (registryScreens.has(id)) document.body.classList.add("theme-screen-registry");
+  if (catScreens.has(id)) document.body.classList.add("theme-screen-cat");
+  if (workScreens.has(id)) document.body.classList.add("theme-screen-work");
+
   [
     "home",
     "registryHub",
