@@ -3,6 +3,11 @@ const DATA_VERSION = "5";
 const FAVORITES_KEY = "asepFavorites";
 const WRONGS_KEY = "asepWrongs";
 const STATS_KEY = "asepStats";
+const QUESTION_STATS_KEY = "asepQuestionStatsV1";
+const RECENT_REGISTRY_KEY = "asepRecentRegistryQuestionsV1";
+const RECENT_CAT_KEY = "asepRecentCatQuestionsV1";
+const RECENT_REGISTRY_LIMIT = 120;
+const RECENT_CAT_LIMIT = 80;
 const WORK_HISTORY_KEY = "asepWorkBehaviourHistory";
 const WORK_SEEN_KEY = "asepWorkBehaviourSeen";
 const WORK_DATA_URL = "data/work_behaviour.json?v=11";
@@ -25,6 +30,7 @@ let categories = [];
 let categoryMap = new Map();
 let currentQuestions = [];
 let currentIndex = 0;
+let currentQuestionStartedAt = null;
 
 let mode = "";
 let score = 0;
@@ -360,7 +366,9 @@ async function loadQuestions(ids) {
     });
   });
 
-  return questions;
+  const unique = new Map();
+  questions.forEach(question => unique.set(questionUniqueKey(question), question));
+  return [...unique.values()];
 }
 
 async function startTest() {
@@ -410,72 +418,75 @@ async function startTest() {
 
 function buildProportionalTest(byCategory, total) {
   const ids = Object.keys(byCategory);
-
-  const availableTotal = ids.reduce(
-    (sum, id) => sum + byCategory[id].length,
-    0
-  );
-
-  const target = Math.min(total, availableTotal);
-
-  let result = [];
-  const allocation = {};
-  let used = 0;
+  const recent = new Set(getRecentRegistryQuestions());
+  const normalized = {};
 
   ids.forEach(id => {
-    const raw =
-      target *
-      (byCategory[id].length / availableTotal);
-
-    allocation[id] = Math.floor(raw);
-    used += allocation[id];
+    const unique = new Map();
+    (byCategory[id] || []).forEach(question => {
+      const enriched = { ...question, categoryId: id };
+      unique.set(questionUniqueKey(enriched), enriched);
+    });
+    normalized[id] = [...unique.values()];
   });
 
-  const remainders = ids
-    .map(id => ({
-      id,
-      remainder:
-        target *
-          (byCategory[id].length / availableTotal) -
-        allocation[id]
-    }))
-    .sort((a, b) => b.remainder - a.remainder);
+  const availableTotal = ids.reduce((sum, id) => sum + normalized[id].length, 0);
+  const target = Math.min(total, availableTotal);
+  if (target <= 0) return [];
 
-  let left = target - used;
-  let remainderIndex = 0;
+  const allocation = {};
+  let usedSlots = 0;
+  ids.forEach(id => {
+    const raw = target * (normalized[id].length / availableTotal);
+    allocation[id] = Math.min(normalized[id].length, Math.floor(raw));
+    usedSlots += allocation[id];
+  });
 
-  while (left > 0 && remainders.length > 0) {
-    const id =
-      remainders[
-        remainderIndex % remainders.length
-      ].id;
+  const remainders = ids.map(id => ({
+    id,
+    remainder: target * (normalized[id].length / availableTotal) - allocation[id]
+  })).sort((a, b) => b.remainder - a.remainder);
 
-    if (allocation[id] < byCategory[id].length) {
-      allocation[id]++;
-      left--;
+  let left = target - usedSlots;
+  let guard = 0;
+  while (left > 0 && guard < 10000) {
+    let allocated = false;
+    for (const item of remainders) {
+      if (allocation[item.id] < normalized[item.id].length && left > 0) {
+        allocation[item.id]++;
+        left--;
+        allocated = true;
+      }
     }
+    if (!allocated) break;
+    guard++;
+  }
 
-    remainderIndex++;
+  const selected = [];
+  const selectedKeys = new Set();
+  ids.forEach(id => {
+    const pool = preferNotRecent(normalized[id], recent);
+    for (const question of pool) {
+      const key = questionUniqueKey(question);
+      if (selectedKeys.has(key)) continue;
+      selectedKeys.add(key);
+      selected.push(question);
+      if (selected.filter(item => item.categoryId === id).length >= allocation[id]) break;
+    }
+  });
 
-    if (remainderIndex > 10000) {
-      break;
+  if (selected.length < target) {
+    const fallback = preferNotRecent(ids.flatMap(id => normalized[id]), recent);
+    for (const question of fallback) {
+      const key = questionUniqueKey(question);
+      if (selectedKeys.has(key)) continue;
+      selectedKeys.add(key);
+      selected.push(question);
+      if (selected.length >= target) break;
     }
   }
 
-  ids.forEach(id => {
-    const selectedQuestions = shuffle([
-      ...byCategory[id]
-    ]).slice(0, allocation[id]);
-
-    selectedQuestions.forEach(question => {
-      result.push({
-        ...question,
-        categoryId: id
-      });
-    });
-  });
-
-  return shuffle(result);
+  return shuffle(selected.slice(0, target));
 }
 
 function openStudy() {
@@ -501,6 +512,8 @@ function updateStudyFilterState(filter) {
     document.querySelector(".favorite-filter")?.classList.add("active");
   } else if (filter === "wrongs") {
     document.querySelector(".wrong-filter")?.classList.add("active");
+  } else if (filter === "unread") {
+    document.querySelector(".unread-filter")?.classList.add("active");
   }
 }
 
@@ -544,13 +557,21 @@ async function startStudy() {
       categories.map(category => category.id)
     );
 
-    currentQuestions =
-      currentQuestions.filter(isWrong);
+    currentQuestions = currentQuestions.filter(isWrong);
 
     if (currentQuestions.length === 0) {
-      showMessage(
-        "Δεν υπάρχουν αποθηκευμένες λάθος ερωτήσεις."
-      );
+      showMessage("Δεν υπάρχουν αποθηκευμένες λάθος ερωτήσεις.");
+      return;
+    }
+  } else if (selected === "unread") {
+    currentQuestions = await loadQuestions(
+      categories.map(category => category.id)
+    );
+
+    currentQuestions = currentQuestions.filter(isUnreadQuestion);
+
+    if (currentQuestions.length === 0) {
+      showMessage("Έχεις ήδη διαβάσει όλες τις διαθέσιμες ερωτήσεις.");
       return;
     }
   } else {
@@ -582,6 +603,9 @@ function renderQuestion() {
   answerLocked = false;
 
   const question = currentQuestions[currentIndex];
+  currentQuestionStartedAt = Date.now();
+  recordQuestionAppearance(question);
+  addRecentRegistryQuestion(question);
 
   document.getElementById(
     "quizCounter"
@@ -686,6 +710,11 @@ function chooseTestAnswer(selected) {
   const isCorrectAnswer = selected === question.correct;
   testAnswered++;
   recordAnswer(question.categoryId, isCorrectAnswer);
+  recordQuestionAnswer(
+    question,
+    isCorrectAnswer,
+    currentQuestionStartedAt ? Date.now() - currentQuestionStartedAt : 0
+  );
 
   if (isCorrectAnswer) {
     buttons[selected].classList.add("correct");
@@ -977,6 +1006,127 @@ function clearAllWrongs() {
   );
 }
 
+function getQuestionStats() {
+  try {
+    const stored = JSON.parse(localStorage.getItem(QUESTION_STATS_KEY) || "{}");
+    return stored && typeof stored === "object" && !Array.isArray(stored) ? stored : {};
+  } catch {
+    return {};
+  }
+}
+
+function saveQuestionStats(stats) {
+  localStorage.setItem(QUESTION_STATS_KEY, JSON.stringify(stats));
+}
+
+function getQuestionStat(question) {
+  return getQuestionStats()[questionUniqueKey(question)] || null;
+}
+
+function isUnreadQuestion(question) {
+  const item = getQuestionStat(question);
+  return !item || (Number(item.appearances) || 0) === 0;
+}
+
+function recordQuestionAppearance(question) {
+  if (!question) return;
+  const stats = getQuestionStats();
+  const key = questionUniqueKey(question);
+  const item = stats[key] || {
+    appearances: 0,
+    correct: 0,
+    wrong: 0,
+    totalAnswerTimeMs: 0,
+    answerCount: 0,
+    correctStreak: 0,
+    lastSeenAt: null,
+    lastAnsweredAt: null,
+    lastAnswerCorrect: null
+  };
+  item.appearances++;
+  item.lastSeenAt = new Date().toISOString();
+  stats[key] = item;
+  saveQuestionStats(stats);
+}
+
+function recordQuestionAnswer(question, correct, elapsedMs) {
+  if (!question) return;
+  const stats = getQuestionStats();
+  const key = questionUniqueKey(question);
+  const item = stats[key] || {
+    appearances: 0,
+    correct: 0,
+    wrong: 0,
+    totalAnswerTimeMs: 0,
+    answerCount: 0,
+    correctStreak: 0,
+    lastSeenAt: null,
+    lastAnsweredAt: null,
+    lastAnswerCorrect: null
+  };
+
+  if (correct) {
+    item.correct++;
+    item.correctStreak++;
+  } else {
+    item.wrong++;
+    item.correctStreak = 0;
+  }
+
+  const safeElapsed = Number.isFinite(elapsedMs) && elapsedMs > 0 ? elapsedMs : 0;
+  item.totalAnswerTimeMs += safeElapsed;
+  item.answerCount++;
+  item.averageAnswerTimeMs = item.answerCount > 0
+    ? Math.round(item.totalAnswerTimeMs / item.answerCount)
+    : 0;
+  item.lastAnsweredAt = new Date().toISOString();
+  item.lastAnswerCorrect = Boolean(correct);
+  stats[key] = item;
+  saveQuestionStats(stats);
+}
+
+function getStoredList(key) {
+  try {
+    const value = JSON.parse(localStorage.getItem(key) || "[]");
+    return Array.isArray(value) ? value : [];
+  } catch {
+    return [];
+  }
+}
+
+function pushRecentKey(storageKey, key, limit) {
+  const values = getStoredList(storageKey).filter(item => item !== key);
+  values.unshift(key);
+  localStorage.setItem(storageKey, JSON.stringify(values.slice(0, limit)));
+}
+
+function getRecentRegistryQuestions() {
+  return getStoredList(RECENT_REGISTRY_KEY);
+}
+
+function addRecentRegistryQuestion(question) {
+  if (!question) return;
+  pushRecentKey(RECENT_REGISTRY_KEY, questionUniqueKey(question), RECENT_REGISTRY_LIMIT);
+}
+
+function getRecentCatQuestions() {
+  return getStoredList(RECENT_CAT_KEY);
+}
+
+function addRecentCatQuestion(signature) {
+  if (!signature) return;
+  pushRecentKey(RECENT_CAT_KEY, signature, RECENT_CAT_LIMIT);
+}
+
+function preferNotRecent(pool, recentSet) {
+  const unique = new Map();
+  pool.forEach(question => unique.set(questionUniqueKey(question), question));
+  const values = [...unique.values()];
+  const fresh = shuffle(values.filter(question => !recentSet.has(questionUniqueKey(question))));
+  const recent = shuffle(values.filter(question => recentSet.has(questionUniqueKey(question))));
+  return [...fresh, ...recent];
+}
+
 function getStats() {
   const emptyStats = { total: 0, correct: 0, wrong: 0, tests: 0, byCategory: {} };
 
@@ -1178,9 +1328,9 @@ function questionUniqueKey(question){
   return `${question.categoryId}:${question.id}`;
 }
 
-function takeUnique(pool,count,used){
+function takeUnique(pool,count,used,recentSet = new Set()){
   const picked=[];
-  const candidates=shuffle([...pool]);
+  const candidates=preferNotRecent(pool, recentSet);
   for(const question of candidates){
     const key=questionUniqueKey(question);
     if(used.has(key))continue;
@@ -1192,65 +1342,56 @@ function takeUnique(pool,count,used){
 }
 
 async function prepareSmartTest(){
-  const total=parseInt(document.getElementById("smartCount").value,10);
-  const stats=getStats();
+  const total = parseInt(document.getElementById("smartCount").value, 10);
+  const allQuestions = await loadQuestions(categories.map(category => category.id));
+  const wrongSet = new Set(getWrongs());
+  const recentSet = new Set(getRecentRegistryQuestions());
 
-  const allQuestions=await loadQuestions(categories.map(category=>category.id));
-  const wrongSet=new Set(getWrongs());
-  const wrongPool=allQuestions.filter(question=>wrongSet.has(questionUniqueKey(question)));
+  const wrongPool = allQuestions.filter(question => wrongSet.has(questionUniqueKey(question)));
+  const unreadPool = allQuestions.filter(isUnreadQuestion);
 
-  const weakest=categories
-    .map(category=>{
-      const item=stats.byCategory[category.id]||{total:0,correct:0};
-      return {
-        id:category.id,
-        total:item.total,
-        percent:item.total>0 ? item.correct/item.total : 1
-      };
-    })
-    .filter(item=>item.total>0)
-    .sort((a,b)=>a.percent-b.percent || b.total-a.total)
-    .slice(0,3)
-    .map(item=>item.id);
+  const wrongTarget = Math.floor(total * 0.50);
+  const unreadTarget = Math.floor(total * 0.30);
+  const randomTarget = total - wrongTarget - unreadTarget;
+  const used = new Set();
 
-  const weakSet=new Set(weakest);
-  const weakPool=allQuestions.filter(question=>weakSet.has(question.categoryId));
+  const fromWrongs = takeUnique(wrongPool, wrongTarget, used, recentSet);
+  const missingWrongs = wrongTarget - fromWrongs.length;
 
-  const wrongTarget=Math.floor(total*0.50);
-  const weakTarget=Math.floor(total*0.30);
-  const randomTarget=total-wrongTarget-weakTarget;
-  const used=new Set();
+  const fromUnread = takeUnique(
+    unreadPool,
+    unreadTarget + missingWrongs,
+    used,
+    recentSet
+  );
+  const missingUnread = unreadTarget + missingWrongs - fromUnread.length;
 
-  const fromWrongs=takeUnique(wrongPool,wrongTarget,used);
-  const fromWeak=takeUnique(weakPool,weakTarget+(wrongTarget-fromWrongs.length),used);
-  const initialRandomNeed=randomTarget+
-    Math.max(0,weakTarget+(wrongTarget-fromWrongs.length)-fromWeak.length);
-  const fromRandom=takeUnique(allQuestions,initialRandomNeed,used);
+  const fromRandom = takeUnique(
+    allQuestions,
+    randomTarget + Math.max(0, missingUnread),
+    used,
+    recentSet
+  );
 
-  let selected=[...fromWrongs,...fromWeak,...fromRandom];
-  if(selected.length<total){
-    selected.push(...takeUnique(allQuestions,total-selected.length,used));
+  let selected = [...fromWrongs, ...fromUnread, ...fromRandom];
+  if (selected.length < total) {
+    selected.push(...takeUnique(allQuestions, total - selected.length, used, new Set()));
   }
 
-  currentQuestions=shuffle(selected.slice(0,total));
-  window.smartComposition={
-    wrongs:fromWrongs.length,
-    weak:fromWeak.length,
-    random:currentQuestions.length-fromWrongs.length-fromWeak.length,
-    weakest
+  currentQuestions = shuffle(selected.slice(0, total));
+  window.smartComposition = {
+    wrongs: fromWrongs.length,
+    unread: fromUnread.length,
+    random: currentQuestions.length - fromWrongs.length - fromUnread.length
   };
 
-  const weakNames=weakest.map(id=>categoryMap.get(id)?.name||id).join(" · ") || "Δεν υπάρχουν ακόμη";
-  const preview=document.getElementById("smartPreview");
-  preview.innerHTML=`
+  const preview = document.getElementById("smartPreview");
+  preview.innerHTML = `
     <strong>Το τεστ δημιουργήθηκε από:</strong>
     <div>❌ ${window.smartComposition.wrongs} ερωτήσεις από τα λάθη σου</div>
-    <div>📉 ${window.smartComposition.weak} ερωτήσεις από τις 3 χειρότερες ενότητες</div>
+    <div>📘 ${window.smartComposition.unread} αδιάβαστες ερωτήσεις</div>
     <div>🎲 ${window.smartComposition.random} τυχαίες ερωτήσεις</div>
-    <small><strong>Αδύναμες ενότητες:</strong> ${weakNames}</small>
-    ${stats.total < 20
-      ? '<small>Το ιστορικό είναι ακόμη μικρό, επομένως το υπόλοιπο τεστ συμπληρώθηκε με τυχαίες ερωτήσεις.</small>'
-      : ''}
+    <small>Αν κάποια κατηγορία δεν έχει αρκετές διαθέσιμες ερωτήσεις, το υπόλοιπο συμπληρώνεται αυτόματα χωρίς διπλοεγγραφές.</small>
   `;
   preview.classList.remove("hidden");
   document.getElementById("smartPrepareButton").classList.add("hidden");
@@ -2110,6 +2251,7 @@ function generateUniqueCatQuestion(difficulty, category = "all") {
     const signature = catQuestionSignature(question);
     if (!catUsedQuestionSignatures.has(signature)) {
       catUsedQuestionSignatures.add(signature);
+      addRecentCatQuestion(signature);
       return question;
     }
   }
@@ -2165,7 +2307,7 @@ function startCatPractice() {
   const category = document.getElementById("catPracticeCategory").value;
 
   catMode = "practice";
-  catUsedQuestionSignatures = new Set();
+  catUsedQuestionSignatures = new Set(getRecentCatQuestions());
   catReviewRecords = [];
   catQuestions = Array.from({length: count}, () => {
     const difficulty = catRandomInt(2, 8);
@@ -2202,7 +2344,7 @@ function beginAdaptiveCatExam() {
   catAnswered = 0;
   catCurrentDifficulty = 5;
   catDifficultyHistory = [];
-  catUsedQuestionSignatures = new Set();
+  catUsedQuestionSignatures = new Set(getRecentCatQuestions());
   catReviewRecords = [];
   catTimeRemaining = catTotalSeconds;
   catStartedAt = Date.now();

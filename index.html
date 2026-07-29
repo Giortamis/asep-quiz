@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#0b5cab">
-  <title>ΑΣΕΠ Quiz V13.6</title>
-  <link rel="stylesheet" href="style.css?v=13.6">
+  <title>ΑΣΕΠ Quiz V13.7</title>
+  <link rel="stylesheet" href="style.css?v=13.7">
 </head>
 <body>
 <main class="app">
@@ -180,7 +180,7 @@
     <div class="dashboard-grid submenu-grid">
       <button class="dashboard-tile tile-registry" onclick="startQuickTest()"><span class="tile-icon">⚡</span><span class="tile-title">Γρήγορο Τεστ</span><span class="tile-description">10 τυχαίες ερωτήσεις από τις ενεργές ενότητες</span><span class="tile-footer"><span>10 ερωτήσεις</span><span class="tile-arrow">›</span></span></button>
       <button class="dashboard-tile tile-registry" onclick="openTest()"><span class="tile-icon">🎯</span><span class="tile-title">Τεστ Ενοτήτων</span><span class="tile-description">Επιλογή ενοτήτων και αριθμού ερωτήσεων</span><span class="tile-footer"><span>Προσαρμοσμένο τεστ</span><span class="tile-arrow">›</span></span></button>
-      <button class="dashboard-tile tile-registry" onclick="startSmartTest()"><span class="tile-icon">🧠</span><span class="tile-title">Έξυπνο Τεστ</span><span class="tile-description">Βασισμένο στα λάθη και στις αδύναμες ενότητες</span><span class="tile-footer"><span>Προσωποποιημένο</span><span class="tile-arrow">›</span></span></button>
+      <button class="dashboard-tile tile-registry" onclick="startSmartTest()"><span class="tile-icon">🧠</span><span class="tile-title">Έξυπνο Τεστ</span><span class="tile-description">50% λάθη, 30% αδιάβαστες και 20% τυχαίες</span><span class="tile-footer"><span>Προσωποποιημένο</span><span class="tile-arrow">›</span></span></button>
     </div>
   </section>
 
@@ -188,7 +188,7 @@
   <section id="smartSetup" class="card theme-registry hidden">
     <button class="screen-back" onclick="openTestHub()">← Επιστροφή</button>
     <h2>🧠 Έξυπνο Τεστ</h2>
-    <p>Το τεστ προσαρμόζεται στα λάθη σου και στις τρεις ενότητες με τη χαμηλότερη επίδοση.</p>
+    <p>Το τεστ συνδυάζει λάθος, αδιάβαστες και τυχαίες ερωτήσεις χωρίς επαναλήψεις.</p>
 
     <label for="smartCount">Αριθμός ερωτήσεων</label>
     <select id="smartCount">
@@ -239,6 +239,7 @@
     <div class="study-filters">
       <button class="study-filter favorite-filter" onclick="openStudyFiltered('favorites')">⭐ Μόνο αγαπημένες</button>
       <button class="study-filter wrong-filter" onclick="openStudyFiltered('wrongs')">❌ Μόνο λάθη</button>
+      <button class="study-filter unread-filter" onclick="openStudyFiltered('unread')">📘 Μόνο αδιάβαστες</button>
     </div>
 
     <label for="studyCategory">Ενότητα</label>
@@ -384,6 +385,6 @@
   <div id="message" class="message hidden"></div>
   <footer id="appFooter">Πηγή δεδομένων: Επίσημο Μητρώο Θεμάτων Γνώσεων ΑΣΕΠ</footer>
 </main>
-<script src="app.js?v=13.6"></script>
+<script src="app.js?v=13.7"></script>
 </body>
 </html>
