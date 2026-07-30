@@ -2245,18 +2245,27 @@ function catQuestionSignature(question) {
 }
 
 function generateUniqueCatQuestion(difficulty, category = "all") {
-  let question = null;
-  for (let attempt = 0; attempt < 120; attempt++) {
-    question = generateCatQuestion(difficulty, category);
-    const signature = catQuestionSignature(question);
-    if (!catUsedQuestionSignatures.has(signature)) {
+  const difficultyOrder = [
+    difficulty,
+    ...Array.from({ length: 10 }, (_, index) => index + 1)
+      .filter(level => level !== difficulty)
+      .sort((a, b) => Math.abs(a - difficulty) - Math.abs(b - difficulty))
+  ];
+
+  for (const level of difficultyOrder) {
+    for (let attempt = 0; attempt < 160; attempt++) {
+      const question = generateCatQuestion(level, category);
+      const signature = catQuestionSignature(question);
+
+      if (catUsedQuestionSignatures.has(signature)) continue;
+
       catUsedQuestionSignatures.add(signature);
       addRecentCatQuestion(signature);
       return question;
     }
   }
-  // Πολύ σπάνιο fallback: κρατάμε την τελευταία ερώτηση αντί να μπλοκάρει το τεστ.
-  return question;
+
+  throw new Error("Δεν ήταν δυνατή η δημιουργία μοναδικής ερώτησης CAT.");
 }
 
 function formatCatSymbols(value) {
