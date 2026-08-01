@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#0b5cab">
-  <title>ΑΣΕΠ Quiz V13.9</title>
-  <link rel="stylesheet" href="style.css?v=13.9">
+  <title>ΑΣΕΠ Quiz V14</title>
+  <link rel="stylesheet" href="style.css?v=14">
 </head>
 <body>
 <main class="app">
@@ -32,11 +32,90 @@
         <span class="tile-description">Άσκηση, πλήρης προσομοίωση και αποτελέσματα</span>
         <span class="tile-footer"><span id="homeWorkMetric">0 / 228 τριάδες</span><span class="tile-arrow">›</span></span>
       </button>
-      <button class="dashboard-tile tile-guide" type="button" onclick="comingSoon('📘 Οδηγός ΑΣΕΠ')">
-        <span class="tile-icon">📘</span><span class="tile-title">Οδηγός ΑΣΕΠ</span>
-        <span class="tile-description">Πληροφορίες και οδηγίες για όλες τις δοκιμασίες</span>
-        <span class="tile-footer"><span>Οδηγός προετοιμασίας</span><span class="tile-arrow">›</span></span>
+      <button class="dashboard-tile tile-plan" type="button" onclick="openStudyPlanHub()">
+        <span class="tile-icon">📅</span><span class="tile-title">Σχέδιο Μελέτης</span>
+        <span class="tile-description">Προσωπικό ημερήσιο πρόγραμμα για Μητρώο, CAT και Συμπεριφορές</span>
+        <span class="tile-footer"><span id="homePlanMetric">Δημιούργησε σχέδιο</span><span class="tile-arrow">›</span></span>
       </button>
+      <button class="dashboard-tile tile-guide" type="button" onclick="openHelpHub()">
+        <span class="tile-icon">❓</span><span class="tile-title">Βοήθεια</span>
+        <span class="tile-description">Οδηγός ΑΣΕΠ και αναλυτικές οδηγίες χρήσης της εφαρμογής</span>
+        <span class="tile-footer"><span>2 οδηγοί</span><span class="tile-arrow">›</span></span>
+      </button>
+    </div>
+  </section>
+
+
+  <section id="studyPlanHub" class="card submenu-screen theme-plan hidden">
+    <button class="screen-back" onclick="goHome()">← Επιστροφή</button>
+    <h2>📅 Σχέδιο Μελέτης</h2>
+    <p class="submenu-intro">Το πλάνο οργανώνει τις υπάρχουσες λειτουργίες χωρίς να δημιουργεί δεύτερους μηχανισμούς ερωτήσεων.</p>
+    <div class="dashboard-grid submenu-grid">
+      <button class="dashboard-tile tile-plan" onclick="openStudyPlanSetup()"><span class="tile-icon">🗓️</span><span class="tile-title">Νέο / Ρύθμιση Σχεδίου</span><span class="tile-description">Ημερομηνία στόχου και ενότητες προετοιμασίας</span><span class="tile-footer"><span>Δημιουργία ή αλλαγή</span><span class="tile-arrow">›</span></span></button>
+      <button class="dashboard-tile tile-plan" onclick="openTodayPlan()"><span class="tile-icon">✅</span><span class="tile-title">Το σημερινό μου πρόγραμμα</span><span class="tile-description">Οι εργασίες που πρέπει να ολοκληρωθούν σήμερα</span><span class="tile-footer"><span id="planTodayTileMetric">Χωρίς ενεργό σχέδιο</span><span class="tile-arrow">›</span></span></button>
+      <button class="dashboard-tile tile-plan" onclick="openStudyPlanProgress()"><span class="tile-icon">📈</span><span class="tile-title">Πρόοδος Σχεδίου</span><span class="tile-description">Υπόλοιπο ύλης, ημέρες και συνολική πορεία</span><span class="tile-footer"><span id="planProgressTileMetric">Προβολή προόδου</span><span class="tile-arrow">›</span></span></button>
+    </div>
+  </section>
+
+  <section id="studyPlanSetup" class="card theme-plan hidden">
+    <button class="screen-back" onclick="openStudyPlanHub()">← Επιστροφή</button>
+    <h2>🗓️ Ρύθμιση Σχεδίου Μελέτης</h2>
+    <label for="studyPlanTargetDate">Ημερομηνία στόχου</label>
+    <input id="studyPlanTargetDate" type="date">
+    <p class="plan-hint">Το πρόγραμμα επανυπολογίζεται αυτόματα με βάση τις ημέρες που απομένουν.</p>
+    <h3>Ενότητες που θα περιλαμβάνονται</h3>
+    <label class="check plan-check"><input type="checkbox" id="planRegistry" checked> 📚 Μητρώο Ερωτήσεων</label>
+    <label class="check plan-check"><input type="checkbox" id="planCat" checked> 🧠 Μέθοδος CAT</label>
+    <label class="check plan-check"><input type="checkbox" id="planWork" checked> 🎭 Εργασιακές Συμπεριφορές</label>
+    <div class="actions actions-single"><button class="primary start-action full" onclick="saveStudyPlan()">Αποθήκευση Σχεδίου</button></div>
+    <button class="reset" onclick="deleteStudyPlan()">Διαγραφή ενεργού σχεδίου</button>
+  </section>
+
+  <section id="studyPlanToday" class="card theme-plan hidden">
+    <button class="screen-back" onclick="openStudyPlanHub()">← Επιστροφή</button>
+    <h2>✅ Το σημερινό μου πρόγραμμα</h2>
+    <div id="studyPlanTodaySummary" class="plan-summary"></div>
+    <div id="studyPlanTodayTasks" class="plan-task-list"></div>
+  </section>
+
+  <section id="studyPlanProgress" class="card theme-plan hidden">
+    <button class="screen-back" onclick="openStudyPlanHub()">← Επιστροφή</button>
+    <h2>📈 Πρόοδος Σχεδίου</h2>
+    <div id="studyPlanProgressSummary" class="plan-summary"></div>
+    <div id="studyPlanProgressDetails" class="plan-progress-details"></div>
+  </section>
+
+  <section id="helpHub" class="card submenu-screen theme-help hidden">
+    <button class="screen-back" onclick="goHome()">← Επιστροφή</button>
+    <h2>❓ Βοήθεια</h2>
+    <p class="submenu-intro">Επίλεξε αν χρειάζεσαι πληροφορίες για τον διαγωνισμό ή για τη χρήση της εφαρμογής.</p>
+    <div class="dashboard-grid submenu-grid two-items">
+      <button class="dashboard-tile tile-guide" onclick="openAsepGuide()"><span class="tile-icon">📘</span><span class="tile-title">Οδηγός ΑΣΕΠ</span><span class="tile-description">Δοκιμασίες, Μητρώο, CAT και Εργασιακές Συμπεριφορές</span><span class="tile-footer"><span>Πληροφορίες διαγωνισμού</span><span class="tile-arrow">›</span></span></button>
+      <button class="dashboard-tile tile-guide" onclick="openAppGuide()"><span class="tile-icon">📱</span><span class="tile-title">Οδηγός Εφαρμογής</span><span class="tile-description">Αναλυτικές οδηγίες για όλες τις λειτουργίες και το Σχέδιο Μελέτης</span><span class="tile-footer"><span>Οδηγίες χρήσης</span><span class="tile-arrow">›</span></span></button>
+    </div>
+  </section>
+
+  <section id="asepGuide" class="card theme-help hidden">
+    <button class="screen-back" onclick="openHelpHub()">← Επιστροφή</button>
+    <h2>📘 Οδηγός ΑΣΕΠ</h2>
+    <div class="guide-content">
+      <details open><summary>Επίσημο Μητρώο Ερωτήσεων</summary><p>Η ενότητα περιλαμβάνει Διάβασμα, Γρήγορο Τεστ, Τεστ Ενοτήτων, Έξυπνο Τεστ και ξεχωριστά στατιστικά.</p></details>
+      <details><summary>Μέθοδος CAT</summary><p>Η προσομοίωση χρησιμοποιεί προσαρμοστική δυσκολία. Η σύγκριση των προσπαθειών γίνεται μόνο μέσω του Ability και ο χρόνος εμφανίζεται πληροφοριακά.</p></details>
+      <details><summary>Εργασιακές Συμπεριφορές</summary><p>Στις τριάδες επιλέγονται υποχρεωτικά η πρώτη και η δεύτερη δήλωση. Η πλήρης προσομοίωση περιλαμβάνει 76 τριάδες σε 30 λεπτά.</p></details>
+      <details><summary>Εκπαιδευτικός χαρακτήρας</summary><p>Οι προσομοιώσεις, οι δείκτες και τα αποτελέσματα της εφαρμογής είναι εκπαιδευτικά και δεν αποτελούν επίσημη βαθμολογία ή πιστοποιημένο ψυχομετρικό αποτέλεσμα ΑΣΕΠ.</p></details>
+    </div>
+  </section>
+
+  <section id="appGuide" class="card theme-help hidden">
+    <button class="screen-back" onclick="openHelpHub()">← Επιστροφή</button>
+    <h2>📱 Οδηγός Εφαρμογής</h2>
+    <div class="guide-content">
+      <details open><summary>Πρώτα βήματα</summary><p>Ξεκίνα από το «Σχέδιο Μελέτης», όρισε ημερομηνία στόχου και επίλεξε τις ενότητες που θέλεις να συμπεριλάβεις.</p></details>
+      <details><summary>Σχέδιο Μελέτης</summary><p>Το πλάνο δεν διαθέτει ξεχωριστές τράπεζες. Εκκινεί τους ίδιους μηχανισμούς του Μητρώου, του CAT και των Εργασιακών Συμπεριφορών. Επομένως ισχύουν οι ίδιοι κανόνες αποφυγής επανάληψης και τα ίδια στατιστικά.</p></details>
+      <details><summary>Μητρώο Ερωτήσεων</summary><p>Οι νέες ερωτήσεις του πλάνου επιλέγονται από τις αδιάβαστες. Οι επαναλήψεις επιλέγονται πρώτα από τα αποθηκευμένα λάθη και συμπληρώνονται από ήδη απαντημένες ερωτήσεις, χωρίς διπλοεγγραφές.</p></details>
+      <details><summary>CAT</summary><p>Το ημερήσιο πρόγραμμα ανοίγει το ίδιο Τεστ Εξάσκησης ή την ίδια Προσομοίωση Εξέτασης CAT που υπάρχουν στην κύρια ενότητα.</p></details>
+      <details><summary>Εργασιακές Συμπεριφορές</summary><p>Οι τριάδες του πλάνου επιλέγονται από τον ίδιο μηχανισμό που προτιμά όσες δεν έχουν εμφανιστεί πρόσφατα.</p></details>
+      <details><summary>Αυτόματος επανυπολογισμός</summary><p>Αν χαθεί μία ημέρα, το υπόλοιπο έργο μοιράζεται αυτόματα στις ημέρες που απομένουν μέχρι την ημερομηνία στόχου.</p></details>
     </div>
   </section>
 
@@ -397,6 +476,6 @@
   <div id="message" class="message hidden"></div>
   <footer id="appFooter">Πηγή δεδομένων: Επίσημο Μητρώο Θεμάτων Γνώσεων ΑΣΕΠ</footer>
 </main>
-<script src="app.js?v=13.8"></script>
+<script src="app.js?v=14"></script>
 </body>
 </html>

@@ -7,6 +7,8 @@ const QUESTION_STATS_KEY = "asepQuestionStatsV1";
 const RECENT_REGISTRY_KEY = "asepRecentRegistryQuestionsV1";
 const RECENT_CAT_KEY = "asepRecentCatQuestionsV1";
 const CAT_HISTORY_KEY = "asepCatHistoryV139";
+const STUDY_PLAN_KEY = "asepStudyPlanV14";
+const STUDY_PLAN_LOG_KEY = "asepStudyPlanLogV14";
 const RECENT_REGISTRY_LIMIT = 120;
 const RECENT_CAT_LIMIT = 80;
 const WORK_HISTORY_KEY = "asepWorkBehaviourHistory";
@@ -32,6 +34,7 @@ let categoryMap = new Map();
 let currentQuestions = [];
 let currentIndex = 0;
 let currentQuestionStartedAt = null;
+let activeStudyPlanTask = null;
 
 let mode = "";
 let score = 0;
@@ -99,14 +102,25 @@ function showOnly(id) {
   const registryScreens = new Set(["registryHub","testHub","smartSetup","testSetup","testHome","studySetup","quizScreen","resultScreen","statsScreen"]);
   const catScreens = new Set(["catHub","catPracticeSetup","adaptiveCatSetup","catPreparing","catQuiz","catResults","catReview","catHistory"]);
   const workScreens = new Set(["workHome","workPracticeSetup","workQuiz","workResults","workHistory"]);
+  const planScreens = new Set(["studyPlanHub","studyPlanSetup","studyPlanToday","studyPlanProgress"]);
+  const helpScreens = new Set(["helpHub","asepGuide","appGuide"]);
 
-  document.body.classList.remove("theme-screen-registry", "theme-screen-cat", "theme-screen-work");
+  document.body.classList.remove("theme-screen-registry", "theme-screen-cat", "theme-screen-work", "theme-screen-plan", "theme-screen-help");
   if (registryScreens.has(id)) document.body.classList.add("theme-screen-registry");
   if (catScreens.has(id)) document.body.classList.add("theme-screen-cat");
   if (workScreens.has(id)) document.body.classList.add("theme-screen-work");
+  if (planScreens.has(id)) document.body.classList.add("theme-screen-plan");
+  if (helpScreens.has(id)) document.body.classList.add("theme-screen-help");
 
   [
     "home",
+    "studyPlanHub",
+    "studyPlanSetup",
+    "studyPlanToday",
+    "studyPlanProgress",
+    "helpHub",
+    "asepGuide",
+    "appGuide",
     "registryHub",
     "catHub",
     "catPracticeSetup",
@@ -176,6 +190,7 @@ function updateHomeDashboard() {
       : `${categories.length || 11} ενότητες`,
     homeStatsMetric: `Μέση επιτυχία ${success}%`,
     homeWorkMetric: `${Math.min(workSeen, 228)} / 228 τριάδες`,
+    homePlanMetric: getStudyPlanHomeMetric(),
     homeSuccess: `${success}%`,
     homeWrongs: wrongs.toLocaleString("el-GR"),
     homeFavorites: favorites.toLocaleString("el-GR"),
@@ -826,6 +841,7 @@ function finishQuiz() {
       `Εμφανίστηκαν ${Math.min(currentIndex, currentQuestions.length)} από ${currentQuestions.length} ερωτήσεις.`;
   }
 
+  completeActiveStudyPlanRegistryTask();
   showOnly("resultScreen");
 }
 
@@ -1425,6 +1441,10 @@ function setFooter(section) {
     footer.textContent = "Εκπαιδευτικό υλικό προσομοίωσης εργασιακών συμπεριφορών — μη επίσημη πιστοποιημένη βαθμολογία ή τράπεζα ΑΣΕΠ";
   } else if (section === "cat") {
     footer.textContent = "Εκπαιδευτική προσομοίωση της προσαρμοστικής εξέτασης (CAT) του ΑΣΕΠ";
+  } else if (section === "plan") {
+    footer.textContent = "Προσωπικό σχέδιο μελέτης με κοινό μηχανισμό Μητρώου, CAT και Εργασιακών Συμπεριφορών";
+  } else if (section === "help") {
+    footer.textContent = "Βοήθεια και οδηγίες χρήσης της εφαρμογής";
   } else if (section === "home") {
     footer.textContent = "Εφαρμογή προετοιμασίας για τον Γραπτό Διαγωνισμό ΑΣΕΠ";
   } else {
@@ -1762,6 +1782,7 @@ function finishWorkAttempt(timeExpired = false, stoppedEarly = false) {
   };
 
   saveWorkHistoryRecord(record);
+  completeActiveStudyPlanWorkTask(record.completedTriads);
   renderWorkResults(record);
   showOnly("workResults");
 }
@@ -2656,6 +2677,8 @@ function finishCat(stoppedEarly = false) {
     });
   }
 
+  completeActiveStudyPlanCatTask(catMode, attempted, stoppedEarly);
+
   document.getElementById("catResultTitle").textContent =
     catMode === "adaptive" ? "Αποτέλεσμα Προσομοίωσης CAT" : "Αποτέλεσμα Εξάσκησης";
 
@@ -2798,3 +2821,267 @@ function renderCatReview() {
       </article>`;
   }).join("");
 }
+
+
+// V14 — Σχέδιο Μελέτης και Βοήθεια
+function localDateKey(date = new Date()) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+function getStudyPlan() {
+  try {
+    const plan = JSON.parse(localStorage.getItem(STUDY_PLAN_KEY) || "null");
+    return plan && typeof plan === "object" ? plan : null;
+  } catch {
+    return null;
+  }
+}
+
+function getStudyPlanLog() {
+  try {
+    const log = JSON.parse(localStorage.getItem(STUDY_PLAN_LOG_KEY) || "{}");
+    return log && typeof log === "object" && !Array.isArray(log) ? log : {};
+  } catch {
+    return {};
+  }
+}
+
+function saveStudyPlanLog(log) {
+  localStorage.setItem(STUDY_PLAN_LOG_KEY, JSON.stringify(log));
+}
+
+function updateStudyPlanLog(field, amount = 1) {
+  const log = getStudyPlanLog();
+  const key = localDateKey();
+  const today = log[key] || {registryNew:0, registryReview:0, catPractice:0, catSimulation:0, workTriads:0};
+  today[field] = (Number(today[field]) || 0) + Math.max(0, Number(amount) || 0);
+  log[key] = today;
+  saveStudyPlanLog(log);
+}
+
+function getStudyPlanHomeMetric() {
+  const plan = getStudyPlan();
+  if (!plan) return "Δημιούργησε σχέδιο";
+  const days = getPlanDaysRemaining(plan);
+  return days > 0 ? `${days} ημέρες απομένουν` : "Η ημερομηνία έφτασε";
+}
+
+function getPlanDaysRemaining(plan) {
+  if (!plan?.targetDate) return 0;
+  const today = new Date(`${localDateKey()}T00:00:00`);
+  const target = new Date(`${plan.targetDate}T00:00:00`);
+  return Math.max(0, Math.floor((target - today) / 86400000) + 1);
+}
+
+function getPlanWeekLog() {
+  const log = getStudyPlanLog();
+  const now = new Date();
+  const monday = new Date(now);
+  const day = (now.getDay() + 6) % 7;
+  monday.setDate(now.getDate() - day);
+  const total = {catPractice:0, catSimulation:0};
+  for (let i=0;i<7;i++) {
+    const date = new Date(monday);
+    date.setDate(monday.getDate()+i);
+    const item = log[localDateKey(date)] || {};
+    total.catPractice += Number(item.catPractice)||0;
+    total.catSimulation += Number(item.catSimulation)||0;
+  }
+  return total;
+}
+
+function calculateStudyPlanTargets(plan) {
+  const days = Math.max(1, getPlanDaysRemaining(plan));
+  const questionStats = getQuestionStats();
+  const readCount = Object.values(questionStats).filter(item => (Number(item.appearances)||0) > 0).length;
+  const unread = Math.max(0, 1989 - readCount);
+  const wrongs = getWrongs().length;
+  const remainingWork = Math.max(0, 228 - getWorkSeenIds().length);
+  const week = getPlanWeekLog();
+  return {
+    days,
+    registryNew: plan.registry ? Math.min(100, Math.ceil(unread / days)) : 0,
+    registryReview: plan.registry && wrongs > 0 ? Math.min(50, Math.max(5, Math.ceil(Math.min(unread || 10, 40) * 0.35))) : 0,
+    catPractice: plan.cat && week.catPractice < 3 ? 1 : 0,
+    catSimulation: plan.cat && week.catSimulation < 1 ? 1 : 0,
+    workTriads: plan.work ? Math.min(76, Math.ceil(remainingWork / days)) : 0,
+    unread,
+    wrongs,
+    remainingWork,
+    week
+  };
+}
+
+function openStudyPlanHub() {
+  setFooter("plan");
+  updateStudyPlanTiles();
+  showOnly("studyPlanHub");
+}
+
+function updateStudyPlanTiles() {
+  const plan = getStudyPlan();
+  const todayMetric = document.getElementById("planTodayTileMetric");
+  const progressMetric = document.getElementById("planProgressTileMetric");
+  if (!plan) {
+    if (todayMetric) todayMetric.textContent = "Χωρίς ενεργό σχέδιο";
+    if (progressMetric) progressMetric.textContent = "Δημιούργησε σχέδιο";
+    return;
+  }
+  const targets = calculateStudyPlanTargets(plan);
+  const taskCount = [targets.registryNew>0, targets.registryReview>0, targets.catPractice>0, targets.catSimulation>0, targets.workTriads>0].filter(Boolean).length;
+  if (todayMetric) todayMetric.textContent = `${taskCount} σημερινές εργασίες`;
+  if (progressMetric) progressMetric.textContent = `${targets.days} ημέρες απομένουν`;
+}
+
+function openStudyPlanSetup() {
+  const plan = getStudyPlan();
+  const dateInput = document.getElementById("studyPlanTargetDate");
+  const min = localDateKey();
+  dateInput.min = min;
+  dateInput.value = plan?.targetDate || (() => { const d=new Date(); d.setDate(d.getDate()+60); return localDateKey(d); })();
+  document.getElementById("planRegistry").checked = plan ? Boolean(plan.registry) : true;
+  document.getElementById("planCat").checked = plan ? Boolean(plan.cat) : true;
+  document.getElementById("planWork").checked = plan ? Boolean(plan.work) : true;
+  setFooter("plan");
+  showOnly("studyPlanSetup");
+}
+
+function saveStudyPlan() {
+  const targetDate = document.getElementById("studyPlanTargetDate").value;
+  const registry = document.getElementById("planRegistry").checked;
+  const cat = document.getElementById("planCat").checked;
+  const work = document.getElementById("planWork").checked;
+  if (!targetDate || targetDate < localDateKey()) {
+    showMessage("Επίλεξε σημερινή ή μεταγενέστερη ημερομηνία.");
+    return;
+  }
+  if (!registry && !cat && !work) {
+    showMessage("Επίλεξε τουλάχιστον μία ενότητα.");
+    return;
+  }
+  const existing = getStudyPlan();
+  localStorage.setItem(STUDY_PLAN_KEY, JSON.stringify({
+    targetDate, registry, cat, work,
+    createdAt: existing?.createdAt || new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  }));
+  updateHomeDashboard();
+  showMessage("Το Σχέδιο Μελέτης αποθηκεύτηκε.");
+  openTodayPlan();
+}
+
+function deleteStudyPlan() {
+  if (!getStudyPlan()) { showMessage("Δεν υπάρχει ενεργό σχέδιο."); return; }
+  if (!confirm("Θέλεις να διαγράψεις το ενεργό Σχέδιο Μελέτης;")) return;
+  localStorage.removeItem(STUDY_PLAN_KEY);
+  localStorage.removeItem(STUDY_PLAN_LOG_KEY);
+  updateHomeDashboard();
+  openStudyPlanHub();
+}
+
+function openTodayPlan() {
+  const plan = getStudyPlan();
+  if (!plan) { showMessage("Δημιούργησε πρώτα ένα Σχέδιο Μελέτης."); openStudyPlanSetup(); return; }
+  const targets = calculateStudyPlanTargets(plan);
+  const log = getStudyPlanLog()[localDateKey()] || {};
+  document.getElementById("studyPlanTodaySummary").innerHTML = `<strong>${targets.days} ημέρες μέχρι τον στόχο</strong><span>Το φορτίο επανυπολογίζεται αυτόματα από την πραγματική σου πρόοδο.</span>`;
+  const tasks=[];
+  const addTask=(icon,title,target,done,action,label)=>{
+    const complete=Math.min(done||0,target||0);
+    const remaining=Math.max(0,(target||0)-complete);
+    tasks.push(`<article class="plan-task ${remaining===0?'is-complete':''}"><div class="plan-task-icon">${icon}</div><div class="plan-task-body"><h3>${title}</h3><p>${complete} / ${target} ολοκληρώθηκαν</p><div class="plan-task-progress"><span style="width:${target?Math.min(100,Math.round(complete/target*100)):100}%"></span></div></div><button ${remaining===0?'disabled':''} onclick="${action}">${remaining===0?'Ολοκληρώθηκε':label}</button></article>`);
+  };
+  if (plan.registry) {
+    if (targets.registryNew>0) addTask('📘','Νέες ερωτήσεις Μητρώου',targets.registryNew,log.registryNew,`startPlanRegistryTask('new',${targets.registryNew})`,'Έναρξη');
+    if (targets.registryReview>0) addTask('🔁','Επαναλήψεις Μητρώου',targets.registryReview,log.registryReview,`startPlanRegistryTask('review',${targets.registryReview})`,'Έναρξη');
+  }
+  if (plan.cat) {
+    if (targets.catPractice>0) addTask('🧩','Τεστ Εξάσκησης CAT',1,log.catPractice,'startPlanCatPractice()','Έναρξη');
+    if (targets.catSimulation>0) addTask('🎓','Προσομοίωση Εξέτασης CAT',1,log.catSimulation,'startPlanCatSimulation()','Έναρξη Εξέτασης');
+  }
+  if (plan.work && targets.workTriads>0) addTask('🎭','Τριάδες Εργασιακών Συμπεριφορών',targets.workTriads,log.workTriads,`startPlanWorkTask(${targets.workTriads})`,'Έναρξη');
+  document.getElementById("studyPlanTodayTasks").innerHTML = tasks.length ? tasks.join('') : '<p class="plan-empty">Το σημερινό πρόγραμμα έχει ολοκληρωθεί.</p>';
+  setFooter("plan"); showOnly("studyPlanToday");
+}
+
+function openStudyPlanProgress() {
+  const plan=getStudyPlan();
+  if(!plan){showMessage("Δημιούργησε πρώτα ένα Σχέδιο Μελέτης.");openStudyPlanSetup();return;}
+  const t=calculateStudyPlanTargets(plan);
+  const read=Math.max(0,1989-t.unread);
+  const seen=Math.max(0,228-t.remainingWork);
+  const catHistory=getCatHistory();
+  const latestAbility=catHistory.length?catHistory[catHistory.length-1].ability:null;
+  document.getElementById("studyPlanProgressSummary").innerHTML=`<strong>Στόχος: ${new Date(plan.targetDate+'T00:00:00').toLocaleDateString('el-GR')}</strong><span>${t.days} ημέρες απομένουν</span>`;
+  const rows=[];
+  if(plan.registry) rows.push(planProgressRow('📚 Μητρώο',read,1989,`${t.unread} αδιάβαστες`));
+  if(plan.cat) rows.push(planProgressRow('🧠 CAT',Math.min(catHistory.length,10),10,latestAbility===null?'Δεν υπάρχει ακόμη Ability':`Τελευταίο Ability: ${latestAbility}/100`));
+  if(plan.work) rows.push(planProgressRow('🎭 Συμπεριφορές',seen,228,`${t.remainingWork} τριάδες απομένουν`));
+  document.getElementById("studyPlanProgressDetails").innerHTML=rows.join('');
+  setFooter("plan");showOnly("studyPlanProgress");
+}
+
+function planProgressRow(title,value,total,note){
+  const pct=total?Math.min(100,Math.round(value/total*100)):0;
+  return `<article class="plan-progress-row"><div><strong>${title}</strong><span>${note}</span></div><b>${pct}%</b><div class="plan-task-progress"><span style="width:${pct}%"></span></div></article>`;
+}
+
+async function startPlanRegistryTask(type,count){
+  const all=await loadQuestions(categories.map(c=>c.id));
+  const used=new Set();
+  const recent=new Set(getRecentRegistryQuestions());
+  let pool=[];
+  if(type==='new') pool=all.filter(isUnreadQuestion);
+  else {
+    const wrongSet=new Set(getWrongs());
+    const wrongPool=all.filter(q=>wrongSet.has(questionUniqueKey(q)));
+    const answeredPool=all.filter(q=>!isUnreadQuestion(q));
+    pool=[...wrongPool,...answeredPool];
+  }
+  currentQuestions=takeUnique(pool,count,used,recent);
+  if(currentQuestions.length<count) currentQuestions.push(...takeUnique(all,count-currentQuestions.length,used,recent));
+  if(!currentQuestions.length){showMessage("Δεν βρέθηκαν διαθέσιμες ερωτήσεις.");return;}
+  activeStudyPlanTask={kind:type==='new'?'registryNew':'registryReview',expected:currentQuestions.length};
+  mode='study';currentIndex=0;score=0;quizFinished=false;studySeconds=5;autoNext=false;
+  setFooter('registry');showOnly('quizScreen');renderQuestion();
+}
+
+function completeActiveStudyPlanRegistryTask(){
+  if(!activeStudyPlanTask || !['registryNew','registryReview'].includes(activeStudyPlanTask.kind)) return;
+  const completed=Math.min(currentQuestions.length, Math.max(0,currentIndex));
+  updateStudyPlanLog(activeStudyPlanTask.kind,completed);
+  activeStudyPlanTask=null;
+}
+
+function startPlanCatPractice(){
+  activeStudyPlanTask={kind:'catPractice'};
+  document.getElementById('catPracticeCount').value='10';
+  document.getElementById('catPracticeCategory').value='all';
+  startCatPractice();
+}
+
+function startPlanCatSimulation(){activeStudyPlanTask={kind:'catSimulation'};startAdaptiveCat();}
+
+function completeActiveStudyPlanCatTask(modeName,attempted,stoppedEarly){
+  if(!activeStudyPlanTask) return;
+  if(activeStudyPlanTask.kind==='catPractice' && modeName==='practice' && attempted>0) updateStudyPlanLog('catPractice',1);
+  if(activeStudyPlanTask.kind==='catSimulation' && modeName==='adaptive' && attempted>0 && !stoppedEarly) updateStudyPlanLog('catSimulation',1);
+  if(['catPractice','catSimulation'].includes(activeStudyPlanTask.kind)) activeStudyPlanTask=null;
+}
+
+async function startPlanWorkTask(count){
+  try {await loadWorkBank();activeStudyPlanTask={kind:'workTriads'};workTimedMode=false;workIsFullSimulation=false;beginWorkAttempt(Math.max(1,Math.min(76,count)),0);} catch(e){console.error(e);showMessage('Δεν ήταν δυνατή η έναρξη της άσκησης.');}
+}
+
+function completeActiveStudyPlanWorkTask(completed){
+  if(activeStudyPlanTask?.kind!=='workTriads') return;
+  updateStudyPlanLog('workTriads',completed);
+  activeStudyPlanTask=null;
+}
+
+function openHelpHub(){setFooter('help');showOnly('helpHub');}
+function openAsepGuide(){setFooter('help');showOnly('asepGuide');}
+function openAppGuide(){setFooter('help');showOnly('appGuide');}
