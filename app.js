@@ -6,6 +6,7 @@ const STATS_KEY = "asepStats";
 const QUESTION_STATS_KEY = "asepQuestionStatsV1";
 const RECENT_REGISTRY_KEY = "asepRecentRegistryQuestionsV1";
 const RECENT_CAT_KEY = "asepRecentCatQuestionsV1";
+const CAT_HISTORY_KEY = "asepCatHistoryV139";
 const RECENT_REGISTRY_LIMIT = 120;
 const RECENT_CAT_LIMIT = 80;
 const WORK_HISTORY_KEY = "asepWorkBehaviourHistory";
@@ -71,6 +72,8 @@ let catCurrentQuestion = null;
 let catUsedQuestionSignatures = new Set();
 let catReviewRecords = [];
 let catReviewFilter = "wrong";
+let catResponseRecords = [];
+let catCorrectStreak = 0;
 let catCategoryStats = {
   numeric: {total: 0, correct: 0},
   symbols: {total: 0, correct: 0},
@@ -94,7 +97,7 @@ async function init() {
 
 function showOnly(id) {
   const registryScreens = new Set(["registryHub","testHub","smartSetup","testSetup","testHome","studySetup","quizScreen","resultScreen","statsScreen"]);
-  const catScreens = new Set(["catHub","catPracticeSetup","adaptiveCatSetup","catPreparing","catQuiz","catResults","catReview"]);
+  const catScreens = new Set(["catHub","catPracticeSetup","adaptiveCatSetup","catPreparing","catQuiz","catResults","catReview","catHistory"]);
   const workScreens = new Set(["workHome","workPracticeSetup","workQuiz","workResults","workHistory"]);
 
   document.body.classList.remove("theme-screen-registry", "theme-screen-cat", "theme-screen-work");
@@ -112,6 +115,7 @@ function showOnly(id) {
     "catQuiz",
     "catResults",
     "catReview",
+    "catHistory",
     "testHub",
     "smartSetup",
     "testSetup",
@@ -2318,6 +2322,8 @@ function startCatPractice() {
   catMode = "practice";
   catUsedQuestionSignatures = new Set(getRecentCatQuestions());
   catReviewRecords = [];
+  catResponseRecords = [];
+  catCorrectStreak = 0;
   catQuestions = Array.from({length: count}, () => {
     const difficulty = catRandomInt(2, 8);
     return generateUniqueCatQuestion(difficulty, category);
@@ -2355,6 +2361,8 @@ function beginAdaptiveCatExam() {
   catDifficultyHistory = [];
   catUsedQuestionSignatures = new Set(getRecentCatQuestions());
   catReviewRecords = [];
+  catResponseRecords = [];
+  catCorrectStreak = 0;
   catTimeRemaining = catTotalSeconds;
   catStartedAt = Date.now();
   catEndedByTime = false;
@@ -2487,12 +2495,19 @@ function chooseCatAnswer(selected, selectedButton) {
   }
 
   catDifficultyHistory.push(question.difficulty);
+  catResponseRecords.push({difficulty: question.difficulty, isCorrect});
 
   if (catMode === "adaptive") {
-    catCurrentDifficulty = Math.max(
-      1,
-      Math.min(10, catCurrentDifficulty + (isCorrect ? 1 : -1))
-    );
+    if (isCorrect) {
+      catCorrectStreak += 1;
+      if (catCorrectStreak >= 2) {
+        catCurrentDifficulty = Math.min(10, catCurrentDifficulty + 1);
+        catCorrectStreak = 0;
+      }
+    } else {
+      catCurrentDifficulty = Math.max(1, catCurrentDifficulty - 1);
+      catCorrectStreak = 0;
+    }
 
     document.getElementById("catFeedback").textContent = "Η απάντηση καταχωρίστηκε.";
     setTimeout(nextCatQuestion, 350);
@@ -2542,6 +2557,68 @@ function finishCatEarly() {
   finishCat(true);
 }
 
+
+function calculateCatAbility(responses) {
+  if (!responses.length) return 0;
+
+  // Εκπαιδευτική εκτίμηση τύπου IRT: η δυσκολία κάθε ερώτησης
+  // επηρεάζει το Ability, όχι ο χρόνος απάντησης.
+  const probability = (theta, difficulty) => {
+    const itemDifficulty = -2.25 + ((difficulty - 1) / 9) * 4.5;
+    return 1 / (1 + Math.exp(-1.2 * (theta - itemDifficulty)));
+  };
+
+  let low = -3;
+  let high = 3;
+  for (let i = 0; i < 45; i++) {
+    const theta = (low + high) / 2;
+    const scoreEquation = responses.reduce((sum, response) => {
+      return sum + (response.isCorrect ? 1 : 0) - probability(theta, response.difficulty);
+    }, 0);
+    if (scoreEquation > 0) low = theta;
+    else high = theta;
+  }
+
+  const theta = (low + high) / 2;
+  return Math.round(Math.max(0, Math.min(100, ((theta + 3) / 6) * 100)));
+}
+
+function getCatHistory() {
+  try {
+    const value = JSON.parse(localStorage.getItem(CAT_HISTORY_KEY) || "[]");
+    return Array.isArray(value) ? value : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveCatHistoryRecord(record) {
+  const history = getCatHistory();
+  history.push(record);
+  localStorage.setItem(CAT_HISTORY_KEY, JSON.stringify(history.slice(-100)));
+}
+
+function formatCatDuration(totalSeconds) {
+  const seconds = Math.max(0, Math.round(totalSeconds || 0));
+  const minutes = Math.floor(seconds / 60);
+  return `${String(minutes).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")}`;
+}
+
+function buildCatComparison(ability, previousAbility) {
+  if (!Number.isFinite(previousAbility)) {
+    return `<div class="cat-comparison neutral"><strong>Πρώτη προσπάθεια</strong><span>Από την επόμενη προσομοίωση θα εμφανίζεται σύγκριση Ability.</span></div>`;
+  }
+
+  const difference = ability - previousAbility;
+  if (difference > 0) {
+    return `<div class="cat-comparison up"><strong>↑ +${difference} από την προηγούμενη προσπάθεια</strong><span>Συγχαρητήρια! Ξεπέρασες την προηγούμενη προσπάθειά σου.</span></div>`;
+  }
+  if (difference < 0) {
+    return `<div class="cat-comparison down"><strong>↓ ${difference} από την προηγούμενη προσπάθεια</strong><span>Η σημερινή προσπάθεια ήταν χαμηλότερη. Δες τις απαντήσεις σου και δοκίμασε ξανά.</span></div>`;
+  }
+  return `<div class="cat-comparison neutral"><strong>→ Ίδιο Ability με την προηγούμενη προσπάθεια</strong><span>Η επίδοσή σου παρέμεινε σταθερή. Συνέχισε την εξάσκηση.</span></div>`;
+}
+
 function finishCat(stoppedEarly = false) {
   clearCatTimer();
   document.body.classList.remove("cat-exam-active", "cat-exam-setup");
@@ -2553,71 +2630,127 @@ function finishCat(stoppedEarly = false) {
   const usedSeconds = catMode === "adaptive" && catStartedAt
     ? Math.min(catTotalSeconds, Math.floor((Date.now() - catStartedAt) / 1000))
     : 0;
-  const usedMinutes = Math.floor(usedSeconds / 60);
-  const usedRemainder = usedSeconds % 60;
-  const usedTimeText = `${String(usedMinutes).padStart(2, "0")}:${String(usedRemainder).padStart(2, "0")}`;
-  const percentage = attempted > 0
-    ? Math.round((catScore / attempted) * 100)
-    : 0;
-
+  const usedTimeText = formatCatDuration(usedSeconds);
+  const remainingSeconds = catMode === "adaptive" ? Math.max(0, catTotalSeconds - usedSeconds) : 0;
+  const averageSeconds = attempted > 0 ? usedSeconds / attempted : 0;
+  const percentage = attempted > 0 ? Math.round((catScore / attempted) * 100) : 0;
   const averageDifficulty = catDifficultyHistory.length > 0
-    ? catDifficultyHistory.reduce((sum, value) => sum + value, 0) /
-      catDifficultyHistory.length
+    ? catDifficultyHistory.reduce((sum, value) => sum + value, 0) / catDifficultyHistory.length
     : 0;
+  const ability = catMode === "adaptive" ? calculateCatAbility(catResponseRecords) : percentage;
 
-  const ability = catMode === "adaptive"
-    ? Math.round(Math.max(0, Math.min(100,
-        (((averageDifficulty - 1) / 9) * 60) + (percentage * 0.40)
-      )))
-    : percentage;
+  let comparisonHtml = "";
+  if (catMode === "adaptive") {
+    const history = getCatHistory();
+    const previous = history.length ? history[history.length - 1] : null;
+    comparisonHtml = buildCatComparison(ability, previous?.ability);
+    saveCatHistoryRecord({
+      date: new Date().toISOString(),
+      ability,
+      usedSeconds,
+      averageSeconds,
+      remainingSeconds,
+      completed: attempted,
+      stoppedEarly: Boolean(stoppedEarly),
+      endedByTime: Boolean(catEndedByTime)
+    });
+  }
 
   document.getElementById("catResultTitle").textContent =
-    catMode === "adaptive"
-      ? "Αποτέλεσμα Προσομοίωσης CAT"
-      : "Αποτέλεσμα Εξάσκησης";
+    catMode === "adaptive" ? "Αποτέλεσμα Προσομοίωσης CAT" : "Αποτέλεσμα Εξάσκησης";
 
-  document.getElementById("catResultScore").textContent =
-    catMode === "adaptive"
-      ? `${(ability / 10).toFixed(1)} / 10`
-      : `${percentage}%`;
+  document.getElementById("catResultScore").innerHTML = catMode === "adaptive"
+    ? `<span class="ability-label">Ability</span><strong>${ability}<small>/100</small></strong>`
+    : `${percentage}%`;
 
   const categoryRows = Object.entries(catCategoryStats)
     .filter(([, stats]) => stats.total > 0)
     .map(([category, stats]) => {
-      const name = category === "numeric"
-        ? "Αριθμητικές ακολουθίες"
-        : category === "symbols"
-        ? "Σύμβολα"
-        : "Λογικοί πίνακες";
+      const name = category === "numeric" ? "Αριθμητικές ακολουθίες" : category === "symbols" ? "Σύμβολα" : "Λογικοί πίνακες";
       const pct = Math.round((stats.correct / stats.total) * 100);
       return `<div><span>${name}</span><strong>${pct}%</strong></div>`;
-    })
-    .join("");
+    }).join("");
 
-  document.getElementById("catResultDetails").innerHTML = `
+  document.getElementById("catResultDetails").innerHTML = catMode === "adaptive" ? `
+    ${comparisonHtml}
+    <h3 class="cat-result-section-title">🧠 Επίδοση</h3>
     <div class="cat-result-grid">
-      <div><span>Απαντήθηκαν</span><strong>${attempted}</strong></div>
       <div><span>Σωστές</span><strong>${catScore}</strong></div>
       <div><span>Λάθος</span><strong>${wrongAnswers}</strong></div>
-      ${catMode === "adaptive" ? `<div><span>Αναπάντητες</span><strong>${unanswered}</strong></div>` : ""}
-      ${catMode === "adaptive" ? `<div><span>Χρόνος που χρησιμοποιήθηκε</span><strong>${usedTimeText}</strong></div>` : ""}
+      <div><span>Αναπάντητες</span><strong>${unanswered}</strong></div>
       <div><span>Μέση δυσκολία</span><strong>${averageDifficulty.toFixed(1)}/10</strong></div>
-      ${catMode === "adaptive"
-        ? `<div><span>Δείκτης ικανότητας</span><strong>${ability}/100</strong></div>`
-        : `<div><span>Ποσοστό επιτυχίας</span><strong>${percentage}%</strong></div>`}
+    </div>
+    <h3 class="cat-result-section-title">⏱️ Διαχείριση χρόνου</h3>
+    <div class="cat-result-grid cat-time-grid">
+      <div><span>Συνολικός χρόνος</span><strong>${usedTimeText}</strong></div>
+      <div><span>Μέσος χρόνος / ερώτηση</span><strong>${formatCatDuration(averageSeconds)}</strong></div>
+      <div><span>Χρόνος που απέμεινε</span><strong>${formatCatDuration(remainingSeconds)}</strong></div>
     </div>
     <div class="cat-category-results">${categoryRows}</div>
     ${stoppedEarly ? '<p class="cat-result-note">Η προσπάθεια τερματίστηκε πρόωρα.</p>' : ''}
     ${catEndedByTime ? '<p class="cat-result-note">Ο συνολικός χρόνος των 24 λεπτών ολοκληρώθηκε.</p>' : ''}
-    ${catMode === "adaptive"
-      ? '<p class="cat-result-note">Ο δείκτης αποτελεί εκπαιδευτική εκτίμηση της εφαρμογής και όχι επίσημη βαθμολογία ΑΣΕΠ.</p>'
-      : ''}
+    <p class="cat-result-note">Ο χρόνος εμφανίζεται μόνο ως πληροφορία διαχείρισης και δεν επηρεάζει το Ability.</p>
+    <p class="cat-result-note">Ο δείκτης αποτελεί εκπαιδευτική εκτίμηση της εφαρμογής και όχι επίσημη βαθμολογία ΑΣΕΠ.</p>
+  ` : `
+    <div class="cat-result-grid">
+      <div><span>Απαντήθηκαν</span><strong>${attempted}</strong></div>
+      <div><span>Σωστές</span><strong>${catScore}</strong></div>
+      <div><span>Λάθος</span><strong>${wrongAnswers}</strong></div>
+      <div><span>Μέση δυσκολία</span><strong>${averageDifficulty.toFixed(1)}/10</strong></div>
+      <div><span>Ποσοστό επιτυχίας</span><strong>${percentage}%</strong></div>
+    </div>
+    <div class="cat-category-results">${categoryRows}</div>
   `;
 
   setFooter("cat");
   showOnly("catResults");
 }
 
+
+function openCatHistory() {
+  renderCatHistory();
+  setFooter("cat");
+  showOnly("catHistory");
+}
+
+function renderCatHistory() {
+  const history = getCatHistory();
+  const summary = document.getElementById("catHistorySummary");
+  const list = document.getElementById("catHistoryList");
+  if (!summary || !list) return;
+
+  if (!history.length) {
+    summary.innerHTML = "";
+    list.innerHTML = '<p class="cat-review-empty">Δεν υπάρχουν ακόμη αποθηκευμένες προσομοιώσεις CAT.</p>';
+    return;
+  }
+
+  const average = Math.round(history.reduce((sum, item) => sum + item.ability, 0) / history.length);
+  const best = Math.max(...history.map(item => item.ability));
+  summary.innerHTML = `
+    <div><span>Μέσο Ability</span><strong>${average}</strong></div>
+    <div><span>Καλύτερο</span><strong>${best}</strong></div>
+    <div><span>Προσπάθειες</span><strong>${history.length}</strong></div>
+  `;
+
+  list.innerHTML = [...history].reverse().map((item, reverseIndex) => {
+    const originalIndex = history.length - reverseIndex;
+    const previous = history[originalIndex - 2];
+    const diff = previous ? item.ability - previous.ability : null;
+    const trend = diff === null ? "—" : diff > 0 ? `↑ +${diff}` : diff < 0 ? `↓ ${diff}` : "→ 0";
+    return `<div class="cat-history-item">
+      <div><span>Προσπάθεια ${originalIndex}</span><small>${new Date(item.date).toLocaleString("el-GR")}</small></div>
+      <strong>${item.ability}<small>/100</small></strong>
+      <span class="cat-history-trend">${trend}</span>
+    </div>`;
+  }).join("");
+}
+
+function clearCatHistory() {
+  if (!confirm("Θέλεις να διαγράψεις όλο το ιστορικό CAT;")) return;
+  localStorage.removeItem(CAT_HISTORY_KEY);
+  renderCatHistory();
+}
 
 function openCatReview(filter = "wrong") {
   catReviewFilter = filter;
