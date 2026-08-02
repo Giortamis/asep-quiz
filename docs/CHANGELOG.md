@@ -1,5 +1,15 @@
 # CHANGELOG.md
 
+## DOC-002 — Epic Registry
+
+### Τεκμηρίωση
+- Προστέθηκε το `docs/EPICS.md` ως κεντρικό μητρώο των μεγάλων δυνατοτήτων του ASEPIA.
+- Καταγράφηκαν τα αρχικά Epics και η κατάστασή τους.
+- Τεκμηριώθηκε η οργανωτική αλυσίδα `VISION → EPICS → SPRINTS`.
+- Ενημερώθηκαν το README και το Sprint Registry.
+
+---
+
 ## FS-3 — Responsive Layout & Adaptive UI
 
 ### Responsive layout

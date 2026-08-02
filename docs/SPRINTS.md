@@ -2,7 +2,7 @@
 
 ## Project Status
 
-Active development. The project foundation, quality checks and responsive layout are established.
+Active development. The project foundation, quality checks, responsive layout and Epic Registry are established.
 
 ## Completed Sprints
 
@@ -45,6 +45,16 @@ Active development. The project foundation, quality checks and responsive layout
 - **Start Date:** 2026-08-02
 - **End Date:** 2026-08-02
 - **Notes:** Added one responsive grid mechanism, fluid spacing and overflow protection across all main application sections.
+
+### DOC-002
+
+- **ID:** DOC-002
+- **Title:** Δημιουργία Epic Registry
+- **Goal:** Create a central registry of ASEPIA's major product capabilities for future Sprint planning.
+- **Status:** Completed
+- **Start Date:** 2026-08-02
+- **End Date:** 2026-08-02
+- **Notes:** Added the initial Epic Registry and documented the `VISION → EPICS → SPRINTS` organization model.
 
 ## Planned Sprints
 
