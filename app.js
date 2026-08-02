@@ -184,7 +184,7 @@ function updateHomeDashboard() {
   const values = {
     homeStudyMetric: stats.total > 0
       ? `${stats.total.toLocaleString("el-GR")} απαντημένες`
-      : "1.989 ερωτήσεις",
+      : `${getRegistryQuestionTotal().toLocaleString("el-GR")} ερωτήσεις`,
     homeTestsMetric: stats.tests > 0
       ? `${stats.tests} ολοκληρωμένα τεστ`
       : `${categories.length || 11} ενότητες`,
@@ -201,6 +201,13 @@ function updateHomeDashboard() {
     const element = document.getElementById(id);
     if (element) element.textContent = value;
   });
+}
+
+function getRegistryQuestionTotal() {
+  return categories.reduce(
+    (total, category) => total + (Number(category.count) || 0),
+    0
+  );
 }
 
 function renderCategoryControls() {
@@ -1307,10 +1314,6 @@ function showMessage(text) {
 
 function openTestHub(){
   showOnly("testHub");
-}
-
-function comingSoon(name){
-  showMessage(name + " - Προσεχώς");
 }
 
 async function startQuickTest(){
@@ -2539,30 +2542,6 @@ function chooseCatAnswer(selected, selectedButton) {
   }
 }
 
-function handleCatTimeout() {
-  if (catLocked) return;
-  catLocked = true;
-  catAnswered++;
-
-  const question = catCurrentQuestion;
-  catCategoryStats[question.category].total++;
-  catDifficultyHistory.push(question.difficulty);
-  catCurrentDifficulty = Math.max(1, catCurrentDifficulty - 1);
-
-  document.querySelectorAll(".cat-answer").forEach(button => {
-    button.disabled = true;
-    const value = button.textContent.replace(/^[Α-Δ]\.\s*/, "");
-    if (value === String(question.correct)) {
-      button.classList.add("correct");
-    }
-  });
-
-  document.getElementById("catFeedback").textContent =
-    "Ο χρόνος έληξε — η ερώτηση θεωρήθηκε λανθασμένη.";
-
-  setTimeout(nextCatQuestion, 1100);
-}
-
 function nextCatQuestion() {
   catIndex++;
 
@@ -2897,7 +2876,7 @@ function calculateStudyPlanTargets(plan) {
   const days = Math.max(1, getPlanDaysRemaining(plan));
   const questionStats = getQuestionStats();
   const readCount = Object.values(questionStats).filter(item => (Number(item.appearances)||0) > 0).length;
-  const unread = Math.max(0, 1989 - readCount);
+  const unread = Math.max(0, getRegistryQuestionTotal() - readCount);
   const wrongs = getWrongs().length;
   const remainingWork = Math.max(0, 228 - getWorkSeenIds().length);
   const week = getPlanWeekLog();
@@ -3011,13 +2990,14 @@ function openStudyPlanProgress() {
   const plan=getStudyPlan();
   if(!plan){showMessage("Δημιούργησε πρώτα ένα Σχέδιο Μελέτης.");openStudyPlanSetup();return;}
   const t=calculateStudyPlanTargets(plan);
-  const read=Math.max(0,1989-t.unread);
+  const registryQuestionTotal=getRegistryQuestionTotal();
+  const read=Math.max(0,registryQuestionTotal-t.unread);
   const seen=Math.max(0,228-t.remainingWork);
   const catHistory=getCatHistory();
   const latestAbility=catHistory.length?catHistory[catHistory.length-1].ability:null;
   document.getElementById("studyPlanProgressSummary").innerHTML=`<strong>Στόχος: ${new Date(plan.targetDate+'T00:00:00').toLocaleDateString('el-GR')}</strong><span>${t.days} ημέρες απομένουν</span>`;
   const rows=[];
-  if(plan.registry) rows.push(planProgressRow('📚 Μητρώο',read,1989,`${t.unread} αδιάβαστες`));
+  if(plan.registry) rows.push(planProgressRow('📚 Μητρώο',read,registryQuestionTotal,`${t.unread} αδιάβαστες`));
   if(plan.cat) rows.push(planProgressRow('🧠 CAT',Math.min(catHistory.length,10),10,latestAbility===null?'Δεν υπάρχει ακόμη Ability':`Τελευταίο Ability: ${latestAbility}/100`));
   if(plan.work) rows.push(planProgressRow('🎭 Συμπεριφορές',seen,228,`${t.remainingWork} τριάδες απομένουν`));
   document.getElementById("studyPlanProgressDetails").innerHTML=rows.join('');
