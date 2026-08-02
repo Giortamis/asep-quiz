@@ -15,6 +15,37 @@ const WORK_HISTORY_KEY = "asepWorkBehaviourHistory";
 const WORK_SEEN_KEY = "asepWorkBehaviourSeen";
 const WORK_DATA_URL = "data/work_behaviour.json?v=11";
 
+const ApplicationState = {
+  read(key, fallback) {
+    try {
+      const value = localStorage.getItem(key);
+      return value === null ? fallback : JSON.parse(value);
+    } catch {
+      return fallback;
+    }
+  },
+
+  write(key, value) {
+    localStorage.setItem(key, JSON.stringify(value));
+  },
+
+  remove(key) {
+    localStorage.removeItem(key);
+  },
+
+  readList(key) {
+    const value = this.read(key, []);
+    return Array.isArray(value) ? value : [];
+  },
+
+  readObject(key, fallback = {}) {
+    const value = this.read(key, fallback);
+    return value && typeof value === "object" && !Array.isArray(value)
+      ? value
+      : fallback;
+  }
+};
+
 const FILES = {
   constitutional: "constitutional.json",
   administrative: "administrative.json",
@@ -306,15 +337,7 @@ function openTest() {
 }
 
 function getSavedCategories() {
-  try {
-    const saved = JSON.parse(
-      localStorage.getItem("asepTestCategories") || "[]"
-    );
-
-    return Array.isArray(saved) ? saved : [];
-  } catch {
-    return [];
-  }
+  return ApplicationState.readList("asepTestCategories");
 }
 
 function saveTestCategories() {
@@ -327,10 +350,7 @@ function saveTestCategories() {
     return;
   }
 
-  localStorage.setItem(
-    "asepTestCategories",
-    JSON.stringify(selected)
-  );
+  ApplicationState.write("asepTestCategories", selected);
 
   updateTestHome(selected);
   showOnly("testHome");
@@ -358,7 +378,7 @@ function resetTestCategories() {
     return;
   }
 
-  localStorage.removeItem("asepTestCategories");
+  ApplicationState.remove("asepTestCategories");
 
   document
     .querySelectorAll(".category-check")
@@ -871,17 +891,7 @@ function finishQuiz() {
 }
 
 function getFavorites() {
-  try {
-    const favorites = JSON.parse(
-      localStorage.getItem(FAVORITES_KEY) || "[]"
-    );
-
-    return Array.isArray(favorites)
-      ? favorites
-      : [];
-  } catch {
-    return [];
-  }
+  return ApplicationState.readList(FAVORITES_KEY);
 }
 
 function favoriteKey(question) {
@@ -920,10 +930,7 @@ function toggleFavorite() {
     );
   }
 
-  localStorage.setItem(
-    FAVORITES_KEY,
-    JSON.stringify(favorites)
-  );
+  ApplicationState.write(FAVORITES_KEY, favorites);
 
   updateFavoriteButton(question);
 }
@@ -975,17 +982,7 @@ function updateFavoriteButton(question) {
 }
 
 function getWrongs() {
-  try {
-    const wrongs = JSON.parse(
-      localStorage.getItem(WRONGS_KEY) || "[]"
-    );
-
-    return Array.isArray(wrongs)
-      ? wrongs
-      : [];
-  } catch {
-    return [];
-  }
+  return ApplicationState.readList(WRONGS_KEY);
 }
 
 function wrongKey(question) {
@@ -1005,10 +1002,7 @@ function addWrong(question) {
   if (!wrongs.includes(key)) {
     wrongs.push(key);
 
-    localStorage.setItem(
-      WRONGS_KEY,
-      JSON.stringify(wrongs)
-    );
+    ApplicationState.write(WRONGS_KEY, wrongs);
   }
 }
 
@@ -1020,10 +1014,7 @@ function removeWrong(question) {
   if (index >= 0) {
     wrongs.splice(index, 1);
 
-    localStorage.setItem(
-      WRONGS_KEY,
-      JSON.stringify(wrongs)
-    );
+    ApplicationState.write(WRONGS_KEY, wrongs);
   }
 }
 
@@ -1044,7 +1035,7 @@ function clearAllWrongs() {
     return;
   }
 
-  localStorage.removeItem(WRONGS_KEY);
+  ApplicationState.remove(WRONGS_KEY);
 
   showMessage(
     "Οι λάθος ερωτήσεις διαγράφηκαν."
@@ -1052,16 +1043,11 @@ function clearAllWrongs() {
 }
 
 function getQuestionStats() {
-  try {
-    const stored = JSON.parse(localStorage.getItem(QUESTION_STATS_KEY) || "{}");
-    return stored && typeof stored === "object" && !Array.isArray(stored) ? stored : {};
-  } catch {
-    return {};
-  }
+  return ApplicationState.readObject(QUESTION_STATS_KEY);
 }
 
 function saveQuestionStats(stats) {
-  localStorage.setItem(QUESTION_STATS_KEY, JSON.stringify(stats));
+  ApplicationState.write(QUESTION_STATS_KEY, stats);
 }
 
 function getQuestionStat(question) {
@@ -1131,18 +1117,13 @@ function recordQuestionAnswer(question, correct, elapsedMs) {
 }
 
 function getStoredList(key) {
-  try {
-    const value = JSON.parse(localStorage.getItem(key) || "[]");
-    return Array.isArray(value) ? value : [];
-  } catch {
-    return [];
-  }
+  return ApplicationState.readList(key);
 }
 
 function pushRecentKey(storageKey, key, limit) {
   const values = getStoredList(storageKey).filter(item => item !== key);
   values.unshift(key);
-  localStorage.setItem(storageKey, JSON.stringify(values.slice(0, limit)));
+  ApplicationState.write(storageKey, values.slice(0, limit));
 }
 
 function getRecentRegistryQuestions() {
@@ -1174,27 +1155,21 @@ function preferNotRecent(pool, recentSet) {
 
 function getStats() {
   const emptyStats = { total: 0, correct: 0, wrong: 0, tests: 0, byCategory: {} };
+  const stored = ApplicationState.readObject(STATS_KEY, emptyStats);
 
-  try {
-    const stored = JSON.parse(localStorage.getItem(STATS_KEY) || "null");
-    if (!stored || typeof stored !== "object") return emptyStats;
-
-    return {
-      total: Number(stored.total) || 0,
-      correct: Number(stored.correct) || 0,
-      wrong: Number(stored.wrong) || 0,
-      tests: Number(stored.tests) || 0,
-      byCategory: stored.byCategory && typeof stored.byCategory === "object"
-        ? stored.byCategory
-        : {}
-    };
-  } catch {
-    return emptyStats;
-  }
+  return {
+    total: Number(stored.total) || 0,
+    correct: Number(stored.correct) || 0,
+    wrong: Number(stored.wrong) || 0,
+    tests: Number(stored.tests) || 0,
+    byCategory: stored.byCategory && typeof stored.byCategory === "object"
+      ? stored.byCategory
+      : {}
+  };
 }
 
 function saveStats(stats) {
-  localStorage.setItem(STATS_KEY, JSON.stringify(stats));
+  ApplicationState.write(STATS_KEY, stats);
 }
 
 function recordAnswer(categoryId, correct) {
@@ -1283,7 +1258,7 @@ function resetStats() {
     "Θέλεις να μηδενίσεις όλα τα στατιστικά; Οι αγαπημένες και τα αποθηκευμένα λάθη δεν θα διαγραφούν."
   )) return;
 
-  localStorage.removeItem(STATS_KEY);
+  ApplicationState.remove(STATS_KEY);
   renderStats();
   showMessage("Τα στατιστικά μηδενίστηκαν.");
 }
@@ -1499,16 +1474,11 @@ async function openWorkBehaviour() {
 }
 
 function getWorkSeenIds() {
-  try {
-    const ids = JSON.parse(localStorage.getItem(WORK_SEEN_KEY) || "[]");
-    return Array.isArray(ids) ? ids : [];
-  } catch {
-    return [];
-  }
+  return ApplicationState.readList(WORK_SEEN_KEY);
 }
 
 function saveWorkSeenIds(ids) {
-  localStorage.setItem(WORK_SEEN_KEY, JSON.stringify(ids));
+  ApplicationState.write(WORK_SEEN_KEY, ids);
 }
 
 function chooseWorkTriads(count) {
@@ -1907,18 +1877,13 @@ function renderWorkResults(record) {
 }
 
 function getWorkHistory() {
-  try {
-    const history = JSON.parse(localStorage.getItem(WORK_HISTORY_KEY) || "[]");
-    return Array.isArray(history) ? history : [];
-  } catch {
-    return [];
-  }
+  return ApplicationState.readList(WORK_HISTORY_KEY);
 }
 
 function saveWorkHistoryRecord(record) {
   const history = getWorkHistory();
   history.unshift(record);
-  localStorage.setItem(WORK_HISTORY_KEY, JSON.stringify(history.slice(0, 50)));
+  ApplicationState.write(WORK_HISTORY_KEY, history.slice(0, 50));
 }
 
 function openWorkHistory() {
@@ -1968,7 +1933,7 @@ function renderWorkHistory() {
 function clearWorkHistory() {
   if (!confirm("Θέλεις να διαγράψεις όλο το ιστορικό εργασιακών συμπεριφορών;")) return;
 
-  localStorage.removeItem(WORK_HISTORY_KEY);
+  ApplicationState.remove(WORK_HISTORY_KEY);
   renderWorkHistory();
   showMessage("Το ιστορικό διαγράφηκε.");
 }
@@ -2608,18 +2573,13 @@ function calculateCatAbility(responses) {
 }
 
 function getCatHistory() {
-  try {
-    const value = JSON.parse(localStorage.getItem(CAT_HISTORY_KEY) || "[]");
-    return Array.isArray(value) ? value : [];
-  } catch {
-    return [];
-  }
+  return ApplicationState.readList(CAT_HISTORY_KEY);
 }
 
 function saveCatHistoryRecord(record) {
   const history = getCatHistory();
   history.push(record);
-  localStorage.setItem(CAT_HISTORY_KEY, JSON.stringify(history.slice(-100)));
+  ApplicationState.write(CAT_HISTORY_KEY, history.slice(-100));
 }
 
 function formatCatDuration(totalSeconds) {
@@ -2774,7 +2734,7 @@ function renderCatHistory() {
 
 function clearCatHistory() {
   if (!confirm("Θέλεις να διαγράψεις όλο το ιστορικό CAT;")) return;
-  localStorage.removeItem(CAT_HISTORY_KEY);
+  ApplicationState.remove(CAT_HISTORY_KEY);
   renderCatHistory();
 }
 
@@ -2835,25 +2795,16 @@ function localDateKey(date = new Date()) {
 }
 
 function getStudyPlan() {
-  try {
-    const plan = JSON.parse(localStorage.getItem(STUDY_PLAN_KEY) || "null");
-    return plan && typeof plan === "object" ? plan : null;
-  } catch {
-    return null;
-  }
+  const plan = ApplicationState.read(STUDY_PLAN_KEY, null);
+  return plan && typeof plan === "object" ? plan : null;
 }
 
 function getStudyPlanLog() {
-  try {
-    const log = JSON.parse(localStorage.getItem(STUDY_PLAN_LOG_KEY) || "{}");
-    return log && typeof log === "object" && !Array.isArray(log) ? log : {};
-  } catch {
-    return {};
-  }
+  return ApplicationState.readObject(STUDY_PLAN_LOG_KEY);
 }
 
 function saveStudyPlanLog(log) {
-  localStorage.setItem(STUDY_PLAN_LOG_KEY, JSON.stringify(log));
+  ApplicationState.write(STUDY_PLAN_LOG_KEY, log);
 }
 
 function updateStudyPlanLog(field, amount = 1) {
@@ -2966,11 +2917,11 @@ function saveStudyPlan() {
     return;
   }
   const existing = getStudyPlan();
-  localStorage.setItem(STUDY_PLAN_KEY, JSON.stringify({
+  ApplicationState.write(STUDY_PLAN_KEY, {
     targetDate, registry, cat, work,
     createdAt: existing?.createdAt || new Date().toISOString(),
     updatedAt: new Date().toISOString()
-  }));
+  });
   updateHomeDashboard();
   showMessage("Το Σχέδιο Μελέτης αποθηκεύτηκε.");
   openTodayPlan();
@@ -2979,8 +2930,8 @@ function saveStudyPlan() {
 function deleteStudyPlan() {
   if (!getStudyPlan()) { showMessage("Δεν υπάρχει ενεργό σχέδιο."); return; }
   if (!confirm("Θέλεις να διαγράψεις το ενεργό Σχέδιο Μελέτης;")) return;
-  localStorage.removeItem(STUDY_PLAN_KEY);
-  localStorage.removeItem(STUDY_PLAN_LOG_KEY);
+  ApplicationState.remove(STUDY_PLAN_KEY);
+  ApplicationState.remove(STUDY_PLAN_LOG_KEY);
   updateHomeDashboard();
   openStudyPlanHub();
 }

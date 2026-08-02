@@ -1,5 +1,18 @@
 # CHANGELOG.md
 
+## V14-002 — Application State Unification
+
+### State management
+- Προστέθηκε κοινός `ApplicationState` gateway για όλους τους Engines.
+- Ενοποιήθηκαν JSON parsing, fallbacks, writes και removals χωρίς αλλαγή των υπαρχόντων storage keys ή schemas.
+- Αφαιρέθηκαν οι επαναλαμβανόμενες άμεσες προσπελάσεις στο `localStorage` από τα domain helpers.
+- Διατηρήθηκε ο διαχωρισμός μόνο για state με διαφορετική σημασία, όπως CAT history, Work profile και Study Plan progress.
+
+### Έλεγχοι
+- Επιβεβαιώθηκε ότι answered, wrongs, favorites, statistics, recents και progress προσπελαύνονται μέσω του κοινού state gateway.
+
+---
+
 ## V14-001 — Study Plan Engine Unification
 
 ### Engine unification

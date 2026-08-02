@@ -134,6 +134,52 @@ async function main() {
     await expectVisible(page, "statsScreen");
   });
 
+  test("Shared Application State", async () => {
+    await reset();
+    await page.evaluate(() => {
+      const questionKey = "constitutional:constitutional-1";
+      localStorage.setItem("asepFavorites", JSON.stringify([questionKey]));
+      localStorage.setItem("asepWrongs", JSON.stringify([questionKey]));
+      localStorage.setItem("asepRecentRegistryQuestionsV1", JSON.stringify([questionKey]));
+      localStorage.setItem("asepWorkBehaviourSeen", JSON.stringify([1, 2]));
+      localStorage.setItem("asepStats", JSON.stringify({
+        total: 1,
+        correct: 0,
+        wrong: 1,
+        tests: 1,
+        byCategory: { constitutional: { total: 1, correct: 0, wrong: 1 } }
+      }));
+      localStorage.setItem("asepQuestionStatsV1", JSON.stringify({
+        [questionKey]: { appearances: 1, correct: 0, wrong: 1, answerCount: 1 }
+      }));
+    });
+
+    await invoke(page, "openStats");
+    await expectVisible(page, "statsScreen");
+    const displayedState = await page.evaluate(() => ({
+      total: document.getElementById("statsTotal").textContent,
+      wrong: document.getElementById("statsWrong").textContent,
+      favorites: document.getElementById("statsFavorites").textContent,
+      savedWrongs: document.getElementById("statsSavedWrongs").textContent
+    }));
+    if (
+      displayedState.total !== "1" ||
+      displayedState.wrong !== "1" ||
+      displayedState.favorites !== "1" ||
+      displayedState.savedWrongs !== "1"
+    ) {
+      throw new Error(`Shared statistics state mismatch: ${JSON.stringify(displayedState)}`);
+    }
+
+    await invoke(page, "openStudyFiltered", "favorites");
+    await invoke(page, "startStudy");
+    await expectVisible(page, "quizScreen");
+    const favoriteQuestion = await page.locator("#questionText").textContent();
+    if (favoriteQuestion !== "Η λαϊκή κυριαρχία, στο πολίτευμά μας, είναι:") {
+      throw new Error("Study did not read the shared favorites state");
+    }
+  });
+
   test("Study Planner", async () => {
     await reset();
     await invoke(page, "openStudyPlanHub");

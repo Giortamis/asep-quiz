@@ -2,7 +2,7 @@
 
 ## Project Status
 
-Active development. The project foundation, quality checks and common Study Plan orchestration are established.
+Active development. The project foundation, common orchestration and unified Application State are established.
 
 ## Completed Sprints
 
@@ -65,6 +65,16 @@ Active development. The project foundation, quality checks and common Study Plan
 - **Start Date:** 2026-08-02
 - **End Date:** 2026-08-02
 - **Notes:** Removed Study Plan selection duplication and delegated Registry and Work tasks to their existing shared entry points without UI or flow changes.
+
+### V14-002
+
+- **ID:** V14-002
+- **Title:** Ενοποίηση Application State
+- **Goal:** Route every Engine through one shared state-access layer without changing storage schemas or application behavior.
+- **Status:** Completed
+- **Start Date:** 2026-08-02
+- **End Date:** 2026-08-02
+- **Notes:** Unified all application storage reads, writes and removals behind `ApplicationState` while preserving domain-specific state semantics.
 
 ## Planned Sprints
 
