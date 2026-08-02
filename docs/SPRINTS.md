@@ -2,7 +2,7 @@
 
 ## Project Status
 
-Active development. The project foundation, quality checks, responsive layout and Epic Registry are established.
+Active development. The project foundation, quality checks and common Study Plan orchestration are established.
 
 ## Completed Sprints
 
@@ -55,6 +55,16 @@ Active development. The project foundation, quality checks, responsive layout an
 - **Start Date:** 2026-08-02
 - **End Date:** 2026-08-02
 - **Notes:** Added the initial Epic Registry and documented the `VISION → EPICS → SPRINTS` organization model.
+
+### V14-001
+
+- **ID:** V14-001
+- **Title:** Study Plan Engine Unification
+- **Goal:** Make the Study Plan an orchestration layer over the existing Registry, CAT and Work Behaviour engines.
+- **Status:** Completed
+- **Start Date:** 2026-08-02
+- **End Date:** 2026-08-02
+- **Notes:** Removed Study Plan selection duplication and delegated Registry and Work tasks to their existing shared entry points without UI or flow changes.
 
 ## Planned Sprints
 

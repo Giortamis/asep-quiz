@@ -1,5 +1,18 @@
 # CHANGELOG.md
 
+## V14-001 — Study Plan Engine Unification
+
+### Engine unification
+- Το Study Plan Registry αναθέτει πλέον την εκτέλεση στο υπάρχον Study pipeline.
+- Τα tasks νέων ερωτήσεων και επανάληψης χρησιμοποιούν τα κοινά `unread` και `wrongs` filters.
+- Τα Work Behaviour tasks αναθέτουν την εκτέλεση στο υπάρχον Work Practice entry point.
+- Αφαιρέθηκε η ανεξάρτητη σύνθεση και fallback λογική ερωτήσεων του Study Plan.
+
+### Έλεγχοι
+- Προστέθηκε smoke coverage για μοναδικές ερωτήσεις, shared appearances και review filters μέσα από το Study Plan.
+
+---
+
 ## DOC-002 — Epic Registry
 
 ### Τεκμηρίωση

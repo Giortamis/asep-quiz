@@ -140,6 +140,39 @@ async function main() {
     await expectVisible(page, "studyPlanHub");
     await invoke(page, "openStudyPlanSetup");
     await expectVisible(page, "studyPlanSetup");
+
+    await invoke(page, "startPlanRegistryTask", "new", 10);
+    await expectVisible(page, "quizScreen");
+
+    const selectedQuestions = [];
+    for (let index = 0; index < 10; index++) {
+      selectedQuestions.push(await page.locator("#questionText").textContent());
+      await invoke(page, "revealStudyAnswer");
+      await invoke(page, "nextQuestion");
+    }
+
+    if (new Set(selectedQuestions).size !== selectedQuestions.length) {
+      throw new Error("Study Plan returned duplicate registry questions");
+    }
+
+    const appearanceCount = await page.evaluate(() => {
+      const stats = JSON.parse(localStorage.getItem("asepQuestionStatsV1") || "{}");
+      return Object.values(stats).filter(item => Number(item.appearances) > 0).length;
+    });
+    if (appearanceCount !== 10) {
+      throw new Error(`Expected 10 shared appearance records, found ${appearanceCount}`);
+    }
+
+    await reset();
+    await page.evaluate(() => {
+      localStorage.setItem("asepWrongs", '["constitutional:constitutional-1"]');
+    });
+    await invoke(page, "startPlanRegistryTask", "review", 10);
+    await expectVisible(page, "quizScreen");
+    const reviewQuestion = await page.locator("#questionText").textContent();
+    if (reviewQuestion !== "Η λαϊκή κυριαρχία, στο πολίτευμά μας, είναι:") {
+      throw new Error("Study Plan review did not respect the shared wrong-question filter");
+    }
   });
 
   let failures = 0;

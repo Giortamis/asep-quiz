@@ -543,14 +543,13 @@ function updateStudyFilterState(filter) {
   }
 }
 
-async function startStudy() {
+async function startStudy(options = {}) {
   const studySelect = document.getElementById("studyCategory");
-  const selected = studySelect.dataset.filter || studySelect.value;
+  const selected = options.filter || studySelect.dataset.filter || studySelect.value;
 
-  studySeconds = parseInt(
-    document.getElementById("studySeconds").value,
-    10
-  );
+  studySeconds = Number.isInteger(options.studySeconds)
+    ? options.studySeconds
+    : parseInt(document.getElementById("studySeconds").value, 10);
 
   if (
     !Number.isInteger(studySeconds) ||
@@ -561,8 +560,9 @@ async function startStudy() {
     return;
   }
 
-  autoNext =
-    document.getElementById("autoNextStudy").checked;
+  autoNext = typeof options.autoNext === "boolean"
+    ? options.autoNext
+    : document.getElementById("autoNextStudy").checked;
 
   if (selected === "favorites") {
     currentQuestions = await loadQuestions(
@@ -609,10 +609,28 @@ async function startStudy() {
     currentQuestions = await loadQuestions(ids);
   }
 
-  if (
-    document.getElementById("randomStudy").checked
-  ) {
+  const randomize = typeof options.randomize === "boolean"
+    ? options.randomize
+    : document.getElementById("randomStudy").checked;
+
+  if (randomize) {
     currentQuestions = shuffle(currentQuestions);
+  }
+
+  if (Number.isInteger(options.limit) && options.limit > 0) {
+    currentQuestions = takeUnique(
+      currentQuestions,
+      options.limit,
+      new Set(),
+      new Set(getRecentRegistryQuestions())
+    );
+  }
+
+  if (options.planTaskKind) {
+    activeStudyPlanTask = {
+      kind: options.planTaskKind,
+      expected: currentQuestions.length
+    };
   }
 
   mode = "study";
@@ -1510,12 +1528,16 @@ function chooseWorkTriads(count) {
   return selected;
 }
 
-async function startWorkPractice() {
+async function startWorkPractice(options = {}) {
   try {
     await loadWorkBank();
 
-    const count = parseInt(document.getElementById("workCount").value, 10);
-    workTimedMode = document.getElementById("workTimed").checked;
+    const count = Number.isInteger(options.count)
+      ? Math.max(1, Math.min(76, options.count))
+      : parseInt(document.getElementById("workCount").value, 10);
+    workTimedMode = typeof options.timed === "boolean"
+      ? options.timed
+      : document.getElementById("workTimed").checked;
     workIsFullSimulation = false;
 
     const seconds = workTimedMode
@@ -1523,9 +1545,11 @@ async function startWorkPractice() {
       : 0;
 
     beginWorkAttempt(count, seconds);
+    return true;
   } catch (error) {
     console.error(error);
     showMessage("Δεν ήταν δυνατή η έναρξη της εξάσκησης.");
+    return false;
   }
 }
 
@@ -3010,23 +3034,14 @@ function planProgressRow(title,value,total,note){
 }
 
 async function startPlanRegistryTask(type,count){
-  const all=await loadQuestions(categories.map(c=>c.id));
-  const used=new Set();
-  const recent=new Set(getRecentRegistryQuestions());
-  let pool=[];
-  if(type==='new') pool=all.filter(isUnreadQuestion);
-  else {
-    const wrongSet=new Set(getWrongs());
-    const wrongPool=all.filter(q=>wrongSet.has(questionUniqueKey(q)));
-    const answeredPool=all.filter(q=>!isUnreadQuestion(q));
-    pool=[...wrongPool,...answeredPool];
-  }
-  currentQuestions=takeUnique(pool,count,used,recent);
-  if(currentQuestions.length<count) currentQuestions.push(...takeUnique(all,count-currentQuestions.length,used,recent));
-  if(!currentQuestions.length){showMessage("Δεν βρέθηκαν διαθέσιμες ερωτήσεις.");return;}
-  activeStudyPlanTask={kind:type==='new'?'registryNew':'registryReview',expected:currentQuestions.length};
-  mode='study';currentIndex=0;score=0;quizFinished=false;studySeconds=5;autoNext=false;
-  setFooter('registry');showOnly('quizScreen');renderQuestion();
+  return startStudy({
+    filter:type==='new'?'unread':'wrongs',
+    limit:count,
+    studySeconds:5,
+    autoNext:false,
+    randomize:false,
+    planTaskKind:type==='new'?'registryNew':'registryReview'
+  });
 }
 
 function completeActiveStudyPlanRegistryTask(){
@@ -3053,7 +3068,9 @@ function completeActiveStudyPlanCatTask(modeName,attempted,stoppedEarly){
 }
 
 async function startPlanWorkTask(count){
-  try {await loadWorkBank();activeStudyPlanTask={kind:'workTriads'};workTimedMode=false;workIsFullSimulation=false;beginWorkAttempt(Math.max(1,Math.min(76,count)),0);} catch(e){console.error(e);showMessage('Δεν ήταν δυνατή η έναρξη της άσκησης.');}
+  activeStudyPlanTask={kind:'workTriads'};
+  const started=await startWorkPractice({count,timed:false});
+  if(!started) activeStudyPlanTask=null;
 }
 
 function completeActiveStudyPlanWorkTask(completed){
