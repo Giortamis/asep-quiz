@@ -1,5 +1,19 @@
 # CHANGELOG.md
 
+## FS-3 — Responsive Layout & Adaptive UI
+
+### Responsive layout
+- Αυξήθηκε το αξιοποιήσιμο πλάτος της εφαρμογής σε desktop χωρίς αλλαγή του UI concept.
+- Ενοποιήθηκε το responsive grid σε τρεις βαθμίδες: desktop, tablet και mobile.
+- Βελτιώθηκαν οι αναλογίες, τα κενά και τα paddings των καρτών ανά viewport.
+- Προστέθηκε προστασία από overflow σε grids, κείμενα και σύνθετα στοιχεία.
+
+### Έλεγχοι
+- Επιβεβαιώθηκε η απουσία horizontal page overflow σε desktop, tablet και mobile.
+- Επαληθεύτηκαν οι υπάρχουσες λειτουργίες με τα FS-2 quality checks.
+
+---
+
 ## FS-2 — Data Validation and Smoke Tests
 
 ### Εργαλεία ποιότητας

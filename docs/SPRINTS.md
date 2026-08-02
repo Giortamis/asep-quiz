@@ -2,7 +2,7 @@
 
 ## Project Status
 
-Active development. The project foundation, sprint registry and permanent quality checks are established.
+Active development. The project foundation, quality checks and responsive layout are established.
 
 ## Completed Sprints
 
@@ -35,6 +35,16 @@ Active development. The project foundation, sprint registry and permanent qualit
 - **Start Date:** 2026-08-02
 - **End Date:** 2026-08-02
 - **Notes:** Added JSON data validation, browser smoke tests and documented quality-check commands without changing application code or UI.
+
+### FS-3
+
+- **ID:** FS-3
+- **Title:** Responsive Layout & Adaptive UI
+- **Goal:** Improve use of available space on desktop, tablet and mobile without changing functionality or the UI concept.
+- **Status:** Completed
+- **Start Date:** 2026-08-02
+- **End Date:** 2026-08-02
+- **Notes:** Added one responsive grid mechanism, fluid spacing and overflow protection across all main application sections.
 
 ## Planned Sprints
 
