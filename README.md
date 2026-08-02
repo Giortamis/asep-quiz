@@ -48,3 +48,33 @@ asep-quiz/
 ## Δεδομένα
 
 Το `data/categories.json` αποτελεί την κεντρική λίστα των θεματικών ενοτήτων. Κάθε εγγραφή συνδέεται με αντίστοιχο JSON αρχείο στον ίδιο φάκελο. Το συνολικό πλήθος ερωτήσεων υπολογίζεται δυναμικά από τα δηλωμένα counts αυτού του αρχείου.
+
+## Εργαλεία ποιότητας
+
+Τα εργαλεία ελέγχου βρίσκονται στον φάκελο `tools/` και απαιτούν Node.js. Για την πρώτη εκτέλεση:
+
+```powershell
+cd tools
+npm install
+npx playwright install chromium
+```
+
+Έλεγχος όλων των JSON δεδομένων:
+
+```powershell
+npm run validate
+```
+
+Τα ίδια κείμενα ερωτήσεων αναφέρονται ως warnings, επειδή μπορεί να έχουν διαφορετικές απαντήσεις. Τα δομικά σφάλματα, τα duplicate IDs, τα invalid correct indexes και τα λανθασμένα category totals αποτυγχάνουν το validation.
+
+Εκτέλεση των βασικών browser smoke tests:
+
+```powershell
+npm run smoke
+```
+
+Πλήρης έλεγχος validation και smoke tests:
+
+```powershell
+npm test
+```

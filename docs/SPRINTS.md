@@ -2,7 +2,7 @@
 
 ## Project Status
 
-Active development. The project foundation has been cleaned and the sprint registry is established.
+Active development. The project foundation, sprint registry and permanent quality checks are established.
 
 ## Completed Sprints
 
@@ -25,6 +25,16 @@ Active development. The project foundation has been cleaned and the sprint regis
 - **Start Date:** 2026-08-02
 - **End Date:** 2026-08-02
 - **Notes:** Added the sprint registry and recorded the change in the project changelog.
+
+### FS-2
+
+- **ID:** FS-2
+- **Title:** Προσθήκη Data Validation και Smoke Tests
+- **Goal:** Create a permanent internal quality-check mechanism for future project changes.
+- **Status:** Completed
+- **Start Date:** 2026-08-02
+- **End Date:** 2026-08-02
+- **Notes:** Added JSON data validation, browser smoke tests and documented quality-check commands without changing application code or UI.
 
 ## Planned Sprints
 

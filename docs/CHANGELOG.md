@@ -1,5 +1,18 @@
 # CHANGELOG.md
 
+## FS-2 — Data Validation and Smoke Tests
+
+### Εργαλεία ποιότητας
+- Προστέθηκε validation για JSON, IDs, κείμενα ερωτήσεων, correct indexes και category totals.
+- Προστέθηκαν browser smoke tests για τις βασικές λειτουργίες της εφαρμογής.
+- Προστέθηκε ενιαία εντολή εκτέλεσης όλων των quality checks.
+
+### Τεκμηρίωση
+- Προστέθηκαν στο README οδηγίες εγκατάστασης και χρήσης των εργαλείων.
+- Ενημερώθηκε το Sprint Registry με την ολοκλήρωση του FS-2.
+
+---
+
 ## DOC-001 — Sprint Registry
 
 ### Τεκμηρίωση

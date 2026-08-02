@@ -1,0 +1,14 @@
+{
+  "name": "asepia-quality-tools",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Data validation and smoke tests for ASEPIA",
+  "scripts": {
+    "validate": "node validate-data.js",
+    "smoke": "node smoke-tests.js",
+    "test": "npm run validate && npm run smoke"
+  },
+  "devDependencies": {
+    "playwright": "^1.55.0"
+  }
+}
