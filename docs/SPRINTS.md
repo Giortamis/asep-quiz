@@ -2,7 +2,7 @@
 
 ## Project Status
 
-Active development. EPIC-002 is in progress with the Smart Welcome Hero Card MVP.
+Active development. EPIC-002 is in progress with an adaptive editorial desktop Hero and the existing tablet/mobile Hero Card.
 
 ## Completed Sprints
 
@@ -85,6 +85,16 @@ Active development. EPIC-002 is in progress with the Smart Welcome Hero Card MVP
 - **Start Date:** 2026-08-02
 - **End Date:** 2026-08-02
 - **Notes:** Added responsive Hero Card placement, time-based greetings, optional stored name and 24 non-repeating motivational messages.
+
+### V14-004
+
+- **ID:** V14-004
+- **Title:** Smart Welcome Engine – Phase 2 (Adaptive Desktop Hero)
+- **Goal:** Give the desktop welcome area a more human, premium editorial presentation while preserving tablet and mobile.
+- **Status:** Completed
+- **Start Date:** 2026-08-02
+- **End Date:** 2026-08-02
+- **Notes:** Removed the desktop card container, centered the Hero content and added a clearly marked temporary ASEPIA wordmark pending the official logo asset.
 
 ## Planned Sprints
 

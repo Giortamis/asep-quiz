@@ -1,5 +1,15 @@
 # CHANGELOG.md
 
+## V14-004 — Smart Welcome Engine Phase 2
+
+### Adaptive Desktop Hero
+- Η desktop Hero Card μετατράπηκε σε κεντραρισμένο editorial Hero Section χωρίς περίγραμμα, background ή σκιά.
+- Διατηρήθηκε η ίδια θέση στο desktop grid και προστέθηκε περισσότερος λευκός χώρος.
+- Προστέθηκε διακριτικό προσωρινό ASEPIA wordmark, με σαφή ένδειξη αντικατάστασης όταν παραδοθεί το επίσημο logo asset.
+- Τα tablet και mobile Hero Card styles παρέμειναν αμετάβλητα.
+
+---
+
 ## V14-003 — Smart Welcome Engine Phase 1
 
 ### Hero Card MVP
