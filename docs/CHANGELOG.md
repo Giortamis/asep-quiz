@@ -1,5 +1,18 @@
 # CHANGELOG.md
 
+## V14-003 — Smart Welcome Engine Phase 1
+
+### Hero Card MVP
+- Προστέθηκε ανεξάρτητη, μη διαδραστική Hero Card στην Αρχική οθόνη.
+- Προστέθηκαν τέσσερις χαιρετισμοί ανά ώρα και προαιρετική εμφάνιση αποθηκευμένου ονόματος.
+- Προστέθηκαν 24 σύντομα ελληνικά motivational messages χωρίς συνεχόμενη επανάληψη.
+- Η Hero Card συμπληρώνει το desktop grid και προηγείται των menu cards σε tablet/mobile.
+
+### Epic
+- Το EPIC-002 — Smart Welcome Engine τέθηκε σε κατάσταση `In Progress`.
+
+---
+
 ## V14-002 — Application State Unification
 
 ### State management

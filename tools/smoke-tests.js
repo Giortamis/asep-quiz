@@ -80,6 +80,45 @@ async function main() {
     await expectVisible(page, "home");
   });
 
+  test("Smart Welcome Hero Card", async () => {
+    await reset();
+    const hero = page.locator("#smartWelcomeCard");
+    await hero.waitFor({ state: "visible", timeout: 5000 });
+    if (await hero.locator("button").count() !== 0) {
+      throw new Error("Hero Card must not contain buttons");
+    }
+
+    const welcomeChecks = await page.evaluate(() => {
+      const greetings = [
+        getWelcomeGreeting(8),
+        getWelcomeGreeting(13),
+        getWelcomeGreeting(17),
+        getWelcomeGreeting(22)
+      ];
+      sessionStorage.removeItem("asepWelcomeLastMessage");
+      const firstMessage = selectWelcomeMessage(0);
+      const secondMessage = selectWelcomeMessage(0);
+      return { greetings, firstMessage, secondMessage };
+    });
+
+    const greetingTexts = welcomeChecks.greetings.map(item => item.text);
+    if (greetingTexts.join("|") !== "Καλημέρα|Καλό μεσημέρι|Καλό απόγευμα|Καλησπέρα") {
+      throw new Error(`Unexpected time greetings: ${greetingTexts.join(", ")}`);
+    }
+    if (welcomeChecks.firstMessage === welcomeChecks.secondMessage) {
+      throw new Error("Hero Card repeated the same message consecutively");
+    }
+
+    await page.evaluate(() => {
+      localStorage.setItem("asepUserName", JSON.stringify("Γιώργο"));
+    });
+    await invoke(page, "goHome");
+    const namedGreeting = await page.locator("#welcomeGreeting").textContent();
+    if (!namedGreeting.includes("Γιώργο")) {
+      throw new Error("Hero Card did not display the stored user name");
+    }
+  });
+
   test("Category loading", async () => {
     await reset();
     const count = await page.locator(".category-check").count();

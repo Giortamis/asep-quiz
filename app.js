@@ -14,6 +14,35 @@ const RECENT_CAT_LIMIT = 80;
 const WORK_HISTORY_KEY = "asepWorkBehaviourHistory";
 const WORK_SEEN_KEY = "asepWorkBehaviourSeen";
 const WORK_DATA_URL = "data/work_behaviour.json?v=11";
+const WELCOME_USER_NAME_KEY = "asepUserName";
+const WELCOME_LAST_MESSAGE_KEY = "asepWelcomeLastMessage";
+
+const WELCOME_MESSAGES = [
+  "Κάθε μικρό βήμα χτίζει σταθερή πρόοδο.",
+  "Η συνέπεια σήμερα κάνει τη διαφορά αύριο.",
+  "Λίγη συγκεντρωμένη μελέτη αξίζει πολύ.",
+  "Η πρόοδος έρχεται μία ερώτηση τη φορά.",
+  "Συνέχισε με καθαρό στόχο και σταθερό ρυθμό.",
+  "Κάθε επανάληψη ενισχύει τη γνώση σου.",
+  "Η σημερινή προσπάθεια είναι επένδυση στον στόχο σου.",
+  "Μείνε προσηλωμένος στο επόμενο ουσιαστικό βήμα.",
+  "Η καλή προετοιμασία χτίζεται με συνέπεια.",
+  "Δώσε χρόνο στη γνώση να γίνει σιγουριά.",
+  "Η συγκέντρωση μετατρέπει τον χρόνο σε πρόοδο.",
+  "Κράτησε σταθερό ρυθμό και καθαρή σκέψη.",
+  "Κάθε σωστή συνήθεια ενισχύει την προετοιμασία σου.",
+  "Σήμερα μπορείς να γνωρίζεις λίγο περισσότερα.",
+  "Η υπομονή και η επανάληψη φέρνουν αποτέλεσμα.",
+  "Προχώρα οργανωμένα, χωρίς περιττή πίεση.",
+  "Η γνώση δυναμώνει κάθε φορά που επιστρέφεις.",
+  "Ένας σαφής στόχος κάνει τη μελέτη αποτελεσματική.",
+  "Εστίασε στην ποιότητα της σημερινής προσπάθειας.",
+  "Η σταθερότητα είναι ισχυρότερη από τη βιασύνη.",
+  "Κάθε ολοκληρωμένη ενότητα σε φέρνει πιο κοντά.",
+  "Δούλεψε μεθοδικά και εμπιστεύσου την πρόοδό σου.",
+  "Η προετοιμασία σου εξελίσσεται μαζί με κάθε προσπάθεια.",
+  "Συνέχισε ήρεμα, οργανωμένα και αποφασιστικά."
+];
 
 const ApplicationState = {
   read(key, fallback) {
@@ -187,8 +216,50 @@ function goHome() {
   clearWorkTimer();
   clearCatTimer();
   updateHomeDashboard();
+  renderSmartWelcome();
   setFooter("home");
   showOnly("home");
+}
+
+function getWelcomeGreeting(hour = new Date().getHours()) {
+  if (hour >= 5 && hour < 12) return {icon:"☀️", text:"Καλημέρα"};
+  if (hour >= 12 && hour < 15) return {icon:"🌤️", text:"Καλό μεσημέρι"};
+  if (hour >= 15 && hour < 19) return {icon:"🌇", text:"Καλό απόγευμα"};
+  return {icon:"🌙", text:"Καλησπέρα"};
+}
+
+function selectWelcomeMessage(randomValue = Math.random()) {
+  const previous = sessionStorage.getItem(WELCOME_LAST_MESSAGE_KEY);
+  const initialIndex = Math.min(
+    WELCOME_MESSAGES.length - 1,
+    Math.floor(Math.max(0, Math.min(0.999999, randomValue)) * WELCOME_MESSAGES.length)
+  );
+  let index = initialIndex;
+
+  if (WELCOME_MESSAGES.length > 1 && WELCOME_MESSAGES[index] === previous) {
+    index = (index + 1) % WELCOME_MESSAGES.length;
+  }
+
+  const message = WELCOME_MESSAGES[index];
+  sessionStorage.setItem(WELCOME_LAST_MESSAGE_KEY, message);
+  return message;
+}
+
+function renderSmartWelcome() {
+  const greetingElement = document.getElementById("welcomeGreeting");
+  const iconElement = document.getElementById("welcomeIcon");
+  const messageElement = document.getElementById("welcomeMessage");
+  if (!greetingElement || !iconElement || !messageElement) return;
+
+  const greeting = getWelcomeGreeting();
+  const storedName = ApplicationState.read(WELCOME_USER_NAME_KEY, "");
+  const userName = typeof storedName === "string" ? storedName.trim() : "";
+
+  iconElement.textContent = greeting.icon;
+  greetingElement.textContent = userName
+    ? `${greeting.text}, ${userName}!`
+    : `${greeting.text}!`;
+  messageElement.textContent = selectWelcomeMessage();
 }
 
 function openRegistryHub() {

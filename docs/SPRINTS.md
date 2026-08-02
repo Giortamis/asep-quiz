@@ -2,7 +2,7 @@
 
 ## Project Status
 
-Active development. The project foundation, common orchestration and unified Application State are established.
+Active development. EPIC-002 is in progress with the Smart Welcome Hero Card MVP.
 
 ## Completed Sprints
 
@@ -75,6 +75,16 @@ Active development. The project foundation, common orchestration and unified App
 - **Start Date:** 2026-08-02
 - **End Date:** 2026-08-02
 - **Notes:** Unified all application storage reads, writes and removals behind `ApplicationState` while preserving domain-specific state semantics.
+
+### V14-003
+
+- **ID:** V14-003
+- **Title:** Smart Welcome Engine – Phase 1 (Hero Card MVP)
+- **Goal:** Add the first personal welcome component without affecting existing application functionality.
+- **Status:** Completed
+- **Start Date:** 2026-08-02
+- **End Date:** 2026-08-02
+- **Notes:** Added responsive Hero Card placement, time-based greetings, optional stored name and 24 non-repeating motivational messages.
 
 ## Planned Sprints
 
