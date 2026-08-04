@@ -71,3 +71,18 @@ SPRINTS
 - **Title:** Android / iOS
 - **Status:** Planned
 - **Description:** Διάθεση του ASEPIA σε Android και iOS με κοινή κατεύθυνση προϊόντος και εμπειρία χρήσης.
+
+## EPIC-007 — Project Governance & Documentation
+
+- **ID:** EPIC-007
+- **Title:** Project Governance & Documentation
+- **Status:** In Progress
+- **Description:** Δημιουργία πλήρους, συνεπούς και επαναχρησιμοποιήσιμου συστήματος τεκμηρίωσης και διακυβέρνησης, ώστε το ASEPIA να μπορεί να συνεχίζεται από νέο developer ή AI χωρίς εξάρτηση από προηγούμενες συνομιλίες.
+
+Το Epic:
+
+- δεν προσθέτει λειτουργίες στην εφαρμογή,
+- δεν αλλάζει business logic,
+- δεν αλλάζει UI,
+- δεν περιλαμβάνει refactor,
+- υλοποιείται μέσω διαδοχικών documentation Sprints.

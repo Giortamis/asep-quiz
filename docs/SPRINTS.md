@@ -2,7 +2,7 @@
 
 ## Project Status
 
-Active development. EPIC-002 is in progress with an adaptive editorial desktop Hero and the existing tablet/mobile Hero Card.
+Active development. EPIC-002 and EPIC-007 are in progress. V14-005 remains blocked pending an official logo asset.
 
 ## Completed Sprints
 
@@ -95,6 +95,16 @@ Active development. EPIC-002 is in progress with an adaptive editorial desktop H
 - **Start Date:** 2026-08-02
 - **End Date:** 2026-08-02
 - **Notes:** Removed the desktop card container, centered the Hero content and added a clearly marked temporary ASEPIA wordmark pending the official logo asset.
+
+### DOC-003
+
+- **ID:** DOC-003
+- **Title:** Documentation Inventory & Information Architecture
+- **Goal:** Οργάνωση της αρχιτεκτονικής τεκμηρίωσης, καθορισμός ρόλων εγγράφων και επίσημη έναρξη του EPIC-007.
+- **Status:** Completed
+- **Start Date:** 2026-08-04
+- **End Date:** 2026-08-04
+- **Notes:** Δημιουργήθηκε το documentation index, ορίστηκε η ιεραρχία πηγών και διορθώθηκαν οι βασικές ασυνέπειες ονοματολογίας και αρμοδιότητας εγγράφων.
 
 ## Planned Sprints
 

@@ -1,6 +1,6 @@
 # VISION.md
 
-# ASEP Smart Prep
+# ASEPIA
 ## Vision Document
 
 ## Αποστολή

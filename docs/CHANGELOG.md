@@ -1,5 +1,17 @@
 # CHANGELOG.md
 
+## DOC-003 — Documentation Inventory & Information Architecture
+
+### Documentation governance
+- Δημιουργήθηκε το `docs/README.md` ως κεντρικός χάρτης της τεκμηρίωσης.
+- Καθορίστηκε η σειρά ανάγνωσης και η ιεραρχία πηγών αλήθειας.
+- Καταγράφηκαν οι αρμοδιότητες των υπαρχόντων και προγραμματισμένων εγγράφων.
+- Προστέθηκε το EPIC-007.
+- Διορθώθηκε η ονοματολογία ASEPIA στα `PROJECT_RULES.md` και `VISION.md`.
+- Διευκρινίστηκε ότι το `PROJECT_CHARTER.md` είναι το ανώτατο κανονιστικό έγγραφο.
+
+---
+
 ## V14-004 — Smart Welcome Engine Phase 2
 
 ### Adaptive Desktop Hero
