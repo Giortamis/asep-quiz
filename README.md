@@ -22,6 +22,8 @@ python -m http.server 8000
 
 ```text
 asep-quiz/
+├── PROJECT_BOOTSTRAP.md    # Onboarding και τρέχουσα κατάσταση
+├── PROJECT_CHARTER.md      # Αποστολή, αρχές και διακυβέρνηση
 ├── index.html              # Δομή και οθόνες της εφαρμογής
 ├── style.css               # Εμφάνιση και responsive layout
 ├── app.js                  # Λογική εφαρμογής και engines
