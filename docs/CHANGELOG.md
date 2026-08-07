@@ -1,5 +1,15 @@
 # CHANGELOG.md
 
+## DOC-004 — Core Project Context
+
+### Documentation
+- Δημιουργήθηκε το `docs/PROJECT_CONTEXT.md`.
+- Καταγράφηκαν η ταυτότητα, τα modules, η τεχνική βάση και η φιλοσοφία του ASEPIA.
+- Διαχωρίστηκαν σαφώς implemented, in-progress και planned δυνατότητες.
+- Ενημερώθηκαν οι documentation references.
+
+---
+
 ## DOC-003 — Documentation Inventory & Information Architecture
 
 ### Documentation governance

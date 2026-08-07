@@ -33,6 +33,7 @@ asep-quiz/
 │   └── *.json              # Τράπεζες ερωτήσεων ανά ενότητα
 ├── docs/
 │   ├── README.md           # Documentation index και σειρά ανάγνωσης
+│   ├── PROJECT_CONTEXT.md  # Συνολική περιγραφή προϊόντος και τεχνικής βάσης
 │   ├── VISION.md           # Όραμα προϊόντος
 │   ├── EPICS.md            # Μητρώο μεγάλων δυνατοτήτων
 │   ├── SPRINTS.md          # Μητρώο Sprints

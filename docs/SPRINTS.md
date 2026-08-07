@@ -106,6 +106,16 @@ Active development. EPIC-002 and EPIC-007 are in progress. V14-005 remains block
 - **End Date:** 2026-08-04
 - **Notes:** Δημιουργήθηκε το documentation index, ορίστηκε η ιεραρχία πηγών και διορθώθηκαν οι βασικές ασυνέπειες ονοματολογίας και αρμοδιότητας εγγράφων.
 
+### DOC-004
+
+- **ID:** DOC-004
+- **Title:** Core Project Context
+- **Goal:** Δημιουργία της κεντρικής συνολικής περιγραφής του ASEPIA για γρήγορο και αξιόπιστο onboarding.
+- **Status:** Completed
+- **Start Date:** 2026-08-07
+- **End Date:** 2026-08-07
+- **Notes:** Δημιουργήθηκε το `PROJECT_CONTEXT.md` και ενσωματώθηκε στο documentation architecture.
+
 ## Planned Sprints
 
 No sprints are currently planned.

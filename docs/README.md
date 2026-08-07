@@ -10,14 +10,15 @@
 
 1. `PROJECT_BOOTSTRAP.md`
 2. `PROJECT_CHARTER.md`
-3. `docs/PROJECT_RULES.md`
-4. `docs/DECISIONS.md`
-5. `docs/SPRINTS.md`
-6. `docs/CHANGELOG.md`
-7. `docs/EPICS.md`
-8. `docs/VISION.md`
-9. `README.md`
-10. Τα υπόλοιπα ειδικά handbook files όταν δημιουργηθούν.
+3. `docs/PROJECT_CONTEXT.md`
+4. `docs/PROJECT_RULES.md`
+5. `docs/DECISIONS.md`
+6. `docs/SPRINTS.md`
+7. `docs/CHANGELOG.md`
+8. `docs/EPICS.md`
+9. `docs/VISION.md`
+10. `README.md`
+11. Τα υπόλοιπα ειδικά handbook files όταν δημιουργηθούν.
 
 ## C. Ιεραρχία πηγών αλήθειας
 
@@ -38,6 +39,7 @@
 | `PROJECT_CHARTER.md` | Active — Living Document | Ανώτατο κανονιστικό έγγραφο | Αποστολή, θεμελιώδεις αρχές, scope και διακυβέρνηση | Καθημερινό changelog ή τεχνική αποτύπωση τρέχουσας υλοποίησης | Όταν αλλάζει θεμελιώδης αρχή, στρατηγική ή διακυβέρνηση |
 | `README.md` | Active | Τεχνική είσοδος repository | Περιγραφή project, εκτέλεση, δομή και quality commands | Πλήρεις project rules, αποφάσεις ή Sprint history | Όταν αλλάζει η τεχνική χρήση ή η δομή του repository |
 | `docs/README.md` | Active | Documentation index | Σειρά ανάγνωσης, ιεραρχία και μητρώο εγγράφων | Αναλυτικό περιεχόμενο που ανήκει στα επιμέρους έγγραφα | Όταν προστίθεται, αφαιρείται ή αλλάζει ρόλο κεντρικό έγγραφο |
+| `docs/PROJECT_CONTEXT.md` | Active — Living Document | Core Project Overview | Κεντρική συνολική περιγραφή του προϊόντος, των modules, της τεχνικής βάσης και της φιλοσοφίας του ASEPIA | Live Sprint status, αναλυτικό changelog ή πλήρες architecture reference | Όταν αλλάζει ουσιαστικά το προϊόν, τα βασικά modules ή η τεχνική βάση |
 | `docs/PROJECT_RULES.md` | Active | Πρακτικοί κλειδωμένοι κανόνες | Εφαρμόσιμοι project, architecture και product rules υπό το Charter | Αποστολή έργου, ιστορικό αλλαγών ή αιτιολόγηση αποφάσεων | Όταν εγκρίνεται ή αλλάζει πρακτικός κλειδωμένος κανόνας |
 | `docs/DECISIONS.md` | Active | Μητρώο εγκεκριμένων αποφάσεων | Κλειδωμένες αποφάσεις και το αντικείμενό τους | Sprint status ή γενικές οδηγίες εκτέλεσης | Όταν εγκρίνεται, αλλάζει ή αντικαθίσταται σημαντική απόφαση |
 | `docs/SPRINTS.md` | Active | Sprint registry | Completed, planned και current Sprints | Αναλυτικό diff ή μακροπρόθεσμο product vision | Σε κάθε εγκεκριμένη μεταβολή κατάστασης Sprint |
@@ -53,7 +55,6 @@
 
 Τα παρακάτω είναι **Planned — Not Yet Created**:
 
-- `docs/PROJECT_CONTEXT.md`
 - `docs/AI_RULES.md`
 - `docs/ARCHITECTURE.md`
 - `docs/DEVELOPMENT_GUIDE.md`
