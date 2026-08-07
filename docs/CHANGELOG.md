@@ -4,7 +4,7 @@
 
 ### Documentation
 - Δημιουργήθηκε το `docs/ARCHITECTURE.md` ως τεχνική αποτύπωση της τρέχουσας υλοποίησης.
-- Δημιουργήθηκε το `docs/DEVELOPMENT_GUIDE.md` με setup, change paths, validation και Definition of Done.
+- Δημιουργήθηκε το `docs/DEVELOPMENT_GUIDE.md` με setup, roles, standard flow, implementation/review rules, Git delivery, validation και Completion Report template.
 - Καταγράφηκαν οι υπάρχοντες engines, τα data και persistence contracts και τα architecture boundaries χωρίς αλλαγή application scope.
 - Ενημερώθηκαν το documentation index, το project context, το repository README και το Sprint Registry.
 

@@ -124,7 +124,7 @@ Active development. EPIC-002 and EPIC-007 are in progress. V14-005 remains block
 - **Status:** Completed
 - **Start Date:** 2026-08-07
 - **End Date:** 2026-08-07
-- **Notes:** Δημιουργήθηκαν τα `ARCHITECTURE.md` και `DEVELOPMENT_GUIDE.md`, καταγράφηκαν engines, contracts, change paths και quality workflow και ενημερώθηκε η documentation architecture.
+- **Notes:** Δημιουργήθηκαν τα `ARCHITECTURE.md` και `DEVELOPMENT_GUIDE.md`, καταγράφηκαν engines, contracts, roles, change paths, review/approval gates, Git delivery και quality workflow και ενημερώθηκε η documentation architecture.
 
 ## Planned Sprints
 
