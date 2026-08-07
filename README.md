@@ -34,6 +34,8 @@ asep-quiz/
 ├── docs/
 │   ├── README.md           # Documentation index και σειρά ανάγνωσης
 │   ├── PROJECT_CONTEXT.md  # Συνολική περιγραφή προϊόντος και τεχνικής βάσης
+│   ├── ARCHITECTURE.md     # Τρέχουσα τεχνική αρχιτεκτονική και contracts
+│   ├── DEVELOPMENT_GUIDE.md # Development και validation workflow
 │   ├── VISION.md           # Όραμα προϊόντος
 │   ├── EPICS.md            # Μητρώο μεγάλων δυνατοτήτων
 │   ├── SPRINTS.md          # Μητρώο Sprints

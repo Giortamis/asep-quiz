@@ -136,7 +136,7 @@ docs/
 
 Η εφαρμογή είναι προς το παρόν monolithic vanilla web application. Δεν χρησιμοποιεί framework ή build system. Τα δεδομένα φορτώνονται από JSON αρχεία και η τοπική πρόοδος αποθηκεύεται μέσω browser persistence. Η πρόσβαση στο application state γίνεται μέσω του κοινού `ApplicationState` gateway.
 
-Η πλήρης τεχνική ανάλυση δεν ανήκει στο παρόν αρχείο και θα καταγραφεί σε μελλοντικό, εγκεκριμένο `docs/ARCHITECTURE.md`.
+Η πλήρης τεχνική ανάλυση δεν ανήκει στο παρόν αρχείο και καταγράφεται στο `docs/ARCHITECTURE.md`.
 
 ## Κοινό Application State
 
@@ -284,6 +284,8 @@ Release / Deploy
 
 ## Related Documentation
 
+- `docs/ARCHITECTURE.md` — τεχνική αρχιτεκτονική, engines και contracts.
+- `docs/DEVELOPMENT_GUIDE.md` — τοπική εκτέλεση, αλλαγές και validation workflow.
 - `PROJECT_BOOTSTRAP.md` — τρέχουσα κατάσταση.
 - `PROJECT_CHARTER.md` — διακυβέρνηση και θεμελιώδεις αρχές.
 - `docs/PROJECT_RULES.md` — πρακτικοί κλειδωμένοι κανόνες.

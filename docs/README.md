@@ -11,14 +11,16 @@
 1. `PROJECT_BOOTSTRAP.md`
 2. `PROJECT_CHARTER.md`
 3. `docs/PROJECT_CONTEXT.md`
-4. `docs/PROJECT_RULES.md`
-5. `docs/DECISIONS.md`
-6. `docs/SPRINTS.md`
-7. `docs/CHANGELOG.md`
-8. `docs/EPICS.md`
-9. `docs/VISION.md`
-10. `README.md`
-11. Τα υπόλοιπα ειδικά handbook files όταν δημιουργηθούν.
+4. `docs/ARCHITECTURE.md`
+5. `docs/DEVELOPMENT_GUIDE.md`
+6. `docs/PROJECT_RULES.md`
+7. `docs/DECISIONS.md`
+8. `docs/SPRINTS.md`
+9. `docs/CHANGELOG.md`
+10. `docs/EPICS.md`
+11. `docs/VISION.md`
+12. `README.md`
+13. Τα υπόλοιπα ειδικά handbook files όταν δημιουργηθούν.
 
 ## C. Ιεραρχία πηγών αλήθειας
 
@@ -40,6 +42,8 @@
 | `README.md` | Active | Τεχνική είσοδος repository | Περιγραφή project, εκτέλεση, δομή και quality commands | Πλήρεις project rules, αποφάσεις ή Sprint history | Όταν αλλάζει η τεχνική χρήση ή η δομή του repository |
 | `docs/README.md` | Active | Documentation index | Σειρά ανάγνωσης, ιεραρχία και μητρώο εγγράφων | Αναλυτικό περιεχόμενο που ανήκει στα επιμέρους έγγραφα | Όταν προστίθεται, αφαιρείται ή αλλάζει ρόλο κεντρικό έγγραφο |
 | `docs/PROJECT_CONTEXT.md` | Active — Living Document | Core Project Overview | Κεντρική συνολική περιγραφή του προϊόντος, των modules, της τεχνικής βάσης και της φιλοσοφίας του ASEPIA | Live Sprint status, αναλυτικό changelog ή πλήρες architecture reference | Όταν αλλάζει ουσιαστικά το προϊόν, τα βασικά modules ή η τεχνική βάση |
+| `docs/ARCHITECTURE.md` | Active — Living Document | Technical Architecture Reference | Τρέχουσα runtime δομή, engines, data/state contracts και τεχνικά boundaries | Roadmap, μη υλοποιημένη target architecture ή καθημερινές οδηγίες εκτέλεσης | Όταν αλλάζει η πραγματική αρχιτεκτονική ή τεχνικό contract |
+| `docs/DEVELOPMENT_GUIDE.md` | Active — Living Document | Contributor Workflow Reference | Setup, τοπική εκτέλεση, change paths, validation και Definition of Done | Product scope, αρχιτεκτονικές αποφάσεις ή Sprint history | Όταν αλλάζει το development ή quality workflow |
 | `docs/PROJECT_RULES.md` | Active | Πρακτικοί κλειδωμένοι κανόνες | Εφαρμόσιμοι project, architecture και product rules υπό το Charter | Αποστολή έργου, ιστορικό αλλαγών ή αιτιολόγηση αποφάσεων | Όταν εγκρίνεται ή αλλάζει πρακτικός κλειδωμένος κανόνας |
 | `docs/DECISIONS.md` | Active | Μητρώο εγκεκριμένων αποφάσεων | Κλειδωμένες αποφάσεις και το αντικείμενό τους | Sprint status ή γενικές οδηγίες εκτέλεσης | Όταν εγκρίνεται, αλλάζει ή αντικαθίσταται σημαντική απόφαση |
 | `docs/SPRINTS.md` | Active | Sprint registry | Completed, planned και current Sprints | Αναλυτικό diff ή μακροπρόθεσμο product vision | Σε κάθε εγκεκριμένη μεταβολή κατάστασης Sprint |
@@ -56,8 +60,6 @@
 Τα παρακάτω είναι **Planned — Not Yet Created**:
 
 - `docs/AI_RULES.md`
-- `docs/ARCHITECTURE.md`
-- `docs/DEVELOPMENT_GUIDE.md`
 - `docs/UI_GUIDELINES.md`
 - `docs/BRAND_GUIDELINES.md`
 - `docs/ROADMAP.md`

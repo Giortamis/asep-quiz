@@ -556,7 +556,7 @@ Warnings για πιθανώς όμοιο κείμενο ερωτήσεων δε
 - Το **EPIC-007 — Project Governance & Documentation** είναι πλέον επίσημο και βρίσκεται σε εξέλιξη.
 - Το **DOC-003 — Documentation Inventory & Information Architecture** ολοκληρώθηκε.
 - Το **DOC-004 — Core Project Context** ολοκληρώθηκε και το `docs/PROJECT_CONTEXT.md` αποτελεί πλέον ενεργό μέρος της documentation architecture.
-- Επόμενο documentation Sprint είναι το **DOC-005 — Architecture & Development Workflow**, χωρίς να θεωρείται ενεργό πριν εγκριθεί σχετικό Specification.
+- Το **DOC-005 — Architecture & Development Workflow** ολοκληρώθηκε και τα `docs/ARCHITECTURE.md` και `docs/DEVELOPMENT_GUIDE.md` αποτελούν πλέον ενεργά handbook files.
 - Το **V14-005 — Mobile ASEPIA brand integration** παραμένει blocked λόγω έλλειψης επίσημου logo asset.
 
 ---

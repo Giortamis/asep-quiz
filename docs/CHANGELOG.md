@@ -1,5 +1,15 @@
 # CHANGELOG.md
 
+## DOC-005 — Architecture & Development Workflow
+
+### Documentation
+- Δημιουργήθηκε το `docs/ARCHITECTURE.md` ως τεχνική αποτύπωση της τρέχουσας υλοποίησης.
+- Δημιουργήθηκε το `docs/DEVELOPMENT_GUIDE.md` με setup, change paths, validation και Definition of Done.
+- Καταγράφηκαν οι υπάρχοντες engines, τα data και persistence contracts και τα architecture boundaries χωρίς αλλαγή application scope.
+- Ενημερώθηκαν το documentation index, το project context, το repository README και το Sprint Registry.
+
+---
+
 ## DOC-004 — Core Project Context
 
 ### Documentation

@@ -116,6 +116,16 @@ Active development. EPIC-002 and EPIC-007 are in progress. V14-005 remains block
 - **End Date:** 2026-08-07
 - **Notes:** Δημιουργήθηκε το `PROJECT_CONTEXT.md` και ενσωματώθηκε στο documentation architecture.
 
+### DOC-005
+
+- **ID:** DOC-005
+- **Title:** Architecture & Development Workflow
+- **Goal:** Τεκμηρίωση της πραγματικής τεχνικής αρχιτεκτονικής και της ασφαλούς, επαναλήψιμης διαδικασίας ανάπτυξης του ASEPIA.
+- **Status:** Completed
+- **Start Date:** 2026-08-07
+- **End Date:** 2026-08-07
+- **Notes:** Δημιουργήθηκαν τα `ARCHITECTURE.md` και `DEVELOPMENT_GUIDE.md`, καταγράφηκαν engines, contracts, change paths και quality workflow και ενημερώθηκε η documentation architecture.
+
 ## Planned Sprints
 
 No sprints are currently planned.
