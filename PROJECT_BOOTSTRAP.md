@@ -500,15 +500,14 @@ Warnings για πιθανώς όμοιο κείμενο ερωτήσεων δε
 
 Γνωστά Epics:
 
-- **EPIC-001 — Study Planner** — υλοποιημένο σε βασική μορφή / ενσωματωμένο, αλλά η ακριβής κατάσταση καθορίζεται από τα docs.
+- **EPIC-001 — Study Planner** — In Progress.
 - **EPIC-002 — Smart Welcome Engine** — In Progress.
 - **EPIC-003 — Authentication** — Planned.
 - **EPIC-004 — Cloud Sync** — Planned.
 - **EPIC-005 — Android / iOS** — Planned.
-- **EPIC-006 — Brand Identity** — προτάθηκε, αλλά πρέπει να επιβεβαιωθεί αν έχει καταγραφεί επίσημα στο `EPICS.md`.
-- **EPIC-007 — Project Governance & Documentation** — προτάθηκε για Developer Handbook, αλλά πρέπει να επιβεβαιωθεί αν έχει καταγραφεί επίσημα.
+- **EPIC-007 — Project Governance & Documentation** — In Progress.
 
-Μην θεωρείς τα EPIC-006/007 επίσημα αν δεν υπάρχουν στα τρέχοντα docs.
+Δεν υπάρχει και δεν δημιουργείται **EPIC-006**. Η επίσημη αρίθμηση έχει σκόπιμα κενό.
 
 ---
 
@@ -520,6 +519,7 @@ Warnings για πιθανώς όμοιο κείμενο ερωτήσεων δε
 - `docs/AI_RULES.md`
 - `docs/UI_GUIDELINES.md`
 - `docs/BRAND_GUIDELINES.md`
+- `docs/ROADMAP.md`
 - `docs/PROJECT_RULES.md`
 - `docs/DECISIONS.md`
 - `docs/VISION.md`
@@ -562,7 +562,8 @@ Warnings για πιθανώς όμοιο κείμενο ερωτήσεων δε
 - Το **DOC-005 — Architecture & Development Workflow** ολοκληρώθηκε και τα `docs/ARCHITECTURE.md` και `docs/DEVELOPMENT_GUIDE.md` αποτελούν πλέον ενεργά handbook files.
 - Το **DOC-006 — AI Governance** ολοκληρώθηκε και το `docs/AI_RULES.md` αποτελεί πλέον ενεργό handbook file.
 - Το **DOC-007 — UI & Brand Governance** ολοκληρώθηκε και το `docs/UI_GUIDELINES.md` αποτελεί ενεργό handbook file, ενώ το `docs/BRAND_GUIDELINES.md` παραμένει incomplete pending official asset.
-- Επόμενο documentation Sprint είναι το **DOC-008 — Decision Log & Roadmap**, χωρίς να θεωρείται ενεργό πριν εγκριθεί σχετικό Specification.
+- Το **DOC-008 — Decision Log & Roadmap** ολοκληρώθηκε, το `docs/DECISIONS.md` ενημερώθηκε και το `docs/ROADMAP.md` αποτελεί πλέον ενεργό handbook file.
+- Επόμενο documentation Sprint είναι το **DOC-009 — Documentation Validation & Handover**, χωρίς να θεωρείται ενεργό πριν εγκριθεί σχετικό Specification.
 - Το **V14-005 — Mobile ASEPIA brand integration** παραμένει blocked λόγω έλλειψης επίσημου logo asset.
 
 ---

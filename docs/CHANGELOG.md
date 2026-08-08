@@ -1,5 +1,16 @@
 # CHANGELOG.md
 
+## DOC-008 — Decision Log & Roadmap
+
+### Documentation
+- Ενισχύθηκε το `docs/DECISIONS.md`.
+- Καταγράφηκαν rationale και consequences για σημαντικές ήδη εγκεκριμένες αποφάσεις.
+- Δημιουργήθηκε το `docs/ROADMAP.md`.
+- Καταγράφηκαν μόνο τα επίσημα Epics και οι τεκμηριωμένες dependencies.
+- Δεν δημιουργήθηκε EPIC-006 ή νέο product commitment.
+
+---
+
 ## DOC-007 — UI & Brand Governance
 
 ### Documentation

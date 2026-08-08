@@ -39,6 +39,7 @@ asep-quiz/
 │   ├── DEVELOPMENT_GUIDE.md # Development και validation workflow
 │   ├── UI_GUIDELINES.md    # UI/UX και responsive governance
 │   ├── BRAND_GUIDELINES.md # Branding governance και asset status
+│   ├── ROADMAP.md          # Επίσημα Epics, sequencing και dependencies
 │   ├── VISION.md           # Όραμα προϊόντος
 │   ├── EPICS.md            # Μητρώο μεγάλων δυνατοτήτων
 │   ├── SPRINTS.md          # Μητρώο Sprints

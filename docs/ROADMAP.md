@@ -1,0 +1,143 @@
+# ASEPIA — Roadmap
+
+> **Χαρακτήρας:** Epic Sequencing & Dependency Reference
+>
+> **Κατάσταση:** Active — Living Document
+>
+> **Product:** ASEPIA
+
+Το Roadmap οργανώνει μόνο ήδη εγκεκριμένα Epics και γνωστές εξαρτήσεις. Δεν μετατρέπει ιδέες σε δεσμεύσεις και δεν αντικαθιστά το `EPICS.md` ή το `SPRINTS.md`.
+
+## 1. Source Rules
+
+Το παρόν document αντλεί current state αποκλειστικά από:
+
+- `docs/EPICS.md`,
+- `docs/SPRINTS.md`,
+- `docs/PROJECT_CONTEXT.md`,
+- `docs/DECISIONS.md`,
+- `PROJECT_BOOTSTRAP.md`.
+
+Το `EPICS.md` παραμένει η πηγή για το επίσημο Epic portfolio και status. Το `SPRINTS.md` παραμένει η πηγή για συγκεκριμένες παραδόσεις. Το Roadmap δεν δημιουργεί initiative, priority ή ημερομηνία.
+
+## 2. Official Epic Portfolio
+
+| Epic | Title | Status |
+| --- | --- | --- |
+| EPIC-001 | Study Planner | In Progress |
+| EPIC-002 | Smart Welcome Engine | In Progress |
+| EPIC-003 | Authentication | Planned |
+| EPIC-004 | Cloud Sync | Planned |
+| EPIC-005 | Android / iOS | Planned |
+| EPIC-007 | Project Governance & Documentation | In Progress |
+
+Η αρίθμηση έχει σκόπιμα κενό. **Δεν υπάρχει και δεν δημιουργείται EPIC-006.**
+
+## 3. Current Foundation — Implemented
+
+Η σημερινή operational βάση περιλαμβάνει:
+
+- responsive vanilla HTML/CSS/JavaScript web application,
+- Registry Study, Registry Test, Quick Test και Smart Test,
+- Favorites, Wrongs, Unread και Statistics,
+- CAT Practice και Simulation με Ability-based αξιολόγηση,
+- Work Behaviour Practice, Simulation και history,
+- Study Plan ως orchestration layer,
+- Smart Welcome με time-based greeting, optional name και adaptive Hero,
+- Help guides,
+- κοινό `ApplicationState` gateway,
+- data validation και browser smoke-test εργαλεία,
+- ενεργό documentation/governance handbook set.
+
+Η foundation περιγραφή δεν αλλάζει το status των σχετικών Epics: EPIC-001 και EPIC-002 παραμένουν `In Progress` σύμφωνα με το `EPICS.md`.
+
+## 4. Active Initiatives — In Progress
+
+### EPIC-001 — Study Planner
+
+Η βασική Study Plan λειτουργία είναι implemented ως orchestration layer, αλλά το επίσημο Epic status παραμένει `In Progress`.
+
+### EPIC-002 — Smart Welcome Engine
+
+Οι Phase 1 και Phase 2 δυνατότητες έχουν υλοποιηθεί. Πρόσθετες καταγεγραμμένες δυνατότητες παραμένουν μελλοντικές και δεν αποτελούν ενεργό Sprint ή commitment.
+
+### EPIC-007 — Project Governance & Documentation
+
+Το documentation workstream βρίσκεται σε εξέλιξη μέσω των εγκεκριμένων DOC Sprints. Το DOC-008 ολοκληρώνει το Decision Log & Roadmap παραδοτέο· το DOC-009 παραμένει μόνο το επόμενο documentation Sprint.
+
+## 5. Planned Initiatives — Unscheduled
+
+### EPIC-003 — Authentication
+
+Επίσημο status: `Planned`. Δεν υπάρχει εγκεκριμένη ημερομηνία ή ενεργό implementation Sprint.
+
+### EPIC-004 — Cloud Sync
+
+Επίσημο status: `Planned`. Δεν αποτελεί σημερινή runtime capability.
+
+### EPIC-005 — Android / iOS
+
+Επίσημο status: `Planned`. Η Cross-Platform First απόφαση καθορίζει κοινή business logic όπου είναι πρακτικά εφικτό, αλλά δεν σημαίνει ότι native clients υπάρχουν ήδη.
+
+## 6. Dependencies
+
+| Initiative | Depends on | Reason |
+| --- | --- | --- |
+| EPIC-001 — Study Planner | Υπάρχοντες Registry, CAT και Work Behaviour engines | Το ADR-005 ορίζει το Study Plan ως orchestration layer χωρίς δικό του engine. |
+| EPIC-004 — Cloud Sync | EPIC-003 — Authentication | Το ADR-003 ορίζει Login για account-based Cloud Sync και προσωπική πρόοδο. |
+| EPIC-005 — Android / iOS | Dependency not formally recorded | Υπάρχει Cross-Platform First direction, αλλά δεν έχει εγκριθεί συγκεκριμένη delivery dependency ή sequence. |
+| EPIC-007 — Project Governance & Documentation | Εγκεκριμένη ακολουθία DOC Sprints | Το workstream παραδίδεται μέσω διαδοχικών documentation Sprints. |
+| V14-005 — Mobile ASEPIA brand integration | Official logo/icon asset | Το Sprint παραμένει blocked μέχρι να παραδοθεί εγκεκριμένο production asset. |
+
+Δεν τεκμηριώνεται άλλη sequencing dependency. Πιθανή τεχνική σχέση δεν παρουσιάζεται ως επίσημη εξάρτηση χωρίς repository evidence.
+
+## 7. Governance Track
+
+| Sprint | Status | Deliverable |
+| --- | --- | --- |
+| DOC-003 | ✅ Completed | Documentation Inventory & Information Architecture |
+| DOC-004 | ✅ Completed | Core Project Context |
+| DOC-005 | ✅ Completed | Architecture & Development Workflow |
+| DOC-006 | ✅ Completed | AI Governance |
+| DOC-007 | ✅ Completed | UI & Brand Governance |
+| DOC-008 | ✅ Completed | Decision Log & Roadmap |
+| DOC-009 | Next — Not Active | Documentation Validation & Handover |
+
+Μετά το DOC-009 ολοκληρώνεται το τρέχον documentation workstream του EPIC-007 μόνο εφόσον το επόμενο εγκεκριμένο Specification και το αποτέλεσμα του Sprint το επιβεβαιώσουν.
+
+## 8. Blocked Item
+
+### V14-005 — Mobile ASEPIA brand integration
+
+- Status: `Blocked`.
+- Blocker: missing official logo/icon asset.
+- Δεν είναι Epic και δεν μετατρέπεται σε EPIC-006.
+- Το DOC-008 δεν το ξεκινά και δεν δημιουργεί branding asset.
+
+## 9. Unscheduled / No Date Commitment
+
+- `Planned` δεν σημαίνει scheduled.
+- Δεν έχουν εγκριθεί release dates, quarters, deadlines ή estimates για τα Planned Epics.
+- Η σειρά εμφάνισης στο portfolio δεν αποτελεί priority order.
+- Μετά το EPIC-007, η επόμενη product προτεραιότητα αποφασίζεται από τον Product Owner βάσει του τότε current state.
+
+## 10. Implemented vs In Progress vs Planned vs Blocked
+
+- **Implemented:** πραγματικές capabilities της Current Foundation.
+- **In Progress:** EPIC-001, EPIC-002 και EPIC-007, σύμφωνα με το `EPICS.md`.
+- **Planned:** EPIC-003, EPIC-004 και EPIC-005, χωρίς date commitment.
+- **Blocked:** V14-005 λόγω missing official branding asset.
+
+Planned infrastructure δεν παρουσιάζεται ως υπάρχουσα runtime δυνατότητα.
+
+## 11. Τι δεν είναι το ROADMAP.md
+
+Δεν είναι feature wishlist, release calendar, Sprint Registry, Changelog, νέο Product Vision ή approval μη εγκεκριμένων ιδεών.
+
+## Related Documentation
+
+- `docs/EPICS.md` — επίσημο Epic portfolio και statuses.
+- `docs/SPRINTS.md` — συγκεκριμένα Sprints και completion status.
+- `docs/DECISIONS.md` — rationale εγκεκριμένων αποφάσεων.
+- `docs/PROJECT_CONTEXT.md` — implemented και planned product context.
+- `PROJECT_BOOTSTRAP.md` — current-state onboarding.

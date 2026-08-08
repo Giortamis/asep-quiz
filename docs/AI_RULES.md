@@ -388,6 +388,7 @@ STOP μετά την τελική αναφορά.
 
 ## Related Documentation
 
+- `docs/ROADMAP.md` — επίσημα Epics και τεκμηριωμένες dependencies· planned δεν σημαίνει approved implementation.
 - `docs/UI_GUIDELINES.md` — UI/UX governance και Design Freeze rules.
 - `docs/BRAND_GUIDELINES.md` — branding constraints και pending official asset status.
 - `PROJECT_CHARTER.md` — ανώτατες αρχές και διακυβέρνηση.

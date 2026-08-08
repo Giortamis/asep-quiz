@@ -146,6 +146,16 @@ Active development. EPIC-002 and EPIC-007 are in progress. V14-005 remains block
 - **End Date:** 2026-08-08
 - **Notes:** Δημιουργήθηκαν τα `UI_GUIDELINES.md` και `BRAND_GUIDELINES.md` χωρίς αλλαγή runtime UI ή δημιουργία branding asset.
 
+### DOC-008
+
+- **ID:** DOC-008
+- **Title:** Decision Log & Roadmap
+- **Status:** Completed
+- **Goal:** Ενίσχυση του ADR/Decision Log και δημιουργία Roadmap με επίσημα Epics και τεκμηριωμένες dependencies.
+- **Start Date:** 2026-08-08
+- **End Date:** 2026-08-08
+- **Notes:** Δεν δημιουργήθηκε νέο Epic ή product commitment.
+
 ## Planned Sprints
 
 No sprints are currently planned.

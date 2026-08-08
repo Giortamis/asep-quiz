@@ -410,6 +410,7 @@ STOP — Δεν ξεκινά επόμενο Sprint χωρίς νέα εντολ�
 
 ## Related Documentation
 
+- `docs/ROADMAP.md` — επίσημα Epic statuses και τεκμηριωμένες dependencies.
 - `docs/UI_GUIDELINES.md` — current UI/UX patterns και validation rules.
 - `docs/BRAND_GUIDELINES.md` — branding governance και asset status.
 - `docs/AI_RULES.md` — AI-specific workflow και constraints.

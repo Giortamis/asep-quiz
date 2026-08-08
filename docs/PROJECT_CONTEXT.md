@@ -284,6 +284,7 @@ Release / Deploy
 
 ## Related Documentation
 
+- `docs/ROADMAP.md` — Epic sequencing και dependencies.
 - `docs/UI_GUIDELINES.md` — UI/UX governance.
 - `docs/BRAND_GUIDELINES.md` — branding rules και asset status.
 - `docs/AI_RULES.md` — AI collaboration και governance.
@@ -292,7 +293,7 @@ Release / Deploy
 - `PROJECT_BOOTSTRAP.md` — τρέχουσα κατάσταση.
 - `PROJECT_CHARTER.md` — διακυβέρνηση και θεμελιώδεις αρχές.
 - `docs/PROJECT_RULES.md` — πρακτικοί κλειδωμένοι κανόνες.
-- `docs/DECISIONS.md` — εγκεκριμένες αποφάσεις.
+- `docs/DECISIONS.md` — rationale εγκεκριμένων architectural/product αποφάσεων.
 - `docs/EPICS.md` — μεγάλα product initiatives.
 - `docs/SPRINTS.md` — Sprint status.
 - `docs/CHANGELOG.md` — πραγματικές αλλαγές.
