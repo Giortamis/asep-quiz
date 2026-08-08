@@ -76,7 +76,7 @@ SPRINTS
 
 - **ID:** EPIC-007
 - **Title:** Project Governance & Documentation
-- **Status:** In Progress
+- **Status:** Completed
 - **Description:** Δημιουργία πλήρους, συνεπούς και επαναχρησιμοποιήσιμου συστήματος τεκμηρίωσης και διακυβέρνησης, ώστε το ASEPIA να μπορεί να συνεχίζεται από νέο developer ή AI χωρίς εξάρτηση από προηγούμενες συνομιλίες.
 
 Το Epic:

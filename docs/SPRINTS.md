@@ -2,7 +2,7 @@
 
 ## Project Status
 
-Active development. EPIC-002 and EPIC-007 are in progress. V14-005 remains blocked pending an official logo asset.
+Active development. EPIC-001 and EPIC-002 are in progress. EPIC-007 is completed. V14-005 remains blocked pending an official logo asset. No next Sprint is approved.
 
 ## Completed Sprints
 
@@ -155,6 +155,16 @@ Active development. EPIC-002 and EPIC-007 are in progress. V14-005 remains block
 - **Start Date:** 2026-08-08
 - **End Date:** 2026-08-08
 - **Notes:** Δεν δημιουργήθηκε νέο Epic ή product commitment.
+
+### DOC-009
+
+- **ID:** DOC-009
+- **Title:** Documentation Validation & Handover
+- **Status:** Completed
+- **Goal:** Τελικός έλεγχος documentation consistency και cold-start handover.
+- **Start Date:** 2026-08-08
+- **End Date:** 2026-08-08
+- **Result:** Documentation system validated και EPIC-007 completed.
 
 ## Planned Sprints
 

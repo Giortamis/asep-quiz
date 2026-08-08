@@ -4,9 +4,9 @@
 > **Τύπος:** Συμπυκνωμένο onboarding / current-state document  
 > **Κατάσταση:** Living Document  
 > **Έκδοση:** 1.0  
-> **Ημερομηνία αναφοράς:** 2026-08-03  
+> **Ημερομηνία αναφοράς:** 2026-08-08
 > **Repository:** `Giortamis/asep-quiz`  
-> **Προσωρινό/τρέχον όνομα προϊόντος:** **ASEPIA**
+> **Επίσημο όνομα προϊόντος:** **ASEPIA**
 
 ---
 
@@ -29,11 +29,13 @@
 ### Ιεραρχία πηγών αλήθειας
 
 1. Πραγματικός κώδικας και δεδομένα του repository.
-2. `PROJECT_RULES.md` και `DECISIONS.md` για κλειδωμένους κανόνες.
-3. `SPRINTS.md` και `CHANGELOG.md` για την τρέχουσα κατάσταση.
-4. `EPICS.md` για τις μεγάλες προγραμματισμένες δυνατότητες.
-5. `VISION.md` για τη μακροπρόθεσμη κατεύθυνση.
-6. Το παρόν `PROJECT_BOOTSTRAP.md` ως γρήγορη σύνοψη και σημείο εισόδου.
+2. `PROJECT_CHARTER.md` για αποστολή, θεμελιώδεις αρχές και διακυβέρνηση.
+3. `PROJECT_RULES.md` και `DECISIONS.md` για κλειδωμένους κανόνες.
+4. `SPRINTS.md` και `CHANGELOG.md` για την τρέχουσα κατάσταση.
+5. `EPICS.md` για τις μεγάλες εγκεκριμένες κατευθύνσεις.
+6. `VISION.md` για τη μακροπρόθεσμη κατεύθυνση.
+7. Το παρόν `PROJECT_BOOTSTRAP.md` ως γρήγορη σύνοψη και σημείο εισόδου.
+8. Το `docs/README.md` και οι explanatory summaries ως χάρτες πλοήγησης.
 
 ---
 
@@ -199,7 +201,7 @@
 
 Υπάρχει κοινός `ApplicationState` gateway.
 
-Όλες οι αναγνώσεις, εγγραφές και διαγραφές application state πρέπει να περνούν από αυτόν, εκτός από state που έχει πραγματικά διαφορετική domain σημασία.
+Το persistent local application state χρησιμοποιεί το κοινό `ApplicationState` gateway.
 
 Διατηρούνται τα υπάρχοντα storage keys και schemas, εκτός αν εγκριθεί migration Specification.
 
@@ -477,6 +479,13 @@ Warnings για πιθανώς όμοιο κείμενο ερωτήσεων δε
 
 - **DOC-001** — Δημιουργία `docs/SPRINTS.md`.
 - **DOC-002** — Δημιουργία `docs/EPICS.md`.
+- **DOC-003** — Documentation Inventory & Information Architecture.
+- **DOC-004** — Core Project Context.
+- **DOC-005** — Architecture & Development Workflow.
+- **DOC-006** — AI Governance.
+- **DOC-007** — UI & Brand Governance.
+- **DOC-008** — Decision Log & Roadmap.
+- **DOC-009** — Documentation Validation & Handover.
 
 ### V14 Architecture / Experience
 
@@ -505,7 +514,7 @@ Warnings για πιθανώς όμοιο κείμενο ερωτήσεων δε
 - **EPIC-003 — Authentication** — Planned.
 - **EPIC-004 — Cloud Sync** — Planned.
 - **EPIC-005 — Android / iOS** — Planned.
-- **EPIC-007 — Project Governance & Documentation** — In Progress.
+- **EPIC-007 — Project Governance & Documentation** — Completed.
 
 Δεν υπάρχει και δεν δημιουργείται **EPIC-006**. Η επίσημη αρίθμηση έχει σκόπιμα κενό.
 
@@ -516,18 +525,22 @@ Warnings για πιθανώς όμοιο κείμενο ερωτήσεων δε
 Γνωστά υπάρχοντα αρχεία:
 
 - `README.md`
+- `PROJECT_BOOTSTRAP.md`
+- `PROJECT_CHARTER.md`
+- `docs/README.md`
+- `docs/PROJECT_CONTEXT.md`
+- `docs/PROJECT_RULES.md`
 - `docs/AI_RULES.md`
+- `docs/ARCHITECTURE.md`
+- `docs/DEVELOPMENT_GUIDE.md`
 - `docs/UI_GUIDELINES.md`
 - `docs/BRAND_GUIDELINES.md`
-- `docs/ROADMAP.md`
-- `docs/PROJECT_RULES.md`
 - `docs/DECISIONS.md`
 - `docs/VISION.md`
-- `docs/CHANGELOG.md`
-- `docs/SPRINTS.md`
 - `docs/EPICS.md`
-
-Το `ARCHITECTURE.md`, `AI_RULES.md`, `DEVELOPMENT_GUIDE.md`, `UI_GUIDELINES.md`, `BRAND_GUIDELINES.md`, `ROADMAP.md`, `PROJECT_CHARTER.md` ή άλλα handbook files μπορεί να έχουν προταθεί αλλά **δεν πρέπει να θεωρούνται υπάρχοντα** χωρίς έλεγχο του repository.
+- `docs/SPRINTS.md`
+- `docs/CHANGELOG.md`
+- `docs/ROADMAP.md`
 
 Το παρόν αρχείο είναι το πρώτο πραγματικό onboarding summary και πρέπει να ενημερώνεται όταν αλλάζει ουσιαστικά η κατάσταση του έργου.
 
@@ -552,18 +565,21 @@ Warnings για πιθανώς όμοιο κείμενο ερωτήσεων δε
 
 ---
 
-## 15. Άμεση προτεραιότητα κατά τη δημιουργία αυτού του αρχείου
+## 15. Τρέχουσα κατάσταση handover
 
-Ο Product Owner επέλεξε την κατεύθυνση **Project Governance / Developer Handbook**.
+Το documentation handbook είναι **Complete / Active Living Documentation**. Τα Living Documents συνεχίζουν να ενημερώνονται όταν αλλάζει πραγματικά το project.
 
-- Το **EPIC-007 — Project Governance & Documentation** είναι πλέον επίσημο και βρίσκεται σε εξέλιξη.
+- Το **EPIC-007 — Project Governance & Documentation** ολοκληρώθηκε.
 - Το **DOC-003 — Documentation Inventory & Information Architecture** ολοκληρώθηκε.
 - Το **DOC-004 — Core Project Context** ολοκληρώθηκε και το `docs/PROJECT_CONTEXT.md` αποτελεί πλέον ενεργό μέρος της documentation architecture.
 - Το **DOC-005 — Architecture & Development Workflow** ολοκληρώθηκε και τα `docs/ARCHITECTURE.md` και `docs/DEVELOPMENT_GUIDE.md` αποτελούν πλέον ενεργά handbook files.
 - Το **DOC-006 — AI Governance** ολοκληρώθηκε και το `docs/AI_RULES.md` αποτελεί πλέον ενεργό handbook file.
 - Το **DOC-007 — UI & Brand Governance** ολοκληρώθηκε και το `docs/UI_GUIDELINES.md` αποτελεί ενεργό handbook file, ενώ το `docs/BRAND_GUIDELINES.md` παραμένει incomplete pending official asset.
 - Το **DOC-008 — Decision Log & Roadmap** ολοκληρώθηκε, το `docs/DECISIONS.md` ενημερώθηκε και το `docs/ROADMAP.md` αποτελεί πλέον ενεργό handbook file.
-- Επόμενο documentation Sprint είναι το **DOC-009 — Documentation Validation & Handover**, χωρίς να θεωρείται ενεργό πριν εγκριθεί σχετικό Specification.
+- Το **DOC-009 — Documentation Validation & Handover** ολοκληρώθηκε με full documentation audit και cold-start handover validation.
+- **Last completed Sprint:** DOC-009.
+- **Next approved Sprint:** None.
+- **Next product priority:** Pending Product Owner decision.
 - Το **V14-005 — Mobile ASEPIA brand integration** παραμένει blocked λόγω έλλειψης επίσημου logo asset.
 
 ---

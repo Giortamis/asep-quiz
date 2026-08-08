@@ -1,5 +1,16 @@
 # CHANGELOG.md
 
+## DOC-009 — Documentation Validation & Handover
+
+### Documentation
+- Ολοκληρώθηκε full documentation audit.
+- Ελέγχθηκαν source hierarchy, locked decisions, statuses, paths και references.
+- Εκτελέστηκε cold-start handover validation.
+- Διορθώθηκαν μόνο documentation inconsistencies.
+- Το EPIC-007 ολοκληρώθηκε.
+
+---
+
 ## DOC-008 — Decision Log & Roadmap
 
 ### Documentation

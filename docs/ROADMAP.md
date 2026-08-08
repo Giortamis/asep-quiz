@@ -29,7 +29,7 @@
 | EPIC-003 | Authentication | Planned |
 | EPIC-004 | Cloud Sync | Planned |
 | EPIC-005 | Android / iOS | Planned |
-| EPIC-007 | Project Governance & Documentation | In Progress |
+| EPIC-007 | Project Governance & Documentation | Completed |
 
 Η αρίθμηση έχει σκόπιμα κενό. **Δεν υπάρχει και δεν δημιουργείται EPIC-006.**
 
@@ -61,11 +61,13 @@
 
 Οι Phase 1 και Phase 2 δυνατότητες έχουν υλοποιηθεί. Πρόσθετες καταγεγραμμένες δυνατότητες παραμένουν μελλοντικές και δεν αποτελούν ενεργό Sprint ή commitment.
 
+## 5. Completed Initiative
+
 ### EPIC-007 — Project Governance & Documentation
 
-Το documentation workstream βρίσκεται σε εξέλιξη μέσω των εγκεκριμένων DOC Sprints. Το DOC-008 ολοκληρώνει το Decision Log & Roadmap παραδοτέο· το DOC-009 παραμένει μόνο το επόμενο documentation Sprint.
+Το documentation workstream ολοκληρώθηκε μέσω των DOC-003 έως DOC-009. Το handbook παραμένει ενεργό ως Living Documentation και ενημερώνεται όταν αλλάζει πραγματικά το project.
 
-## 5. Planned Initiatives — Unscheduled
+## 6. Planned Initiatives — Unscheduled
 
 ### EPIC-003 — Authentication
 
@@ -79,7 +81,7 @@
 
 Επίσημο status: `Planned`. Η Cross-Platform First απόφαση καθορίζει κοινή business logic όπου είναι πρακτικά εφικτό, αλλά δεν σημαίνει ότι native clients υπάρχουν ήδη.
 
-## 6. Dependencies
+## 7. Dependencies
 
 | Initiative | Depends on | Reason |
 | --- | --- | --- |
@@ -91,7 +93,7 @@
 
 Δεν τεκμηριώνεται άλλη sequencing dependency. Πιθανή τεχνική σχέση δεν παρουσιάζεται ως επίσημη εξάρτηση χωρίς repository evidence.
 
-## 7. Governance Track
+## 8. Governance Track
 
 | Sprint | Status | Deliverable |
 | --- | --- | --- |
@@ -101,36 +103,37 @@
 | DOC-006 | ✅ Completed | AI Governance |
 | DOC-007 | ✅ Completed | UI & Brand Governance |
 | DOC-008 | ✅ Completed | Decision Log & Roadmap |
-| DOC-009 | Next — Not Active | Documentation Validation & Handover |
+| DOC-009 | ✅ Completed | Documentation Validation & Handover |
 
-Μετά το DOC-009 ολοκληρώνεται το τρέχον documentation workstream του EPIC-007 μόνο εφόσον το επόμενο εγκεκριμένο Specification και το αποτέλεσμα του Sprint το επιβεβαιώσουν.
+Το governance documentation workstream και το EPIC-007 έχουν ολοκληρωθεί.
 
-## 8. Blocked Item
+## 9. Blocked Item
 
 ### V14-005 — Mobile ASEPIA brand integration
 
 - Status: `Blocked`.
 - Blocker: missing official logo/icon asset.
 - Δεν είναι Epic και δεν μετατρέπεται σε EPIC-006.
-- Το DOC-008 δεν το ξεκινά και δεν δημιουργεί branding asset.
+- Το documentation governance workstream δεν το ξεκινά και δεν δημιουργεί branding asset.
 
-## 9. Unscheduled / No Date Commitment
+## 10. Unscheduled / No Date Commitment
 
 - `Planned` δεν σημαίνει scheduled.
 - Δεν έχουν εγκριθεί release dates, quarters, deadlines ή estimates για τα Planned Epics.
 - Η σειρά εμφάνισης στο portfolio δεν αποτελεί priority order.
-- Μετά το EPIC-007, η επόμενη product προτεραιότητα αποφασίζεται από τον Product Owner βάσει του τότε current state.
+- **Next product priority: Pending Product Owner decision.**
 
-## 10. Implemented vs In Progress vs Planned vs Blocked
+## 11. Implemented vs In Progress vs Planned vs Completed vs Blocked
 
 - **Implemented:** πραγματικές capabilities της Current Foundation.
-- **In Progress:** EPIC-001, EPIC-002 και EPIC-007, σύμφωνα με το `EPICS.md`.
+- **In Progress:** EPIC-001 και EPIC-002, σύμφωνα με το `EPICS.md`.
 - **Planned:** EPIC-003, EPIC-004 και EPIC-005, χωρίς date commitment.
+- **Completed:** EPIC-007.
 - **Blocked:** V14-005 λόγω missing official branding asset.
 
 Planned infrastructure δεν παρουσιάζεται ως υπάρχουσα runtime δυνατότητα.
 
-## 11. Τι δεν είναι το ROADMAP.md
+## 12. Τι δεν είναι το ROADMAP.md
 
 Δεν είναι feature wishlist, release calendar, Sprint Registry, Changelog, νέο Product Vision ή approval μη εγκεκριμένων ιδεών.
 
