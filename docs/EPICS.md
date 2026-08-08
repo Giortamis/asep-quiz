@@ -31,7 +31,7 @@ SPRINTS
 
 - **ID:** EPIC-001
 - **Title:** Study Planner
-- **Status:** In Progress
+- **Status:** Completed
 - **Description:** Προσωπικός προγραμματισμός μελέτης που αξιοποιεί τους υπάρχοντες engines και οργανώνει ημερήσιους στόχους και πρόοδο.
 
 ## EPIC-002 — Smart Welcome Engine

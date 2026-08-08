@@ -493,6 +493,7 @@ Warnings για πιθανώς όμοιο κείμενο ερωτήσεων δε
 - **V14-002** — Κοινός `ApplicationState` gateway.
 - **V14-003** — Smart Welcome Engine Phase 1 / Hero Card MVP.
 - **V14-004** — Adaptive Desktop Hero / editorial presentation.
+- **EPIC-001-C1** — Study Plan Progress Integrity.
 
 ### Εκκρεμές / blocked
 
@@ -509,7 +510,7 @@ Warnings για πιθανώς όμοιο κείμενο ερωτήσεων δε
 
 Γνωστά Epics:
 
-- **EPIC-001 — Study Planner** — In Progress.
+- **EPIC-001 — Study Planner** — Completed.
 - **EPIC-002 — Smart Welcome Engine** — In Progress.
 - **EPIC-003 — Authentication** — Planned.
 - **EPIC-004 — Cloud Sync** — Planned.
@@ -577,7 +578,11 @@ Warnings για πιθανώς όμοιο κείμενο ερωτήσεων δε
 - Το **DOC-007 — UI & Brand Governance** ολοκληρώθηκε και το `docs/UI_GUIDELINES.md` αποτελεί ενεργό handbook file, ενώ το `docs/BRAND_GUIDELINES.md` παραμένει incomplete pending official asset.
 - Το **DOC-008 — Decision Log & Roadmap** ολοκληρώθηκε, το `docs/DECISIONS.md` ενημερώθηκε και το `docs/ROADMAP.md` αποτελεί πλέον ενεργό handbook file.
 - Το **DOC-009 — Documentation Validation & Handover** ολοκληρώθηκε με full documentation audit και cold-start handover validation.
-- **Last completed Sprint:** DOC-009.
+- Το **EPIC-001-C1 — Study Plan Progress Integrity** ολοκληρώθηκε.
+- Το Product Completion Re-check και το Product Approval ολοκληρώθηκαν και το **EPIC-001 — Study Planner** έκλεισε ως Completed.
+- Το Study Plan θεωρείται ολοκληρωμένο στο συμφωνημένο scope του EPIC-001.
+- Τα NOT DEFINED items, όπως resume, archive/history και Return to Study Plan, δεν αποτελούν missing blockers του EPIC-001 και απαιτούν ξεχωριστή απόφαση Product Owner αν ζητηθούν στο μέλλον.
+- **Last completed product work:** EPIC-001-C1 — Study Plan Progress Integrity.
 - **Next approved Sprint:** None.
 - **Next product priority:** Pending Product Owner decision.
 - Το **V14-005 — Mobile ASEPIA brand integration** παραμένει blocked λόγω έλλειψης επίσημου logo asset.

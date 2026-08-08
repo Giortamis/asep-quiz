@@ -1,5 +1,22 @@
 # CHANGELOG.md
 
+## EPIC-001-C1 — Study Plan Progress Integrity
+
+### Study Plan
+- Το Work progress ενημερώνεται μόνο από triads που ολοκληρώθηκαν πραγματικά.
+- Το Registry review target περιορίζεται στο διαθέσιμο wrongs pool του κοινού Registry engine.
+- Το persisted Study Plan state ελέγχεται ως προς date και configuration flags πριν χρησιμοποιηθεί.
+
+### Tests
+- Προστέθηκε focused regression coverage για zero/partial/full Work completion, reload persistence, Registry review pool sizes και invalid persisted plans.
+
+### Product Closeout
+- Διορθώθηκαν οι τρεις completion blockers του Study Plan: Work progress integrity, Registry review target alignment και invalid persisted-plan fallback.
+- Ολοκληρώθηκε το Product Completion Re-check και το Product Approval.
+- Το EPIC-001 — Study Planner έκλεισε ως Completed στο συμφωνημένο scope του.
+
+---
+
 ## DOC-009 — Documentation Validation & Handover
 
 ### Documentation

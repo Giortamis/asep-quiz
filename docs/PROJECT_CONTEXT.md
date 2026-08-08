@@ -245,11 +245,11 @@ Release / Deploy
 
 ### In Progress
 
-- `EPIC-001 — Study Planner`.
 - `EPIC-002 — Smart Welcome Engine`.
 
 ### Completed
 
+- `EPIC-001 — Study Planner`, ολοκληρωμένο στο συμφωνημένο Epic scope.
 - `EPIC-007 — Project Governance & Documentation`.
 
 ### Planned

@@ -263,6 +263,149 @@ async function main() {
     }
   });
 
+  test("Study Planner Work progress integrity", async () => {
+    const completeCurrentTriad = async () => {
+      const statements = page.locator("#workStatements .work-statement");
+      await statements.nth(0).click();
+      await statements.nth(1).click();
+      await invoke(page, "nextWorkTriad");
+    };
+    const readWorkProgress = () => page.evaluate(() => {
+      const log = JSON.parse(localStorage.getItem("asepStudyPlanLogV14") || "{}");
+      return {
+        seen: JSON.parse(localStorage.getItem("asepWorkBehaviourSeen") || "[]").length,
+        completed: Number(log[localDateKey()]?.workTriads) || 0
+      };
+    });
+
+    await reset();
+    await invoke(page, "startPlanWorkTask", 5);
+    await expectVisible(page, "workQuiz");
+    const uniqueCount = await page.evaluate(() => new Set(workTriads.map(item => item.id)).size);
+    if (uniqueCount !== 5) throw new Error(`Expected 5 unique Work triads, found ${uniqueCount}`);
+    await invoke(page, "finishWorkAttempt", false, true);
+    const zeroProgress = await readWorkProgress();
+    if (zeroProgress.seen !== 0 || zeroProgress.completed !== 0) {
+      throw new Error(`Zero-completion Work progress changed: ${JSON.stringify(zeroProgress)}`);
+    }
+
+    await reset();
+    await invoke(page, "startPlanWorkTask", 5);
+    await completeCurrentTriad();
+    await completeCurrentTriad();
+    await invoke(page, "finishWorkAttempt", false, true);
+    const partialProgress = await readWorkProgress();
+    if (partialProgress.seen !== 2 || partialProgress.completed !== 2) {
+      throw new Error(`Partial Work progress mismatch: ${JSON.stringify(partialProgress)}`);
+    }
+    await page.reload({ waitUntil: "networkidle" });
+    const reloadedProgress = await readWorkProgress();
+    if (reloadedProgress.seen !== 2 || reloadedProgress.completed !== 2) {
+      throw new Error(`Reloaded Work progress mismatch: ${JSON.stringify(reloadedProgress)}`);
+    }
+
+    await reset();
+    await invoke(page, "startPlanWorkTask", 3);
+    await completeCurrentTriad();
+    await completeCurrentTriad();
+    await completeCurrentTriad();
+    await expectVisible(page, "workResults");
+    const fullProgress = await readWorkProgress();
+    if (fullProgress.seen !== 3 || fullProgress.completed !== 3) {
+      throw new Error(`Full Work progress mismatch: ${JSON.stringify(fullProgress)}`);
+    }
+  });
+
+  test("Study Planner Registry review targets", async () => {
+    const scenarios = [
+      { pool: 20, expected: 14 },
+      { pool: 14, expected: 14 },
+      { pool: 2, expected: 2 },
+      { pool: 0, expected: 0 }
+    ];
+
+    for (const scenario of scenarios) {
+      await reset();
+      await page.evaluate(pool => {
+        const wrongs = Array.from(
+          { length: pool },
+          (_, index) => `constitutional:constitutional-${index + 1}`
+        );
+        localStorage.setItem("asepWrongs", JSON.stringify(wrongs));
+      }, scenario.pool);
+
+      const target = await page.evaluate(() => calculateStudyPlanTargets({
+        targetDate: "2099-12-31",
+        registry: true,
+        cat: false,
+        work: false
+      }).registryReview);
+      if (target !== scenario.expected) {
+        throw new Error(`Review target for pool ${scenario.pool}: expected ${scenario.expected}, found ${target}`);
+      }
+
+      if (target > 0) {
+        await invoke(page, "startPlanRegistryTask", "review", target);
+        await expectVisible(page, "quizScreen");
+        const delivered = await page.evaluate(() => ({
+          count: currentQuestions.length,
+          unique: new Set(currentQuestions.map(question => `${question.categoryId}:${question.id}`)).size
+        }));
+        if (delivered.count !== target || delivered.unique !== target) {
+          throw new Error(`Review delivery mismatch for pool ${scenario.pool}: ${JSON.stringify(delivered)}`);
+        }
+      }
+    }
+  });
+
+  test("Study Planner persisted-state fallback", async () => {
+    await reset();
+    const missingPlan = await page.evaluate(() => getStudyPlan());
+    if (missingPlan !== null) throw new Error("Missing Study Plan state did not return null");
+
+    const validPlan = {
+      targetDate: "2099-12-31",
+      registry: true,
+      cat: false,
+      work: true,
+      createdAt: "2026-08-08T00:00:00.000Z",
+      updatedAt: "2026-08-08T00:00:00.000Z"
+    };
+    await page.evaluate(plan => {
+      localStorage.setItem("asepStudyPlanV14", JSON.stringify(plan));
+    }, validPlan);
+    await page.reload({ waitUntil: "networkidle" });
+    const loadedPlan = await page.evaluate(() => getStudyPlan());
+    if (!loadedPlan || loadedPlan.targetDate !== validPlan.targetDate || !loadedPlan.registry || !loadedPlan.work) {
+      throw new Error(`Valid Study Plan did not load: ${JSON.stringify(loadedPlan)}`);
+    }
+
+    const invalidPlans = [
+      "malformed",
+      {},
+      { targetDate: "2026-02-30", registry: true, cat: false, work: false },
+      { targetDate: "2099-12-31", registry: "true", cat: false, work: false },
+      { targetDate: "2099-12-31", registry: false, cat: false, work: false }
+    ];
+    for (const invalidPlan of invalidPlans) {
+      const original = JSON.stringify(invalidPlan);
+      await page.evaluate(plan => {
+        localStorage.setItem("asepStudyPlanV14", JSON.stringify(plan));
+      }, invalidPlan);
+      await page.reload({ waitUntil: "networkidle" });
+      const result = await page.evaluate(() => ({
+        plan: getStudyPlan(),
+        stored: localStorage.getItem("asepStudyPlanV14")
+      }));
+      if (result.plan !== null) {
+        throw new Error(`Invalid Study Plan was accepted: ${original}`);
+      }
+      if (result.stored !== original) {
+        throw new Error(`Invalid Study Plan was silently migrated: ${original}`);
+      }
+    }
+  });
+
   let failures = 0;
   try {
     for (const item of tests) {

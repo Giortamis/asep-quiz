@@ -117,6 +117,7 @@ let workTimeRemaining = 0;
 let workStartedAt = null;
 let workIsFullSimulation = false;
 let workTimedMode = false;
+let workSeenBaseline = null;
 
 let catMode = "";
 let catQuestions = [];
@@ -1563,10 +1564,23 @@ function chooseWorkTriads(count) {
   }
 
   const selected = shuffle([...unseen]).slice(0, count);
-  selected.forEach(item => seen.add(item.id));
-  saveWorkSeenIds([...seen]);
+  workSeenBaseline = [...seen];
 
   return selected;
+}
+
+function saveCompletedWorkTriads(completedIds) {
+  if (!completedIds.length) {
+    workSeenBaseline = null;
+    return;
+  }
+
+  const seen = new Set(
+    Array.isArray(workSeenBaseline) ? workSeenBaseline : getWorkSeenIds()
+  );
+  completedIds.forEach(id => seen.add(id));
+  saveWorkSeenIds([...seen]);
+  workSeenBaseline = null;
 }
 
 async function startWorkPractice(options = {}) {
@@ -1834,6 +1848,8 @@ function finishWorkAttempt(timeExpired = false, stoppedEarly = false) {
       ranking: [workFirstChoice, workSecondChoice, thirdChoice]
     });
   }
+
+  saveCompletedWorkTriads(workAnswers.map(answer => answer.triadId));
 
   const result = calculateWorkProfile();
   const record = {
@@ -2867,7 +2883,30 @@ function localDateKey(date = new Date()) {
 
 function getStudyPlan() {
   const plan = ApplicationState.read(STUDY_PLAN_KEY, null);
-  return plan && typeof plan === "object" ? plan : null;
+  if (!plan || typeof plan !== "object" || Array.isArray(plan)) return null;
+
+  if (
+    typeof plan.targetDate !== "string" ||
+    !/^\d{4}-\d{2}-\d{2}$/.test(plan.targetDate)
+  ) {
+    return null;
+  }
+
+  const targetDate = new Date(`${plan.targetDate}T00:00:00`);
+  if (Number.isNaN(targetDate.getTime()) || localDateKey(targetDate) !== plan.targetDate) {
+    return null;
+  }
+
+  if (
+    typeof plan.registry !== "boolean" ||
+    typeof plan.cat !== "boolean" ||
+    typeof plan.work !== "boolean" ||
+    (!plan.registry && !plan.cat && !plan.work)
+  ) {
+    return null;
+  }
+
+  return plan;
 }
 
 function getStudyPlanLog() {
@@ -2926,10 +2965,14 @@ function calculateStudyPlanTargets(plan) {
   const wrongs = getWrongs().length;
   const remainingWork = Math.max(0, 228 - getWorkSeenIds().length);
   const week = getPlanWeekLog();
+  const requestedRegistryReview = Math.min(
+    50,
+    Math.max(5, Math.ceil(Math.min(unread || 10, 40) * 0.35))
+  );
   return {
     days,
     registryNew: plan.registry ? Math.min(100, Math.ceil(unread / days)) : 0,
-    registryReview: plan.registry && wrongs > 0 ? Math.min(50, Math.max(5, Math.ceil(Math.min(unread || 10, 40) * 0.35))) : 0,
+    registryReview: plan.registry ? Math.min(wrongs, requestedRegistryReview) : 0,
     catPractice: plan.cat && week.catPractice < 3 ? 1 : 0,
     catSimulation: plan.cat && week.catSimulation < 1 ? 1 : 0,
     workTriads: plan.work ? Math.min(76, Math.ceil(remainingWork / days)) : 0,

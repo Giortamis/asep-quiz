@@ -2,7 +2,7 @@
 
 ## Project Status
 
-Active development. EPIC-001 and EPIC-002 are in progress. EPIC-007 is completed. V14-005 remains blocked pending an official logo asset. No next Sprint is approved.
+Active development. EPIC-001 and EPIC-007 are completed. EPIC-002 is in progress. V14-005 remains blocked pending an official logo asset. No next Sprint is approved.
 
 ## Completed Sprints
 
@@ -165,6 +165,17 @@ Active development. EPIC-001 and EPIC-002 are in progress. EPIC-007 is completed
 - **Start Date:** 2026-08-08
 - **End Date:** 2026-08-08
 - **Result:** Documentation system validated και EPIC-007 completed.
+
+### EPIC-001-C1
+
+- **ID:** EPIC-001-C1
+- **Title:** Study Plan Progress Integrity
+- **Status:** Completed
+- **Goal:** Διόρθωση των completion blockers του Study Plan.
+- **Start Date:** 2026-08-08
+- **End Date:** 2026-08-08
+- **Notes:** Work progress accounting corrected. Registry review target aligned with the available pool. Corrupted persisted-plan fallback added.
+- **Closeout:** Μετά το Product Completion Re-check και το Product Approval, το EPIC-001 έκλεισε ως Completed.
 
 ## Planned Sprints
 
