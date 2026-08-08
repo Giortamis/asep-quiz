@@ -1,5 +1,16 @@
 # CHANGELOG.md
 
+## DOC-007 — UI & Brand Governance
+
+### Documentation
+- Δημιουργήθηκε το `docs/UI_GUIDELINES.md`.
+- Καταγράφηκαν responsive, layout, navigation και Design Freeze rules.
+- Δημιουργήθηκε το `docs/BRAND_GUIDELINES.md`.
+- Καταγράφηκε η υπάρχουσα branding direction και το pending official logo asset.
+- Δεν δημιουργήθηκε ή τροποποιήθηκε branding asset.
+
+---
+
 ## DOC-006 — AI Governance
 
 ### Documentation

@@ -410,6 +410,8 @@ STOP — Δεν ξεκινά επόμενο Sprint χωρίς νέα εντολ�
 
 ## Related Documentation
 
+- `docs/UI_GUIDELINES.md` — current UI/UX patterns και validation rules.
+- `docs/BRAND_GUIDELINES.md` — branding governance και asset status.
 - `docs/AI_RULES.md` — AI-specific workflow και constraints.
 - `docs/ARCHITECTURE.md` — runtime structure, engines και contracts.
 - `PROJECT_BOOTSTRAP.md` — τρέχουσα κατάσταση και onboarding.

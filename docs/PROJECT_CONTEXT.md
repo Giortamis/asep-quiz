@@ -284,6 +284,8 @@ Release / Deploy
 
 ## Related Documentation
 
+- `docs/UI_GUIDELINES.md` — UI/UX governance.
+- `docs/BRAND_GUIDELINES.md` — branding rules και asset status.
 - `docs/AI_RULES.md` — AI collaboration και governance.
 - `docs/ARCHITECTURE.md` — τεχνική αρχιτεκτονική, engines και contracts.
 - `docs/DEVELOPMENT_GUIDE.md` — τοπική εκτέλεση, αλλαγές και validation workflow.

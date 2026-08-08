@@ -136,6 +136,16 @@ Active development. EPIC-002 and EPIC-007 are in progress. V14-005 remains block
 - **End Date:** 2026-08-07
 - **Notes:** Δημιουργήθηκε το `AI_RULES.md` με startup protocol, source-of-truth hierarchy, scope controls, AI roles, review gates και reusable handoff templates.
 
+### DOC-007
+
+- **ID:** DOC-007
+- **Title:** UI & Brand Governance
+- **Goal:** Καταγραφή των υφιστάμενων UI/UX κανόνων και της εγκεκριμένης branding κατεύθυνσης του ASEPIA.
+- **Status:** Completed
+- **Start Date:** 2026-08-08
+- **End Date:** 2026-08-08
+- **Notes:** Δημιουργήθηκαν τα `UI_GUIDELINES.md` και `BRAND_GUIDELINES.md` χωρίς αλλαγή runtime UI ή δημιουργία branding asset.
+
 ## Planned Sprints
 
 No sprints are currently planned.

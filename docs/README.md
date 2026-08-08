@@ -14,14 +14,16 @@
 4. `docs/AI_RULES.md`
 5. `docs/ARCHITECTURE.md`
 6. `docs/DEVELOPMENT_GUIDE.md`
-7. `docs/PROJECT_RULES.md`
-8. `docs/DECISIONS.md`
-9. `docs/SPRINTS.md`
-10. `docs/CHANGELOG.md`
-11. `docs/EPICS.md`
-12. `docs/VISION.md`
-13. `README.md`
-14. Τα υπόλοιπα ειδικά handbook files όταν δημιουργηθούν.
+7. `docs/UI_GUIDELINES.md`
+8. `docs/BRAND_GUIDELINES.md`
+9. `docs/PROJECT_RULES.md`
+10. `docs/DECISIONS.md`
+11. `docs/SPRINTS.md`
+12. `docs/CHANGELOG.md`
+13. `docs/EPICS.md`
+14. `docs/VISION.md`
+15. `README.md`
+16. Τα υπόλοιπα ειδικά handbook files όταν δημιουργηθούν.
 
 ## C. Ιεραρχία πηγών αλήθειας
 
@@ -46,6 +48,8 @@
 | `docs/AI_RULES.md` | Active — Living Document | AI Collaboration & Governance Handbook | Κανόνες χρήσης ChatGPT, Codex και άλλων AI collaborators μέσα στο ASEPIA | Δεύτερο Charter, architecture reference ή product roadmap | Όταν αλλάζει το AI collaboration ή governance workflow |
 | `docs/ARCHITECTURE.md` | Active — Living Document | Technical Architecture Reference | Τρέχουσα runtime δομή, engines, data/state contracts και τεχνικά boundaries | Roadmap, μη υλοποιημένη target architecture ή καθημερινές οδηγίες εκτέλεσης | Όταν αλλάζει η πραγματική αρχιτεκτονική ή τεχνικό contract |
 | `docs/DEVELOPMENT_GUIDE.md` | Active — Living Document | Contributor Workflow Reference | Setup, τοπική εκτέλεση, change paths, validation και Definition of Done | Product scope, αρχιτεκτονικές αποφάσεις ή Sprint history | Όταν αλλάζει το development ή quality workflow |
+| `docs/UI_GUIDELINES.md` | Active — Living Document | UI & UX Governance Reference | Υφιστάμενα UI patterns, responsive behavior, navigation και Design Freeze rules | Redesign proposal, CSS rewrite ή branding guide | Όταν αλλάζει η εγκεκριμένη UI/UX λογική ή πραγματική υλοποίηση |
+| `docs/BRAND_GUIDELINES.md` | Active — Incomplete Pending Official Asset | Brand Governance Reference | Εγκεκριμένη branding κατεύθυνση, περιορισμοί και official asset status | Logo creation brief, marketing strategy ή άδεια υλοποίησης V14-005 | Όταν εγκρίνεται branding direction ή πραγματικό official asset |
 | `docs/PROJECT_RULES.md` | Active | Πρακτικοί κλειδωμένοι κανόνες | Εφαρμόσιμοι project, architecture και product rules υπό το Charter | Αποστολή έργου, ιστορικό αλλαγών ή αιτιολόγηση αποφάσεων | Όταν εγκρίνεται ή αλλάζει πρακτικός κλειδωμένος κανόνας |
 | `docs/DECISIONS.md` | Active | Μητρώο εγκεκριμένων αποφάσεων | Κλειδωμένες αποφάσεις και το αντικείμενό τους | Sprint status ή γενικές οδηγίες εκτέλεσης | Όταν εγκρίνεται, αλλάζει ή αντικαθίσταται σημαντική απόφαση |
 | `docs/SPRINTS.md` | Active | Sprint registry | Completed, planned και current Sprints | Αναλυτικό diff ή μακροπρόθεσμο product vision | Σε κάθε εγκεκριμένη μεταβολή κατάστασης Sprint |
@@ -61,8 +65,6 @@
 
 Τα παρακάτω είναι **Planned — Not Yet Created**:
 
-- `docs/UI_GUIDELINES.md`
-- `docs/BRAND_GUIDELINES.md`
 - `docs/ROADMAP.md`
 
 ## F. Κανόνας αποφυγής επικαλύψεων

@@ -206,7 +206,7 @@ Implementation δεν ξεκινά χωρίς εγκεκριμένο Specificati
 - δεν δημιουργείται «προσωρινό official» asset,
 - δεν θεωρείται branding proposal ως τελική απόφαση.
 
-Οι πραγματικοί κανόνες branding θα ανήκουν στο μελλοντικό `docs/BRAND_GUIDELINES.md`, όταν δημιουργηθεί μέσω εγκεκριμένου Specification.
+Οι πραγματικοί κανόνες branding καταγράφονται στο `docs/BRAND_GUIDELINES.md`, το οποίο παραμένει incomplete pending official asset.
 
 ## 15. Validation Truthfulness
 
@@ -388,6 +388,8 @@ STOP μετά την τελική αναφορά.
 
 ## Related Documentation
 
+- `docs/UI_GUIDELINES.md` — UI/UX governance και Design Freeze rules.
+- `docs/BRAND_GUIDELINES.md` — branding constraints και pending official asset status.
 - `PROJECT_CHARTER.md` — ανώτατες αρχές και διακυβέρνηση.
 - `PROJECT_BOOTSTRAP.md` — onboarding και τρέχουσα κατάσταση.
 - `docs/DEVELOPMENT_GUIDE.md` — development, review και delivery workflow.

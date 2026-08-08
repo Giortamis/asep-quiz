@@ -37,6 +37,8 @@ asep-quiz/
 │   ├── AI_RULES.md         # AI collaboration και governance
 │   ├── ARCHITECTURE.md     # Τρέχουσα τεχνική αρχιτεκτονική και contracts
 │   ├── DEVELOPMENT_GUIDE.md # Development και validation workflow
+│   ├── UI_GUIDELINES.md    # UI/UX και responsive governance
+│   ├── BRAND_GUIDELINES.md # Branding governance και asset status
 │   ├── VISION.md           # Όραμα προϊόντος
 │   ├── EPICS.md            # Μητρώο μεγάλων δυνατοτήτων
 │   ├── SPRINTS.md          # Μητρώο Sprints
