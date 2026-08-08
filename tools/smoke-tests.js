@@ -87,8 +87,11 @@ async function main() {
     if (await hero.locator("button").count() !== 0) {
       throw new Error("Hero Card must not contain buttons");
     }
-    if (await hero.locator('[data-placeholder="true"]').count() !== 1) {
-      throw new Error("Hero Card logo placeholder is missing");
+    if (await hero.locator('[data-placeholder="true"]').count() !== 0) {
+      throw new Error("Hero Card must not contain the logo placeholder");
+    }
+    if (await page.locator(".main-four > [data-placeholder=\"true\"]").count() !== 1) {
+      throw new Error("Desktop grid logo placeholder is missing");
     }
 
     const welcomeChecks = await page.evaluate(() => {
