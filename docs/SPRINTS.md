@@ -2,7 +2,7 @@
 
 ## Project Status
 
-Active development. EPIC-001 and EPIC-007 are completed. EPIC-002 is in progress. V14-005 remains blocked pending an official logo asset. No next Sprint is approved.
+Active development. EPIC-001, EPIC-002 and EPIC-007 are completed. V14-005 remains blocked pending an official logo asset. No next Sprint is approved.
 
 ## Completed Sprints
 
@@ -95,6 +95,8 @@ Active development. EPIC-001 and EPIC-007 are completed. EPIC-002 is in progress
 - **Start Date:** 2026-08-02
 - **End Date:** 2026-08-02
 - **Notes:** Removed the desktop card container, centered the Hero content and added a clearly marked temporary ASEPIA wordmark pending the official logo asset.
+
+Μετά το AUD-002 Product Completion Audit, το εγκεκριμένο Technical Architect Review και το Product Owner Approval, το EPIC-002 έκλεισε ως `Completed`. Δεν δημιουργήθηκε νέο Sprint και το V14-005 παραμένει ξεχωριστά `Blocked`.
 
 ### DOC-003
 

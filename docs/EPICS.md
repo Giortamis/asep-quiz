@@ -38,7 +38,7 @@ SPRINTS
 
 - **ID:** EPIC-002
 - **Title:** Smart Welcome Engine
-- **Status:** In Progress
+- **Status:** Completed
 - **Description:** Η «Έξυπνη Κάρτα Υποδοχής» αποτελεί τη ζωντανή προσωπικότητα του ASEPIA. Δεν είναι κουμπί ή dashboard, αλλά ένα δυναμικό component που εξελίσσεται μαζί με την εφαρμογή.
 
 ### Μελλοντικές δυνατότητες

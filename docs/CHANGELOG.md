@@ -1,5 +1,17 @@
 # CHANGELOG.md
 
+## EPIC-002 — Smart Welcome Engine Closeout
+
+### Product Closeout
+- Ολοκληρώθηκε το AUD-002 Product Completion Audit με απόφαση `A — READY TO CLOSE`.
+- Εγκρίθηκαν το Technical Architect Review και το Product Owner Approval.
+- Το EPIC-002 — Smart Welcome Engine έκλεισε ως `Completed` στο συμφωνημένο scope των V14-003 και V14-004.
+- Η εγκεκριμένη desktop παρουσίαση καταγράφεται ως κεντραρισμένο Hero πάνω από το menu, με το `Αρχικό μενού` ακριβώς πάνω από το 3×2 grid και το προσωρινό ASEPIA branding ως μη-interactive 6ο grid item.
+- Reminders, streak, progress messages, notifications, daily missions και announcements παραμένουν future και δεν αποτελούν completion blockers.
+- Το V14-005 παραμένει ξεχωριστά `Blocked` μέχρι να υπάρξει εγκεκριμένο official branding asset.
+
+---
+
 ## EPIC-001-C1 — Study Plan Progress Integrity
 
 ### Study Plan

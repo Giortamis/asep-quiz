@@ -34,7 +34,7 @@
 
 - Το content αξιοποιεί έως `1120px` πλάτος.
 - Η home και η κύρια submenu βάση χρησιμοποιούν περίπου 3-column grid με `repeat(3, minmax(0, 1fr))` όπου ισχύει.
-- Το Smart Welcome εμφανίζεται ως κεντραρισμένο editorial section στην εγκεκριμένη θέση του desktop grid.
+- Το Smart Welcome εμφανίζεται ως μεγάλο κεντραρισμένο editorial Hero πάνω από το menu.
 - Από `901px` αφαιρούνται από το Hero card background, border, radius και shadow.
 
 ### Tablet — έως 900px
@@ -72,6 +72,8 @@
 
 Το Smart Welcome είναι ξεχωριστό `article`, όχι button. Δεν είναι CTA, δεν εκκινεί λειτουργία και δεν πρέπει να μοιάζει με διαφήμιση.
 
+Στο desktop, το `Αρχικό μενού` και το subtitle του βρίσκονται ακριβώς πάνω από το 3×2 grid. Το grid περιλαμβάνει τις πέντε λειτουργικές κάρτες και το ASEPIA branding ως μη-interactive έκτο grid item, χωρίς card background, border ή shadow.
+
 ## 6. Smart Welcome / Hero
 
 Το περιεχόμενο του component είναι greeting, προαιρετικό αποθηκευμένο όνομα και motivational message. Τα στοιχεία αυτά δεν είναι navigation controls.
@@ -81,8 +83,10 @@
 - Editorial presentation από `901px` και πάνω.
 - Κεντραρισμένο περιεχόμενο σε column layout.
 - Χωρίς card background, border, radius ή shadow.
-- Παραμένει στην εγκεκριμένη θέση του 3-column desktop grid.
-- Το προσωρινό ASEPIA wordmark εμφανίζεται μόνο σε αυτή την desktop κατάσταση.
+- Βρίσκεται πάνω από το `Αρχικό μενού`, το subtitle και τα menu cards.
+- Το `Αρχικό μενού` και το subtitle ευθυγραμμίζονται με την αρχή του card grid και βρίσκονται ακριβώς πάνω από αυτό.
+- Τα πέντε menu cards σχηματίζουν 3×2 desktop grid μαζί με το προσωρινό ASEPIA branding.
+- Το προσωρινό ASEPIA branding καταλαμβάνει την 6η θέση ως κεντραρισμένο, μη-interactive grid item και δεν είναι card.
 
 ### Tablet / Mobile
 

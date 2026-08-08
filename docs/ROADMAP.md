@@ -25,7 +25,7 @@
 | Epic | Title | Status |
 | --- | --- | --- |
 | EPIC-001 | Study Planner | Completed |
-| EPIC-002 | Smart Welcome Engine | In Progress |
+| EPIC-002 | Smart Welcome Engine | Completed |
 | EPIC-003 | Authentication | Planned |
 | EPIC-004 | Cloud Sync | Planned |
 | EPIC-005 | Android / iOS | Planned |
@@ -49,15 +49,17 @@
 - data validation και browser smoke-test εργαλεία,
 - ενεργό documentation/governance handbook set.
 
-Η foundation περιγραφή δεν αλλάζει το status των σχετικών Epics: το EPIC-001 είναι `Completed` και το EPIC-002 παραμένει `In Progress` σύμφωνα με το `EPICS.md`.
+Η foundation περιγραφή δεν αλλάζει το status των σχετικών Epics: τα EPIC-001 και EPIC-002 είναι `Completed` σύμφωνα με το `EPICS.md`.
 
 ## 4. Active Initiatives — In Progress
 
-### EPIC-002 — Smart Welcome Engine
-
-Οι Phase 1 και Phase 2 δυνατότητες έχουν υλοποιηθεί. Πρόσθετες καταγεγραμμένες δυνατότητες παραμένουν μελλοντικές και δεν αποτελούν ενεργό Sprint ή commitment.
+Δεν υπάρχει ενεργό product initiative ή εγκεκριμένο επόμενο Sprint. Δεν ορίζεται νέο product priority.
 
 ## 5. Completed Initiatives
+
+### EPIC-002 — Smart Welcome Engine
+
+Το Smart Welcome Engine ολοκληρώθηκε στο συμφωνημένο scope των V14-003 και V14-004 μετά το AUD-002, το Technical Architect Review και το Product Owner Approval. Οι πρόσθετες καταγεγραμμένες δυνατότητες παραμένουν future και δεν αποτελούν completion blockers ή ενεργό commitment.
 
 ### EPIC-001 — Study Planner
 
@@ -126,9 +128,9 @@
 ## 11. Implemented vs In Progress vs Planned vs Completed vs Blocked
 
 - **Implemented:** πραγματικές capabilities της Current Foundation.
-- **In Progress:** EPIC-002, σύμφωνα με το `EPICS.md`.
+- **In Progress:** None.
 - **Planned:** EPIC-003, EPIC-004 και EPIC-005, χωρίς date commitment.
-- **Completed:** EPIC-001 και EPIC-007.
+- **Completed:** EPIC-001, EPIC-002 και EPIC-007.
 - **Blocked:** V14-005 λόγω missing official branding asset.
 
 Planned infrastructure δεν παρουσιάζεται ως υπάρχουσα runtime δυνατότητα.

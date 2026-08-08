@@ -133,7 +133,7 @@
 
 ### Smart Welcome Engine
 
-Το EPIC-002 βρίσκεται σε εξέλιξη.
+Το EPIC-002 έχει ολοκληρωθεί στο συμφωνημένο scope του.
 
 Υλοποιημένα:
 
@@ -142,13 +142,13 @@
 - 24 ελληνικά motivational messages.
 - Αποφυγή άμεσης επανάληψης μηνύματος μέσα στο ίδιο session.
 - Adaptive θέση:
-  - Desktop: δεύτερη σειρά, δεξιά, για ισορροπία του 3-column grid.
+  - Desktop: μεγάλο κεντραρισμένο editorial Hero πάνω από το `Αρχικό μενού`, το subtitle και το 3×2 menu grid.
   - Tablet και Mobile: πρώτη, πριν από τις menu cards.
 - Desktop editorial Hero χωρίς card background/σκιά.
 - Tablet και Mobile Hero Card διατηρούν card presentation.
-- Προσωρινό ASEPIA wordmark στο desktop, επειδή δεν υπάρχει ακόμη επίσημο logo asset.
+- Προσωρινό ASEPIA branding ως μη-interactive 6ο item του desktop 3×2 grid, επειδή δεν υπάρχει ακόμη επίσημο logo asset.
 
-Δεν έχουν ακόμη υλοποιηθεί ως μέρος του Smart Welcome Engine:
+Οι παρακάτω δυνατότητες είναι future/not completion blockers και δεν περιλαμβάνονται στο ολοκληρωμένο scope του EPIC-002:
 
 - Progress.
 - Streak.
@@ -156,7 +156,8 @@
 - Study reminders.
 - Daily missions.
 - Ανακοινώσεις.
-- Οριστικό official branding asset.
+
+Το οριστικό official branding asset παραμένει ξεχωριστή εξάρτηση του blocked V14-005 και δεν αποτελεί completion blocker του EPIC-002.
 
 ---
 
@@ -511,7 +512,7 @@ Warnings για πιθανώς όμοιο κείμενο ερωτήσεων δε
 Γνωστά Epics:
 
 - **EPIC-001 — Study Planner** — Completed.
-- **EPIC-002 — Smart Welcome Engine** — In Progress.
+- **EPIC-002 — Smart Welcome Engine** — Completed.
 - **EPIC-003 — Authentication** — Planned.
 - **EPIC-004 — Cloud Sync** — Planned.
 - **EPIC-005 — Android / iOS** — Planned.
@@ -582,7 +583,7 @@ Warnings για πιθανώς όμοιο κείμενο ερωτήσεων δε
 - Το Product Completion Re-check και το Product Approval ολοκληρώθηκαν και το **EPIC-001 — Study Planner** έκλεισε ως Completed.
 - Το Study Plan θεωρείται ολοκληρωμένο στο συμφωνημένο scope του EPIC-001.
 - Τα NOT DEFINED items, όπως resume, archive/history και Return to Study Plan, δεν αποτελούν missing blockers του EPIC-001 και απαιτούν ξεχωριστή απόφαση Product Owner αν ζητηθούν στο μέλλον.
-- **Last completed product work:** EPIC-001-C1 — Study Plan Progress Integrity.
+- **Last completed product work:** EPIC-002 — Smart Welcome Engine, στο εγκεκριμένο scope των V14-003 και V14-004.
 - **Next approved Sprint:** None.
 - **Next product priority:** Pending Product Owner decision.
 - Το **V14-005 — Mobile ASEPIA brand integration** παραμένει blocked λόγω έλλειψης επίσημου logo asset.

@@ -36,7 +36,7 @@
 
 Το ASEPIA βρίσκεται σε ενεργή ανάπτυξη και διαθέτει ήδη λειτουργική web βάση σε vanilla HTML, CSS και JavaScript. Η εφαρμογή προσφέρει responsive εμπειρία σε desktop, tablet και mobile και περιλαμβάνει Επίσημο Μητρώο Ερωτήσεων, CAT, Εργασιακές Συμπεριφορές, Study Plan, Statistics και Help.
 
-Το Smart Welcome έχει ήδη υλοποιημένες φάσεις προσωπικής υποδοχής και adaptive παρουσίασης. Το `EPIC-007 — Project Governance & Documentation` έχει ολοκληρωθεί και το handbook παραμένει ενεργό ως Living Documentation.
+Το Smart Welcome έχει ολοκληρωθεί στο συμφωνημένο scope του EPIC-002 με προσωπική υποδοχή και adaptive παρουσίαση. Το `EPIC-007 — Project Governance & Documentation` έχει ολοκληρωθεί και το handbook παραμένει ενεργό ως Living Documentation.
 
 Το επίσημο branding asset δεν έχει ακόμη οριστικοποιηθεί. Η ενσωμάτωση του mobile branding παραμένει blocked μέχρι να παραδοθεί εγκεκριμένο logo/icon asset.
 
@@ -112,7 +112,7 @@
 - desktop editorial Hero,
 - tablet/mobile Hero Card.
 
-Reminders, streaks, notifications και άλλες μελλοντικές δυνατότητες δεν έχουν υλοποιηθεί.
+Reminders, streaks, progress messages, notifications, daily missions, announcements και άλλες μελλοντικές δυνατότητες δεν περιλαμβάνονται στο ολοκληρωμένο scope του EPIC-002 και δεν αποτελούν completion blockers.
 
 ### Βοήθεια
 
@@ -245,11 +245,12 @@ Release / Deploy
 
 ### In Progress
 
-- `EPIC-002 — Smart Welcome Engine`.
+- Κανένα Epic.
 
 ### Completed
 
 - `EPIC-001 — Study Planner`, ολοκληρωμένο στο συμφωνημένο Epic scope.
+- `EPIC-002 — Smart Welcome Engine`, ολοκληρωμένο στο συμφωνημένο scope των V14-003 και V14-004.
 - `EPIC-007 — Project Governance & Documentation`.
 
 ### Planned
