@@ -34,6 +34,7 @@ asep-quiz/
 ├── docs/
 │   ├── README.md           # Documentation index και σειρά ανάγνωσης
 │   ├── PROJECT_CONTEXT.md  # Συνολική περιγραφή προϊόντος και τεχνικής βάσης
+│   ├── AI_RULES.md         # AI collaboration και governance
 │   ├── ARCHITECTURE.md     # Τρέχουσα τεχνική αρχιτεκτονική και contracts
 │   ├── DEVELOPMENT_GUIDE.md # Development και validation workflow
 │   ├── VISION.md           # Όραμα προϊόντος

@@ -126,6 +126,16 @@ Active development. EPIC-002 and EPIC-007 are in progress. V14-005 remains block
 - **End Date:** 2026-08-07
 - **Notes:** Δημιουργήθηκαν τα `ARCHITECTURE.md` και `DEVELOPMENT_GUIDE.md`, καταγράφηκαν engines, contracts, roles, change paths, review/approval gates, Git delivery και quality workflow και ενημερώθηκε η documentation architecture.
 
+### DOC-006
+
+- **ID:** DOC-006
+- **Title:** AI Governance
+- **Goal:** Δημιουργία επίσημων κανόνων συνεργασίας ChatGPT, Codex και άλλων AI tools με το ASEPIA.
+- **Status:** Completed
+- **Start Date:** 2026-08-07
+- **End Date:** 2026-08-07
+- **Notes:** Δημιουργήθηκε το `AI_RULES.md` με startup protocol, source-of-truth hierarchy, scope controls, AI roles, review gates και reusable handoff templates.
+
 ## Planned Sprints
 
 No sprints are currently planned.

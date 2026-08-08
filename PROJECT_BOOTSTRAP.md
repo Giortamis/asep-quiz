@@ -517,6 +517,7 @@ Warnings για πιθανώς όμοιο κείμενο ερωτήσεων δε
 Γνωστά υπάρχοντα αρχεία:
 
 - `README.md`
+- `docs/AI_RULES.md`
 - `docs/PROJECT_RULES.md`
 - `docs/DECISIONS.md`
 - `docs/VISION.md`
@@ -557,6 +558,8 @@ Warnings για πιθανώς όμοιο κείμενο ερωτήσεων δε
 - Το **DOC-003 — Documentation Inventory & Information Architecture** ολοκληρώθηκε.
 - Το **DOC-004 — Core Project Context** ολοκληρώθηκε και το `docs/PROJECT_CONTEXT.md` αποτελεί πλέον ενεργό μέρος της documentation architecture.
 - Το **DOC-005 — Architecture & Development Workflow** ολοκληρώθηκε και τα `docs/ARCHITECTURE.md` και `docs/DEVELOPMENT_GUIDE.md` αποτελούν πλέον ενεργά handbook files.
+- Το **DOC-006 — AI Governance** ολοκληρώθηκε και το `docs/AI_RULES.md` αποτελεί πλέον ενεργό handbook file.
+- Επόμενο documentation Sprint είναι το **DOC-007 — UI & Brand Governance**, χωρίς να θεωρείται ενεργό πριν εγκριθεί σχετικό Specification.
 - Το **V14-005 — Mobile ASEPIA brand integration** παραμένει blocked λόγω έλλειψης επίσημου logo asset.
 
 ---

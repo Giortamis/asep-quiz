@@ -410,6 +410,7 @@ STOP — Δεν ξεκινά επόμενο Sprint χωρίς νέα εντολ�
 
 ## Related Documentation
 
+- `docs/AI_RULES.md` — AI-specific workflow και constraints.
 - `docs/ARCHITECTURE.md` — runtime structure, engines και contracts.
 - `PROJECT_BOOTSTRAP.md` — τρέχουσα κατάσταση και onboarding.
 - `PROJECT_CHARTER.md` — governance και workflow.

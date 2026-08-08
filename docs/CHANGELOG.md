@@ -1,5 +1,16 @@
 # CHANGELOG.md
 
+## DOC-006 — AI Governance
+
+### Documentation
+- Δημιουργήθηκε το `docs/AI_RULES.md`.
+- Καθορίστηκαν οι ρόλοι και τα όρια ChatGPT και Codex.
+- Καταγράφηκαν startup, source-of-truth, blocker και validation rules.
+- Προστέθηκαν reusable templates για implementation και Technical Review.
+- Ενημερώθηκε το documentation index.
+
+---
+
 ## DOC-005 — Architecture & Development Workflow
 
 ### Documentation

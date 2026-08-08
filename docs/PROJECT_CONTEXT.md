@@ -284,6 +284,7 @@ Release / Deploy
 
 ## Related Documentation
 
+- `docs/AI_RULES.md` — AI collaboration και governance.
 - `docs/ARCHITECTURE.md` — τεχνική αρχιτεκτονική, engines και contracts.
 - `docs/DEVELOPMENT_GUIDE.md` — τοπική εκτέλεση, αλλαγές και validation workflow.
 - `PROJECT_BOOTSTRAP.md` — τρέχουσα κατάσταση.
