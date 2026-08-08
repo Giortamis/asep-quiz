@@ -15,6 +15,17 @@
   </header>
 
   <section id="home" class="home-dashboard">
+    <article id="smartWelcomeCard" class="welcome-card" aria-labelledby="welcomeGreeting">
+      <span id="welcomeIcon" class="welcome-icon" aria-hidden="true"></span>
+      <div class="welcome-content">
+        <h2 id="welcomeGreeting"></h2>
+        <p id="welcomeMessage"></p>
+      </div>
+      <div class="welcome-logo-placeholder" data-placeholder="true" aria-label="Προσωρινό λογότυπο ASEPIA">
+        <strong>ASEPIA</strong>
+        <small>προσωρινό λογότυπο</small>
+      </div>
+    </article>
     <div class="home-heading"><div><h2>Αρχικό μενού</h2><p>Επίλεξε τη βασική ενότητα προετοιμασίας.</p></div></div>
     <div class="dashboard-grid main-four">
       <button class="dashboard-tile tile-registry" type="button" onclick="openRegistryHub()">
@@ -42,17 +53,6 @@
         <span class="tile-description">Οδηγός ΑΣΕΠ και αναλυτικές οδηγίες χρήσης της εφαρμογής</span>
         <span class="tile-footer"><span>2 οδηγοί</span><span class="tile-arrow">›</span></span>
       </button>
-      <article id="smartWelcomeCard" class="welcome-card" aria-labelledby="welcomeGreeting">
-        <span id="welcomeIcon" class="welcome-icon" aria-hidden="true"></span>
-        <div class="welcome-content">
-          <h2 id="welcomeGreeting"></h2>
-          <p id="welcomeMessage"></p>
-        </div>
-        <div class="welcome-logo-placeholder" data-placeholder="true" aria-label="Προσωρινό λογότυπο ASEPIA">
-          <strong>ASEPIA</strong>
-          <small>προσωρινό λογότυπο</small>
-        </div>
-      </article>
     </div>
   </section>
 
